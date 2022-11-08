@@ -74857,7 +74857,7 @@ m(){this.a.toString
 this.aJ()},
 I(a){return this.a.c}}
 A.Jv.prototype={
-I(a){return new A.yo("/webhome",new A.a4B(),new A.a4C(),"LuckTown",A.aqs(B.am,"gotham",B.ik,null),!1,null)}}
+I(a){return new A.yo("/webscaffold",new A.a4B(),new A.a4C(),"LuckTown",A.aqs(B.am,"gotham",B.ik,null),!1,null)}}
 A.a4B.prototype={
 $1(a){return A.aFB(a,new A.a4A(a),t.z)},
 $S:108}
