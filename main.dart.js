@@ -78353,7 +78353,7 @@ s=6
 return A.P(o.el(),$async$oW)
 case 6:h=e.c([d,c,b,a0],i,i)
 s=7
-return A.P(A.i7(j,B.v.f3(A.c(["data",A.c(["productId",69,"amountTransfer","0","viewType","web"],i,t.K)],i,t.z),null),h),$async$oW)
+return A.P(A.i7(j,B.v.f3(A.c(["data",A.c(["productId",o.a.c.a,"amountTransfer","0","viewType","mobile"],i,t.u)],i,t.z),null),h),$async$oW)
 case 7:n=a0
 switch(n.b){case 200:o.J(new A.amb(o))
 A.aO(n.b)
