@@ -1,28 +1,38 @@
-import 'package:flutter/gestures.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_application_lucky_town/utils/components/ecotextfield.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
-import 'package:flutter_application_lucky_town/utils/components/social_buttons.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
+import 'package:flutter_application_lucky_town/web/sign_in_sign_up/viewModel.dart';
+import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
+import '../utils/components/custom_toast.dart';
 import '../utils/components/gradient_text.dart';
-import '../utils/components/select_category.dart';
+import '../utils/constants/api_constants.dart';
 
-class TabletOTPScreen extends StatefulWidget {
+class LoginOTPScreen extends StatefulWidget {
   // String? image;
   // String? text;
-  Map? data;
-  TabletOTPScreen({this.data});
+  // final String? data;
+  // LoginOTPScreen({this.data});
 
   @override
-  State<TabletOTPScreen> createState() => _TabletOTPScreenState();
+  State<LoginOTPScreen> createState() => _LoginOTPScreenState();
 }
 
-class _TabletOTPScreenState extends State<TabletOTPScreen> {
+class _LoginOTPScreenState extends State<LoginOTPScreen> {
   int index = 0;
   bool line_visible1 = false;
   bool line_visible = true;
+  String? otpCode;
+  String? tokenKey;
+  bool isLoading = false;
+  Map bindInfo = {};
+
   final Shader linearGradient = LinearGradient(
     colors: <Color>[
       Color(0xBD8E37).withOpacity(1),
@@ -34,22 +44,91 @@ class _TabletOTPScreenState extends State<TabletOTPScreen> {
   ).createShader(Rect.fromLTWH(200.0, 0.0, 0.0, 70.0));
 
   @override
+  void initState() {
+    super.initState();
+    // tokenKey = widget.data;
+    bindInfo =
+        Provider.of<SignInProvider>(context, listen: false).getTokenAndPhone;
+    // print("my token key ${widget.data}");
+  }
+
+  verifyOtp() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}user/verification'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "data": {
+            "otpCode": otpCode,
+            "tokenKey": bindInfo['userToken'],
+            // "otpCode": widget.data!['otpCode'],
+            "language": "EN",
+            // "language": widget.data!['language'],
+          }
+        }),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          setState(() {
+            isLoading = false;
+          });
+          final data = json.decode(response1.body);
+          print(data);
+          CustomToast.customToast(context, data['msg']);
+          Navigator.pushNamed(context, web_set_new_pin_page);
+          setState(() {
+            tempAuthKey = data['response']['authToken'];
+          });
+          // Navigator.pushNamed(context, web_otp_page, arguments: {
+          //   "authkey": data['response']['authToken'],
+          //   "usertoken": data['response']['userToken']
+          // });
+          break;
+        default:
+          final data = json.decode(response1.body);
+          print(data);
+          CustomToast.customToast(context, data['msg']);
+          setState(() {
+            // index = 0;
+            isLoading = false;
+          });
+        // CustomToast.customToast(context, "WENT WRONG");
+      }
+    } catch (e) {
+      CustomToast.customToast(context, e.toString());
+      setState(() {
+        // index = 0;
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
         body: Row(
           children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  image: DecorationImage(
-                    image: AssetImage(tabletsidebar),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
+            ResponsiveVisibility(
+              visible: true,
+              hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+              child: Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    image: DecorationImage(
+                      image: AssetImage(tabletsidebar),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    ),
                   ),
+                  child: Center(child: Image.asset(logo)),
                 ),
-                child: Center(child: Image.asset(logo)),
               ),
             ),
             Expanded(
@@ -105,24 +184,28 @@ class _TabletOTPScreenState extends State<TabletOTPScreen> {
                                     },
                                     //runs when every textfield is filled
                                     onSubmit: (String verificationCode) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text("Verification Code"),
-                                              content: Text(
-                                                  'Code entered is $verificationCode'),
-                                            );
-                                          });
+                                      otpCode = verificationCode;
+                                      // showDialog(
+                                      //     context: context,
+                                      //     builder: (context) {
+                                      //       return AlertDialog(
+                                      //         title: Text("Verification Code"),
+                                      //         content: Text(
+                                      //             'Code entered is $verificationCode'),
+                                      //       );
+                                      //     });
                                     }, // end onSubmit
                                   ),
                                   SizedBox(height: 30),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: PrimaryButton(
-                                        width: double.infinity,
                                         title: "Continue",
-                                        onPress: () {}),
+                                        width: double.infinity,
+                                        loading: isLoading,
+                                        onPress: () {
+                                          verifyOtp();
+                                        }),
                                   ),
                                   SizedBox(height: 20),
 

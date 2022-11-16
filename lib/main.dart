@@ -3,20 +3,39 @@ import 'package:flutter_application_lucky_town/models/product_model.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/utils/routes/lucky_routes.dart';
+import 'package:flutter_application_lucky_town/web/check_auth.dart';
+import 'package:flutter_application_lucky_town/web/login_otp.dart';
+import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page.dart';
+import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
+import 'package:flutter_application_lucky_town/web/topUpMethod/topup_method.dart';
+import 'package:flutter_application_lucky_town/web/web_forget_page.dart';
 import 'package:flutter_application_lucky_town/web/web_home.dart';
 import 'package:flutter_application_lucky_town/web/web_otp_screen.dart';
-import 'package:flutter_application_lucky_town/web/web_scaffold.dart';
+import 'package:flutter_application_lucky_town/web/select_country/view/web_scaffold.dart';
 import 'package:flutter_application_lucky_town/web/web_set_new_pin_page.dart';
-import 'package:flutter_application_lucky_town/web/web_signin.dart';
+import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
+  //////////////
   // setPathUrlStrategy();
   await LuckySharedPef.init();
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<SelectCountry>(
+        create: (context) => SelectCountry(),
+      ),
+      ChangeNotifierProvider<MenuProvider>(
+        create: (context) => MenuProvider(),
+      )
+    ],
+    child: MyApp(),
+  ));
 }
 
+///////////aaaaaaaaaaaaaaaaaaaaa//////////////
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -29,14 +48,22 @@ class MyApp extends StatelessWidget {
           switch (settings.name) {
             case web_home_Page:
               return WebHomePage();
+            case web_auth_page:
+              return CheckAuth();
+            case web_login_otp_page:
+              return LoginOTPScreen();
             case web_product_detail:
+              // return ProductDetailPage();
               Products data = settings.arguments as Products;
               return ProductDetailPage(product: data);
             // return ProductDetailPage();
-
+            case web_usd_topup:
+              return TopUpMethodScreen();
+            case web_forget_page:
+              return WebForgetPage();
             case web_signin_page:
-              var data = settings.arguments as Map;
-              return WebSignInPage(data: data);
+              // var data = settings.arguments as Map;
+              return WebSignInPage();
             case web_otp_page:
               String data = settings.arguments as String;
               return OTPScreen(data: data);
@@ -68,7 +95,9 @@ class MyApp extends StatelessWidget {
         ],
       ),
       // home: web_scaffold_page,
-      initialRoute: web_home_Page,
+      initialRoute: LuckySharedPef.getAuthToken().isEmpty
+          ? web_scaffold_page
+          : web_home_Page,
       // home: ResponsiveLayout(
       //     mobileScaffold: MobileScaffold(),
       //     tabletScaffold: TabletScaffold(),

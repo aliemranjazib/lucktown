@@ -8,8 +8,8 @@ class CustomToast {
     return showToastWidget(
         Container(
           width: MediaQuery.of(context).size.width * 0.5,
-          padding: EdgeInsets.symmetric(horizontal: 18.0),
-          margin: EdgeInsets.symmetric(horizontal: 50.0),
+          // padding: EdgeInsets.symmetric(horizontal: 18.0),
+          // margin: EdgeInsets.symmetric(horizontal: 50.0),
           decoration: ShapeDecoration(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5.0),

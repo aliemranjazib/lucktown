@@ -16,4 +16,8 @@ class LuckySharedPef {
   static String getAuthToken() {
     return sharedPreferences!.getString(authToken) ?? "";
   }
+
+  static Future<bool> removeAuthToken() async {
+    return sharedPreferences!.remove(authToken);
+  }
 }

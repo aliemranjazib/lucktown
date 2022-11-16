@@ -7,6 +7,9 @@ import '../../models/select_country_model.dart';
 
 //////////////// ROUTES /////////////////////
 //web
+const String web_auth_page = '/websauth';
+const String web_usd_topup = '/webusdtopup';
+const String web_login_otp_page = '/webloginotppage';
 const String web_scaffold_page = '/webscaffold';
 const String web_home_Page = '/webhome';
 const String web_signin_page = '/websignin';
@@ -14,13 +17,14 @@ const String web_otp_page = '/web_otp';
 const String web_forget_page = '/web_forget';
 const String web_set_new_pin_page = '/web_set_pin';
 const String web_product_detail = '/web_detail_page';
+const String web_profile_page = '/web_profile_page';
 
 //mobile
-const String mobilehomePage = '/mobilehome';
-const String mobileSigninPage = '/mobilesignin';
+// const String mobilehomePage = '/mobilehome';
+// const String mobileSigninPage = '/mobilesignin';
 
 //tablet
-const String tablethomePage = '/tablethome';
+// const String tablethomePage = '/tablethome';
 //////////////// IMAGES  ////////////////////
 
 const String chat = "assets/images/chat.png";
@@ -41,9 +45,13 @@ const String egame = "assets/images/egame.png";
 const String lottery = "assets/images/lottery.png";
 const String sport = "assets/images/sport.png";
 
+/////////////////////// PROFILE ///////////////////////////////
+const String gameIcon = "assets/images/AG2.png";
+
 //////////////////// product detail page icons ///////////////
 const String detail_page_banner =
     "assets/images/product_detail_page_banner.png";
+const String arrow_left = "assets/images/arrow-left.png";
 
 const String topup = "assets/images/topup.png";
 const String transaction = "assets/images/transaction.png";

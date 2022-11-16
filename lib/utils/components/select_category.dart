@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'gradient_text.dart';
 
-Column selectCountry(
-    String text, String image, double fontsize, BuildContext context) {
-  double width = MediaQuery.of(context).size.width;
+Column selectCountry(String text, String image, BuildContext context) {
   return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Image.asset(
           image,
-          width: width / 12,
-          height: width / 9.5,
+          width: ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 124 : 84,
+          height: ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 124 : 84,
           fit: BoxFit.contain,
         ),
       ),
-      Center(child: silverGradient(text, fontsize))
+      SizedBox(height: 10),
+      Center(
+          child: silverGradientRobto(
+              text,
+              ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 24 : 16,
+              FontWeight.normal))
     ],
   );
 }

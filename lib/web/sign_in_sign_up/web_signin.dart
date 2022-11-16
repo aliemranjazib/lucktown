@@ -1,34 +1,33 @@
 import 'dart:convert';
-import 'dart:html';
-
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/models/userSignInModel.dart'
+    as user;
+import 'package:flutter_application_lucky_town/models/user_session_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/components/ecotextfield.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
-import 'package:flutter_application_lucky_town/utils/components/small_button.dart';
 import 'package:flutter_application_lucky_town/utils/components/social_buttons.dart';
-import 'package:flutter_application_lucky_town/utils/components/verify_button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
+import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
+import 'package:flutter_application_lucky_town/web/sign_in_sign_up/viewModel.dart';
 // import 'package:ftoast/ftoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:is_first_run/is_first_run.dart';
 import 'package:multiple_result/multiple_result.dart';
+import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
-import '../models/user_model.dart';
-import '../utils/components/gradient_text.dart';
-import '../utils/constants/api_constants.dart';
+import '../../models/user_model.dart';
+import '../../utils/components/gradient_text.dart';
+import '../../utils/constants/api_constants.dart';
 import 'package:client_information/client_information.dart';
 
 String? tempAuthKey;
+user.User? userModel;
 
 class WebSignInPage extends StatefulWidget {
-  // String? image;
-  // String? text;
-  Map? data;
-  WebSignInPage({this.data});
-
   @override
   State<WebSignInPage> createState() => _WebSignInPageState();
 }
@@ -40,14 +39,19 @@ class _WebSignInPageState extends State<WebSignInPage> {
   String? selectedvalue = "+60";
   bool isLoading = false;
   bool isValidatingUserName = false;
+  bool isBinding = false;
 
   bool isPasswordShown = false;
   String? isoCode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController yourIdController = TextEditingController();
+  final TextEditingController refferalController = TextEditingController();
+  ///////////// login controller ////////////////////////////////////
+  final TextEditingController userNameC = TextEditingController();
+  final TextEditingController userPasswordC = TextEditingController();
+  //////////////////////////////////////////////////////////////
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController refferalController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
@@ -132,8 +136,9 @@ class _WebSignInPageState extends State<WebSignInPage> {
           Map<String, dynamic> data = json.decode(response1.body);
           if (data['msg'] == 'Member Not Found!') {
             CustomToast.customToast(context, 'user does not exist');
-          } else if (data['msg'] == 'Member Not Found!') {
-            CustomToast.customToast(context, 'user does not exist');
+          } else if (data['msg'] == 'Member exists!') {
+            CustomToast.customToast(
+                context, 'user exist. choose any other name');
           }
           print(response1.statusCode);
 
@@ -142,13 +147,195 @@ class _WebSignInPageState extends State<WebSignInPage> {
           });
           break;
         default:
-          final data = json.decode(response1.body);
-          print(response1.statusCode);
-          print(data);
+          Map<String, dynamic> data = json.decode(response1.body);
+          if (data['msg'] == 'Member Not Found!') {
+            CustomToast.customToast(context, 'user does not exist');
+          } else if (data['msg'] == 'Member exists!') {
+            CustomToast.customToast(
+                context, 'user exist. choose any other name');
+          }
           setState(() {
             isValidatingUserName = false;
           });
 
+          CustomToast.customToast(context, data['msg']);
+        // CustomToast.customToast(context, "WENT WRONG");
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      CustomToast.customToast(context, e.toString());
+    }
+  }
+
+  bindOtp() async {
+    setState(() {
+      isBinding = true;
+    });
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}user/validateUsername'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+
+          // 'Authorization':
+        },
+        body: jsonEncode(<String, dynamic>{
+          "data": {
+            // "tokenKey": widget.data,
+            "username": yourIdController.text,
+            // "language": widget.data!['language'],
+          }
+        }),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          setState(() {
+            isValidatingUserName = true;
+          });
+          Map<String, dynamic> data = json.decode(response1.body);
+          if (data['msg'] == 'Member Not Found!') {
+            CustomToast.customToast(context, 'user does not exist');
+          } else if (data['msg'] == 'Member exists!') {
+            CustomToast.customToast(
+                context, 'user exist. choose any other name');
+          }
+          print(response1.statusCode);
+
+          setState(() {
+            isValidatingUserName = false;
+          });
+          break;
+        default:
+          Map<String, dynamic> data = json.decode(response1.body);
+          if (data['msg'] == 'Member Not Found!') {
+            CustomToast.customToast(context, 'user does not exist');
+          } else if (data['msg'] == 'Member exists!') {
+            CustomToast.customToast(
+                context, 'user exist. choose any other name');
+          }
+          setState(() {
+            isValidatingUserName = false;
+          });
+
+          CustomToast.customToast(context, data['msg']);
+        // CustomToast.customToast(context, "WENT WRONG");
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      CustomToast.customToast(context, e.toString());
+    }
+  }
+
+  signInUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}user/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          // "Authorization": LuckySharedPef.getAuthToken(),
+
+          // 'Authorization':
+        },
+        body: jsonEncode(<String, dynamic>{
+          "data": {
+            "username": "techtest",
+            "push_noti_token":
+                "d8jZfHNsk0EKkxuFZEbVQO:APA91bHsQUQjMpLKadIdktX-y-0doGvJLskp4NgbAjcru4jWuAanZ4BcsjmwBlrEXcQC5Ltm8cLxqTv0U5R3zoftqjX8szjSyE3bhj6wUphhXpDVytKjMEpB5OgEB9lFj3laGxVV5_Tx",
+            "password": "1233211234567abc",
+            "language": "EN",
+            "authSession": "",
+            "deviceInfo": {
+              "deviceId": "exynos990",
+              "userAgent":
+                  "Mozilla\/5.0 (Linux; Android 11; SM-G780F Build\/RP1A.200720.012; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/90.0.4430.210 Mobile Safari\/537.36",
+              "model": "SM-G780F",
+              "manufacturer": "samsung",
+              "host": "21DJ6B24",
+              "hardware": "exynos990",
+              "firstTimeInstall": 1629221041434,
+              "deviceName": "benjamin's Galaxy S20 FE",
+              "display": "RP1A.200720.012.G780FXXS3CUD7",
+              "device": "r8s",
+              "carrier": "MY ONEXOX",
+              "apiLevel": 30,
+              "version": "3.0.5",
+              "uniqueId": "58c549bc790a5ed4",
+              "id": "58c549bc790a5ed4",
+              "platform": "android"
+            },
+            "version": "4.0.1"
+          }
+        }),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          setState(() {
+            isLoading = true;
+          });
+          Map<String, dynamic> data = json.decode(response1.body);
+          setState(() {
+            userModel = user.User.fromJson(data['response']['user']);
+          });
+          CustomToast.customToast(context, data['msg']);
+          // Navigator.pushNamed(context, web_home_Page);
+          // print("ooo ${dau.getAllUsers()}");
+          Future.delayed(
+              Duration(
+                seconds: 1,
+              ), () {
+            LuckySharedPef.saveAuthToken(data['response']['authToken']);
+          });
+          // String? otp = data['response']['userToken'];
+
+          Future.delayed(
+              Duration(
+                seconds: 2,
+              ), () {
+            String aa = LuckySharedPef.getAuthToken();
+            print("ccc $aa");
+
+            Navigator.pushNamed(context, web_home_Page);
+            // print()
+          });
+          // await IsFirstRun.isFirstRun()
+          //     ? Navigator.pushNamed(context, web_login_otp_page,
+          //         arguments: data['response']['userToken'])
+          //     : Navigator.pushNamed(context, web_home_Page);
+
+          // Navigator.pushNamed(context, web_home_Page);
+          setState(() {
+            isLoading = false;
+          });
+          break;
+        case 303:
+          CustomToast.customToast(context, "Please bind your account first");
+          // Map<String, dynamic> data = json.decode(response1.body);
+          // String userToken = data['response']['authToken'];
+
+          // setState(() {
+          //   Provider.of<SignInProvider>(context, listen: false)
+          //       .saveTokenAndPhone({
+          //     "userToken": data['response']['userToken'],
+          //     "authToken": data['response']['authToken']
+          //   });
+          // });
+
+          Navigator.pushNamed(context, web_login_otp_page);
+          break;
+        default:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          print(data);
+          setState(() {
+            isLoading = false;
+          });
           CustomToast.customToast(context, data['msg']);
         // CustomToast.customToast(context, "WENT WRONG");
       }
@@ -187,7 +374,10 @@ class _WebSignInPageState extends State<WebSignInPage> {
           setState(() {
             isLoading = true;
           });
-          final data = json.decode(response.body);
+          Map<String, dynamic> data = json.decode(response.body);
+          if (data['msg'] == 'Username Existing.') {
+            CustomToast.customToast(context, 'user already exist');
+          }
           // 2. return Success with the desired value
           print("successs");
           // print(Success());
@@ -228,24 +418,14 @@ class _WebSignInPageState extends State<WebSignInPage> {
 
           return Success(UserModel.fromJson(data));
         default:
-          print(Exception(response.reasonPhrase));
-          final data = json.decode(response.body);
-          //Interactive toast, set [isIgnoring] false.
+          Map<String, dynamic> data = json.decode(response.body);
+          if (data['msg'] == 'Username Existing.') {
+            CustomToast.customToast(context, 'user already exist');
+          }
           setState(() {
             isLoading = false;
           });
-          CustomToast.customToast(context, "${data['msg']}");
 
-          // FToast.toast(
-          //   context,
-          //   msg: "${data['msg']}",
-          //   // subMsg: "Welcome to use FToast. This is subMsg!",
-          //   color: Color(0xff3F3F3F),
-          //   image: Image.asset(info),
-          //   imageDirection: AxisDirection.left,
-          // );
-          // ScaffoldMessenger.of(context)
-          //     .showSnackBar(SnackBar(content: Text("${data['msg']}")));
           return Error(Exception(response.reasonPhrase));
       }
     } catch (e) {
@@ -261,11 +441,15 @@ class _WebSignInPageState extends State<WebSignInPage> {
   @override
   Widget build(BuildContext context) {
     s();
+    // Provider.of<SelectCountry>(context);
     return Scaffold(
-        backgroundColor: Colors.black,
-        body: Row(
-          children: [
-            Expanded(
+      backgroundColor: Colors.black,
+      body: Row(
+        children: [
+          ResponsiveVisibility(
+            visible: true,
+            hiddenWhen: [Condition.smallerThan(name: TABLET)],
+            child: Expanded(
               // child: Image.asset(bg),
               // child: Container(
               //   color: Colors.black,
@@ -283,129 +467,164 @@ class _WebSignInPageState extends State<WebSignInPage> {
                 child: Center(child: Image.asset(logo)),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 50, right: 60),
-                child: SingleChildScrollView(
-                  child: Container(
-                    // height: double.infinity,
-                    color: bgColor,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 0, right: 10, left: 10),
+              child: SingleChildScrollView(
+                child: Container(
+                  // height: double.infinity,
+                  color: bgColor,
 
-                    // decoration: BoxDecoration(
-                    //   image: DecorationImage(
-                    //     image: AssetImage(tabletrightbar),
-                    //     fit: BoxFit.cover,
-                    //     alignment: Alignment.center,
-                    //   ),
-                    // ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                  // decoration: BoxDecoration(
+                  //   image: DecorationImage(
+                  //     image: AssetImage(tabletrightbar),
+                  //     fit: BoxFit.cover,
+                  //     alignment: Alignment.center,
+                  //   ),
+                  // ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(context, web_scaffold_page);
+                              },
+                              child: Image.asset(
+                                arrow_left,
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.contain,
+                              )),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Center(
+                              child: Image.asset(
+                                logo,
+                                height: 60,
+                                width: 195,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 70),
+                      Consumer<SelectCountry>(
+                        builder: (context, value, child) {
+                          return Column(
+                            children: [
+                              value.getSelection['image'] == null
+                                  ? CircularProgressIndicator()
+                                  : Image.asset(value.getSelection['image']),
+                              SizedBox(height: 10),
+                              value.getSelection['text'] == null
+                                  ? CircularProgressIndicator()
+                                  : silverGradientRobto(
+                                      value.getSelection['text'],
+                                      24,
+                                      FontWeight.bold)
+                            ],
+                          );
+                        },
+                      ),
+                      // Provider.of<SelectCountry>(context)
+                      //             .getSelection['image'] ==
+                      //         null
+                      //     ? CircularProgressIndicator()
+                      //     : Image.asset(
+                      //         Provider.of<SelectCountry>(context)
+                      //             .getSelection['image'],
+                      //       ),
+                      // SizedBox(height: 10),
+                      // Provider.of<SelectCountry>(context)
+                      //             .getSelection['text'] ==
+                      //         null
+                      //     ? CircularProgressIndicator()
+                      //     : silverGradient(
+                      //         Provider.of<SelectCountry>(context)
+                      //             .getSelection['text'],
+                      //         24),
+                      SizedBox(height: 50),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                index = 0;
+                              });
+                            },
+                            child: Column(
                               children: [
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.navigate_before,
-                                    color: Colors.white,
-                                  ),
-                                  iconSize: 40,
-                                ),
-                                SizedBox(width: 10),
-                                Image.asset(
-                                  logo,
-                                  height: 60,
-                                  width: 195,
-                                  fit: BoxFit.contain,
-                                ),
+                                silverGradient(
+                                    "Sign In",
+                                    ResponsiveWrapper.of(context)
+                                            .isLargerThan(MOBILE)
+                                        ? 24
+                                        : 16),
+                                Visibility(
+                                    visible: line_visible,
+                                    child: Image.asset(line)),
                               ],
                             ),
-                            Image.asset(
-                              chat,
-                              width: 32,
-                              height: 37,
-                              fit: BoxFit.contain,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                index = 1;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                silverGradient(
+                                    "Sign Up",
+                                    ResponsiveWrapper.of(context)
+                                            .isLargerThan(MOBILE)
+                                        ? 24
+                                        : 16),
+                                Visibility(
+                                    visible: line_visible1,
+                                    child: Image.asset(line)),
+                              ],
                             ),
-                          ],
-                        ),
-
-                        // Image.asset(curve),
-                        // logoWork(),
-                        SizedBox(height: 70),
-                        Image.asset(widget.data!['image']),
-                        SizedBox(height: 10),
-
-                        silverGradient(widget.data!['text'], 24),
-                        SizedBox(height: 50),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  index = 0;
-                                });
-                              },
-                              child: Column(
-                                children: [
-                                  silverGradient("Sign In", 24),
-                                  Visibility(
-                                      visible: line_visible,
-                                      child: Image.asset(line)),
-                                ],
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  index = 1;
-                                });
-                              },
-                              child: Column(
-                                children: [
-                                  silverGradient("Sign Up", 24),
-                                  Visibility(
-                                      visible: line_visible1,
-                                      child: Image.asset(line)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 70),
-                        IndexedStack(
-                          index: s(),
-                          children: [
-                            // silverGradient("Sign In", 24),
-                            Visibility(visible: index == 0, child: signIn()),
-                            Visibility(visible: index == 1, child: signUp()),
-                          ],
-                        ),
-                        // select_country.map((e) => Text(e.text)).toList(),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 70),
+                      IndexedStack(
+                        index: s(),
+                        children: [
+                          // silverGradient("Sign In", 24),
+                          Visibility(visible: index == 0, child: signIn()),
+                          Visibility(visible: index == 1, child: signUp()),
+                        ],
+                      ),
+                      // select_country.map((e) => Text(e.text)).toList(),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
   Widget signIn() {
     return SingleChildScrollView(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 70, vertical: 0),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
             // edit(),
             EcoTextField(
+              controller: userNameC,
               upperText: "Your ID",
               preIcons: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -414,6 +633,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
             ),
             SizedBox(height: 30),
             EcoTextField(
+              controller: userPasswordC,
               isPassword: isPasswordShown,
               upperText: "Password",
               postIcons: IconButton(
@@ -446,7 +666,11 @@ class _WebSignInPageState extends State<WebSignInPage> {
                       child: silverGradientLight("Forget Password?", 16)),
                 )),
             PrimaryButton(
-                title: "Login", width: double.infinity, onPress: () {}),
+                title: "Login",
+                width: double.infinity,
+                onPress: () {
+                  signInUser();
+                }),
             SizedBox(height: 10),
             Container(
               // margin: const EdgeInsets.symmetric(horizontal: 70, vertical: 0),
@@ -482,7 +706,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
         RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
     RegExp reguser = RegExp(r'^[a-zA-Z0-9]+$');
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 70, vertical: 0),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Form(
         key: _formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,

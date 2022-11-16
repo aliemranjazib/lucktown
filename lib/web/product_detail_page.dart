@@ -1,16 +1,25 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_lucky_town/models/product_model.dart';
+import 'package:flutter_application_lucky_town/models/available_credits_model.dart';
+import 'package:flutter_application_lucky_town/models/profile_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
-import 'package:flutter_application_lucky_town/web/web_home.dart';
+import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../models/product_model.dart';
 import '../utils/components/custom_toast.dart';
 import '../utils/constants/api_constants.dart';
+
+String temp =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Njg0MzY4MzQsImlzcyI6IiIsImV4cCI6MTY2ODUyMzIzNCwidXNlclRva2VuIjoiQ3ZyS0pnTWkxNm4zY3JMUTdDUnByUktZaWhmOWVwYm5wMjlET2NkM3RXNEZNeU5wSFlVUVg2VjdERVJwelVZNEREY3o4TzlwT2FSNFB4b2dPR2t5c2RQU05QeEpCMmdwQUJ0ZlRrbG9Sc01LeGZZOFR4a2xqME9DdEhuT1VLVjBrYUJtTkJhWk5zVzNlT3RVTmVsU00zclE2ek9Mb3hjc2dBQWFxUnNrZHF5Z2s1bElCUnJzVmJ1QlJjSHBNSU1UQUQ4YVVlTlciLCJ1c2VyVHlwZSI6Im1lbWJlciIsInVzZXJBdXRoIjoiNm1vQ0wxNFViNEloRFROVkhiUUc2QVI4U29WUmxKWXBIYnpGNTRGVG5HQVZleHZ2RnF0Ymx5Z0Z3RXZpOHNwckxQZzVvRU1QMTM0NUp0dTBkUnB6VmNXekd6bUMwRVVJWVp3ZllkM2VlWWRmSnZXc0NSVEJyTjRSSDg1R3BlMnQwNk1QM0FOc2lKM2Q4RXRTczJDSW9OelBVYUZ1ZFFtbE9BaGMyNUUwUGgyR2hOZExRZHd3ZW9OdDc5ck1Vb0hBbElPZDBSbE0ifQ.GuE4PycyHIqy5IdS8gbwJ6mh54i0eSqfrRvaX_wT5PQ";
 
 class ProductDetailPage extends StatefulWidget {
   Products? product;
@@ -24,6 +33,81 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   bool isLoading = false;
+  bool isLoadingClose = false;
+  String? gameStatus = "";
+  ProfileData profileData = ProfileData();
+  AvailableCredits _availablecredit = AvailableCredits();
+  bool isRunning = false;
+  bool isLoadingGif = false;
+  String? url;
+  final headfontSize = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+  final rowfontSize = TextStyle(
+    fontSize: 16,
+  );
+
+  // DateTime datetime = DateTime.now();
+  String? date = DateFormat('dd/MM/yyyy').format(DateTime.now());
+
+  Future<String> getToken() async {
+    return await LuckySharedPef.getAuthToken();
+  }
+
+  Future<AvailableCredits> getAvailableCredit() async {
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}game/getAvailableCredit'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await getToken(),
+
+          // 'Authorization':
+        },
+        body: jsonEncode(<String, dynamic>{
+          "data": {"productId": "69", "pullCredit": "true"}
+        }),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          setState(() {
+            isLoadingGif = true;
+          });
+          Map<String, dynamic> data = json.decode(response1.body);
+          setState(() {
+            _availablecredit = AvailableCredits.fromJson(data);
+          });
+          print("in game ${_availablecredit.response!.inGameStatus}");
+
+          setState(() {
+            isLoadingGif = false;
+            gameStatus = _availablecredit.response!.inGameStatus;
+            print(gameStatus);
+          });
+
+          break;
+        default:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          print(data);
+          setState(() {
+            isLoadingGif = false;
+          });
+
+          CustomToast.customToast(context, data['msg']);
+        // CustomToast.customToast(context, "WENT WRONG");
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingGif = false;
+      });
+      CustomToast.customToast(context, e.toString());
+    }
+
+    return _availablecredit;
+  }
+
   Future<void> _launchInBrowser(Uri url) async {
     if (!await launchUrl(
       url,
@@ -32,6 +116,55 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       print('Could not launch $url');
       throw 'Could not launch $url';
     }
+  }
+
+  Future<ProfileData> getProfileInfo() async {
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}user/getProfileData'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await getToken(),
+
+          // 'Authorization':
+        },
+        body: jsonEncode(<String, dynamic>{"data": {}}),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          setState(() {
+            isLoadingGif = true;
+          });
+          Map<String, dynamic> data = json.decode(response1.body);
+          setState(() {
+            profileData = ProfileData.fromJson(data);
+          });
+          print("coin ${profileData.response!.coinBalance}");
+
+          setState(() {
+            isLoadingGif = false;
+          });
+
+          break;
+        default:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          print(data);
+          setState(() {
+            isLoadingGif = false;
+          });
+
+          CustomToast.customToast(context, data['msg']);
+        // CustomToast.customToast(context, "WENT WRONG");
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingGif = false;
+      });
+      CustomToast.customToast(context, e.toString());
+    }
+
+    return profileData;
   }
 
   playGame() async {
@@ -43,7 +176,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Uri.parse('${memberBaseUrl}game/launch'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": homeAuthToken,
+          "Authorization": await getToken(),
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
@@ -60,13 +193,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           });
           print(response1.statusCode);
           Map<String, dynamic> data = json.decode(response1.body);
-          // CustomToast.customToast(context, data['msg']);
-          CustomToast.customToast(
-              context, data['response']['gameDetails']['Url']);
           print("ppp ${data['response']['gameDetails']['Url']}");
-          _launchInBrowser(Uri.parse(data['response']['gameDetails']['Url']));
+          // _launchInBrowser(Uri.parse(data['response']['gameDetails']['Url']));
+          // String a = Uri.parse(data['response']['gameDetails']['Url']);
+          window.open(data['response']['gameDetails']['Url'], 'foo');
           setState(() {
             isLoading = false;
+            isRunning = true;
+            gameStatus = _availablecredit.response!.inGameStatus;
+            url = data['response']['gameDetails']['Url'];
           });
           break;
         default:
@@ -88,106 +223,830 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
   }
 
+  closeGame() async {
+    setState(() {
+      isLoadingClose = true;
+    });
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}game/closeGame'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await getToken(),
+        },
+        body: jsonEncode(<String, dynamic>{
+          "data": {
+            "productId": 69,
+          }
+        }),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          setState(() {
+            isLoadingClose = true;
+          });
+          print(response1.statusCode);
+          Map<String, dynamic> data = json.decode(response1.body);
+          // CustomToast.customToast(context, data['msg']);
+          window.close();
+          CustomToast.customToast(context, data['msg']);
+          // print("ppp ${data['response']['gameDetails']['Url']}");
+          var other = window.open(url!, 'foo');
+// Closes other window, as it is script-closeable.
+          other.close();
+          print(other.closed);
+          setState(() {
+            isLoadingClose = false;
+            isRunning = false;
+            gameStatus = _availablecredit.response!.inGameStatus;
+          });
+          break;
+        default:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          print(data);
+          setState(() {
+            isLoadingClose = false;
+          });
+
+          CustomToast.customToast(context, data['msg']);
+        // CustomToast.customToast(context, "WENT WRONG");
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingClose = false;
+      });
+      CustomToast.customToast(context, e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    // getToken();
+    playGame();
+    getProfileInfo();
+    getAvailableCredit();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            Container(
-              height: 50,
-              color: Colors.black,
-              child: Row(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(Icons.navigate_before)),
-                  Text("Back")
+                  Container(
+                    height: 50,
+                    color: Colors.black,
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.navigate_before)),
+                        ResponsiveVisibility(
+                            visible: true,
+                            hiddenWhen: const [
+                              Condition.smallerThan(name: TABLET)
+                            ],
+                            child: Text("Back"))
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Image.asset(
+                        logo,
+                        width: 101,
+                        height: 31,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Image.asset(detail_page_banner),
-            SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                    flex: 4,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(widget.product!.productName!,
-                                  style: GoogleFonts.roboto(fontSize: 32))),
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(widget.product!.productCategory!,
-                                  style: GoogleFonts.roboto(fontSize: 32))),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  // width: 100,
-                                  // height: 100,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xff292929),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(38.0),
-                                    child: Row(
+              Image.network(
+                widget.product!.productImageUrl!,
+                width: double.infinity,
+                height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                    ? 301
+                    : 131,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                      // flex: 4,
+                      child: Container(
+                    padding: EdgeInsets.all(15),
+                    child: Column(
+                      children: [
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("${widget.product!.productName!}",
+                                style: GoogleFonts.roboto(
+                                    fontSize: ResponsiveWrapper.of(context)
+                                            .isLargerThan(MOBILE)
+                                        ? 32
+                                        : 18))),
+                        ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                            ? Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                    // height: 100,
+                                    // width: 100,
+                                    child: Column(
                                       children: [
-                                        Image.asset(topup),
-                                        silverGradient('Top Up', 16),
+                                        availableTransfer(
+                                            title: "Available Transfer",
+                                            value:
+                                                "${_availablecredit.response!.avaiableTransfer}"),
+                                        availableTransfer(
+                                            title: "Available Coin",
+                                            value:
+                                                "${_availablecredit.response!.coinAvailable}"),
+                                        availableTransfer(
+                                            title: "Total",
+                                            value:
+                                                "${_availablecredit.response!.productDetail!.memberProductTotalBalance}"),
+                                        availableTransfer(
+                                            title: "Available Transfer",
+                                            value:
+                                                "${_availablecredit.response!.avaiableTransfer}"),
                                       ],
                                     ),
+                                    // color: Colors.amber,
+                                  )),
+                                  Column(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  // width: 100,
+                                                  // height: 100,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xff292929),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            38.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(topup),
+                                                        silverGradient(
+                                                            'Top Up', 16),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  // width: 100,
+                                                  height: 100,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xff292929),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            38.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                            transaction),
+                                                        silverGradient(
+                                                            'Game Transaction',
+                                                            16),
+                                                        Text('')
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            width: 426,
+                                            height: 54,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: Color(0xffEEF2F5),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                  "Amount (THB)    ${_availablecredit.response!.productDetail!.memberProductTotalBalance}",
+                                                  style: GoogleFonts.roboto(
+                                                      fontSize: 16,
+                                                      color: Colors.black)),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 426,
+                                            child: Column(
+                                              children: [
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                        "${_availablecredit.response!.ptsCopyWriting}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                    Text(
+                                                        "Commission: ${_availablecredit.response!.selfCommission}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                        "Today stake: ${_availablecredit.response!.todayStake}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                    Text(
+                                                        "Yesterday stake: ${_availablecredit.response!.yesterdayStake}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  // width: 100,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xff292929),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(38.0),
-                                    child: Row(
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  Container(
+                                    // height: 100,
+                                    // width: 100,
+                                    child: Column(
                                       children: [
-                                        Image.asset(transaction),
-                                        silverGradient('Game Transaction', 16),
-                                        Text('')
+                                        availableTransfer(
+                                            title: "Available Transfer",
+                                            value:
+                                                "${_availablecredit.response!.avaiableTransfer}"),
+                                        availableTransfer(
+                                            title: "Available Coin",
+                                            value:
+                                                "${_availablecredit.response!.coinAvailable}"),
+                                        availableTransfer(
+                                            title: "Total",
+                                            value:
+                                                "${_availablecredit.response!.productDetail!.memberProductTotalBalance}"),
+                                        availableTransfer(
+                                            title: "Available Transfer",
+                                            value:
+                                                "${_availablecredit.response!.avaiableTransfer}"),
                                       ],
                                     ),
+                                    // color: Colors.amber,
                                   ),
-                                ),
+                                  Column(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {},
+                                                  child: Container(
+                                                    // width: 154,
+                                                    alignment: Alignment.center,
+                                                    height: 100,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xff292929),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20)),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image.asset(topup),
+                                                        SizedBox(width: 10),
+                                                        silverGradientRobto(
+                                                            'Top Up',
+                                                            ResponsiveWrapper.of(
+                                                                        context)
+                                                                    .isLargerThan(
+                                                                        MOBILE)
+                                                                ? 16
+                                                                : 14,
+                                                            FontWeight.normal),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Expanded(
+                                                child: Container(
+                                                  // width: 170,
+                                                  height: 100,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xff292929),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  child: Center(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image.asset(
+                                                            transaction),
+                                                        SizedBox(width: 10),
+                                                        silverGradientRobto(
+                                                            'Game Transaction',
+                                                            ResponsiveWrapper.of(
+                                                                        context)
+                                                                    .isLargerThan(
+                                                                        MOBILE)
+                                                                ? 16
+                                                                : 14,
+                                                            FontWeight.normal),
+                                                        Text('')
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 15),
+                                          Container(
+                                            width: double.infinity,
+                                            height: 60,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: Color(0xffEEF2F5),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                  "Amount (THB)    ${_availablecredit.response!.productDetail!.memberProductTotalBalance}",
+                                                  style: GoogleFonts.roboto(
+                                                      fontSize: 16,
+                                                      color: Colors.black)),
+                                            ),
+                                          ),
+                                          SizedBox(height: 15),
+                                          Container(
+                                            // width: 426,
+                                            child: Column(
+                                              children: [
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                        "${_availablecredit.response!.ptsCopyWriting}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                    Text(
+                                                        "Commission: ${_availablecredit.response!.selfCommission}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                        "Today stake: ${_availablecredit.response!.todayStake}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                    Text(
+                                                        "Yesterday stake: ${_availablecredit.response!.yesterdayStake}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .white)),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          PrimaryButton(
-                              title: "Start",
-                              onPress: () {
-                                playGame();
-                              },
-                              width: double.infinity),
-                        ],
-                      ),
-                    )),
-                Expanded(
-                    child: Container(
-                  height: 300,
-                  decoration: BoxDecoration(color: Color(0xff292929)),
-                ))
-              ],
-            ),
+                        GameDetailPageButton(
+                            title: gameStatus == "" ? "Start" : "Close",
+                            onPress: () {
+                              setState(() {
+                                gameStatus == "" ? playGame() : closeGame();
+                              });
+                              getAvailableCredit();
+                            },
+                            width: double.infinity),
+                        SizedBox(height: 20),
+                        ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                            ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("所有投注记录 / All Bets Record",
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 24,
+                                      )),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.calendar_today),
+                                      TextButton(
+                                          onPressed: () async {
+                                            DateTime? pickedDate =
+                                                await showDatePicker(
+                                                    context: context,
+                                                    initialDate: DateTime
+                                                        .now(), //get today's date
+                                                    firstDate: DateTime(
+                                                        2000), //DateTime.now() - not to allow to choose before today.
+                                                    lastDate: DateTime(2101));
+                                            if (pickedDate != null) {
+                                              print(
+                                                  pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
+                                              String formattedDate = DateFormat(
+                                                      'dd/MM/yyyy')
+                                                  .format(
+                                                      pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                                              print(
+                                                  formattedDate); //formatted date output using intl package =>  2022-07-04
+                                              //You can format date as per your need
+
+                                              setState(() {
+                                                date =
+                                                    formattedDate; //set foratted date to TextField value.
+                                              });
+                                            } else {
+                                              print("Date is not selected");
+                                            }
+                                          },
+                                          child: Text(
+                                            "$date",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          )),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("所有投注记录 / All Bets Record",
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 18,
+                                      )),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.calendar_today, size: 14),
+                                      TextButton(
+                                          onPressed: () async {
+                                            DateTime? pickedDate =
+                                                await showDatePicker(
+                                                    context: context,
+                                                    initialDate: DateTime
+                                                        .now(), //get today's date
+                                                    firstDate: DateTime(
+                                                        2000), //DateTime.now() - not to allow to choose before today.
+                                                    lastDate: DateTime(2101));
+                                            if (pickedDate != null) {
+                                              print(
+                                                  pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
+                                              String formattedDate = DateFormat(
+                                                      'dd/MM/yyyy')
+                                                  .format(
+                                                      pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                                              print(
+                                                  formattedDate); //formatted date output using intl package =>  2022-07-04
+                                              //You can format date as per your need
+
+                                              setState(() {
+                                                date =
+                                                    formattedDate; //set foratted date to TextField value.
+                                              });
+                                            } else {
+                                              print("Date is not selected");
+                                            }
+                                          },
+                                          child: Text(
+                                            "$date",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14),
+                                          )),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                        SizedBox(height: 15),
+                        profileData.response == null
+                            ? Center(child: CircularProgressIndicator())
+                            : ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                                ? Container(
+                                    // constraints: BoxConstraints(minWidth: 100),
+                                    color: Color(0xff212631),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: profileData.response!
+                                                  .walletTransactions!.isEmpty
+                                              ? Center(child: Text("no data"))
+                                              : isLoadingGif
+                                                  ? Container()
+                                                  : DataTable(
+                                                      onSelectAll: (b) {},
+                                                      sortColumnIndex: 0,
+                                                      // columnSpacing: 180,
+                                                      sortAscending: true,
+                                                      columns: <DataColumn>[
+                                                        DataColumn(
+                                                            label: Expanded(
+                                                                child: Text(
+                                                                    "Date & Time",
+                                                                    style:
+                                                                        headfontSize)),
+                                                            tooltip:
+                                                                "To Display date and time"),
+                                                        DataColumn(
+                                                            label: Text(
+                                                                "Username",
+                                                                style:
+                                                                    headfontSize),
+                                                            tooltip:
+                                                                "To Display user name"),
+                                                        DataColumn(
+                                                            label: Text("ID",
+                                                                style:
+                                                                    headfontSize),
+                                                            tooltip:
+                                                                "display id"),
+                                                        DataColumn(
+                                                            label: Text(
+                                                                "Bet / Transfer",
+                                                                style:
+                                                                    headfontSize),
+                                                            tooltip:
+                                                                "to display bet/transfer"),
+                                                        DataColumn(
+                                                            label: Text(
+                                                                "Total Win",
+                                                                style:
+                                                                    headfontSize),
+                                                            tooltip:
+                                                                "to display total win"),
+                                                      ],
+                                                      rows: profileData
+                                                          .response!
+                                                          .walletTransactions!
+                                                          .map((e) => DataRow(
+                                                                cells: [
+                                                                  DataCell(
+                                                                    Text(e
+                                                                        .transactionCreatedDatetime!),
+                                                                  ),
+                                                                  DataCell(
+                                                                    Text(e
+                                                                        .transactionOwner!),
+                                                                  ),
+                                                                  DataCell(
+                                                                    Text(e
+                                                                        .transactionId!),
+                                                                  ),
+                                                                  DataCell(
+                                                                    Text(e
+                                                                        .transactionAmount!),
+                                                                  ),
+                                                                  DataCell(
+                                                                    Text(e
+                                                                        .transactionAmount!),
+                                                                  ),
+                                                                ],
+                                                              ))
+                                                          .toList()),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff212631).withOpacity(0.5),
+                                    ),
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: profileData
+                                          .response!.walletTransactions!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final pdata = profileData.response!
+                                            .walletTransactions![index];
+                                        return ListTile(
+                                          leading: CircleAvatar(
+                                            backgroundColor: Colors.blue,
+                                            // radius: 20,
+                                            minRadius: 30,
+                                            maxRadius: 30,
+                                            child: Text(""),
+                                          ),
+                                          title: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: Text(
+                                              pdata.transactionOwner!,
+                                              style: GoogleFonts.roboto(),
+                                            ),
+                                          ),
+                                          subtitle: Container(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "${pdata.transactionCreatedDatetime}",
+                                                  style: GoogleFonts.roboto(
+                                                      fontSize: 12),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 0,
+                                                          right: 10,
+                                                          top: 8),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            "Bet/Transfer   :   ${pdata.transactionAmount}",
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    fontSize:
+                                                                        12),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Image.asset(
+                                                            coin,
+                                                            width: 12,
+                                                            height: 11,
+                                                            fit: BoxFit.cover,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            "Win    :   ${pdata.transactionAmount}",
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    fontSize:
+                                                                        12),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Image.asset(
+                                                            coin,
+                                                            width: 12,
+                                                            height: 11,
+                                                            fit: BoxFit.cover,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                      ],
+                    ),
+                  )),
+                  // Expanded(
+                  //     child: Column(
+                  //   children: [
+                  //     // Text(
+                  //     //   "你可能会喜欢 You May Like",
+                  //     //   style: TextStyle(color: Colors.white, fontSize: 20),
+                  //     // ),
+                  //     Container(
+                  //       height: 300,
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.black,
+                  //         // color: Color(0xff292929)
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ))
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Align availableTransfer({String? title, String? value}) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Row(
+          children: [
+            Expanded(child: Text("$title")),
+            SizedBox(width: 30, child: Text(":")),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("${value ?? "0"}"))),
           ],
         ),
+        // child: Text("$title   :   ${value ?? "0"}",
+        //     style: GoogleFonts.roboto(fontSize: 16)),
       ),
     );
   }

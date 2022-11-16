@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget home_container(VoidCallback click) {
+Widget join_nowButton(VoidCallback click) {
   return InkWell(
     onTap: () {
       click();

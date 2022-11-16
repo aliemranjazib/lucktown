@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
+import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:responsive_framework/responsive_value.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
@@ -107,6 +108,26 @@ class MenuBar extends StatelessWidget {
                           // fit: BoxFit.contain,
                           image: AssetImage(navbar_gift),
                         )),
+                  ),
+                )),
+            ResponsiveVisibility(
+                visible: true,
+                // hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    child: IconButton(
+                        onPressed: () {
+                          LuckySharedPef.removeAuthToken().then((value) =>
+                              Navigator.pushNamed(context, web_scaffold_page));
+                        },
+                        icon: Icon(Icons.logout)),
+                    decoration: BoxDecoration(
+                      color: Colors.amberAccent,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 )),
             ResponsiveVisibility(

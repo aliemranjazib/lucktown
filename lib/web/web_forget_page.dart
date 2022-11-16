@@ -1,12 +1,10 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/utils/components/ecotextfield.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
-import 'package:flutter_application_lucky_town/utils/components/social_buttons.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import '../utils/components/gradient_text.dart';
-import '../utils/components/select_category.dart';
 
 class WebForgetPage extends StatefulWidget {
   // String? image;
@@ -20,64 +18,51 @@ class _WebForgetPageState extends State<WebForgetPage> {
   int index = 0;
   bool line_visible1 = false;
   bool line_visible = true;
-  final Shader linearGradient = LinearGradient(
-    colors: <Color>[
-      Color(0xBD8E37).withOpacity(1),
-      Color(0xFCD877).withOpacity(1),
-      Color(0xFFFFD1).withOpacity(1),
-      // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
-      Color(0xC1995C).withOpacity(1),
-    ],
-  ).createShader(Rect.fromLTWH(200.0, 0.0, 0.0, 70.0));
+  String? isoCode;
 
-  int s() {
-    if (index == 0) {
-      print("000000000000000");
-      setState(() {
-        line_visible = true;
-        line_visible1 = false;
-      });
-      return index;
-    } else {
-      print("11111111111111111111111");
-      // line_visible = !line_visible;
-      // line_visible = !line_visible;
-      setState(() {
-        line_visible1 = true;
-        line_visible = false;
-      });
-      return index;
-    }
-  }
+  final TextEditingController phoneController = TextEditingController();
+
+  // final Shader linearGradient = LinearGradient(
+  //   colors: <Color>[
+  //     Color(0xBD8E37).withOpacity(1),
+  //     Color(0xFCD877).withOpacity(1),
+  //     Color(0xFFFFD1).withOpacity(1),
+  //     // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+  //     Color(0xC1995C).withOpacity(1),
+  //   ],
+  // ).createShader(Rect.fromLTWH(200.0, 0.0, 0.0, 70.0));
 
   @override
   Widget build(BuildContext context) {
-    s();
     return Scaffold(
         backgroundColor: Colors.black,
         body: Row(
           children: [
-            Expanded(
-              // child: Image.asset(bg),
-              // child: Container(
-              //   color: Colors.black,
-              // ),
-              child: Container(
-                // width: double.infinity,
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  image: DecorationImage(
-                    image: AssetImage(tabletsidebar),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
+            ResponsiveVisibility(
+              visible: true,
+              hiddenWhen: [Condition.smallerThan(name: TABLET)],
+              child: Expanded(
+                // child: Image.asset(bg),
+                // child: Container(
+                //   color: Colors.black,
+                // ),
+                child: Container(
+                  // width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    image: DecorationImage(
+                      image: AssetImage(tabletsidebar),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    ),
                   ),
+                  child: Center(child: Image.asset(logo)),
                 ),
-                child: Center(child: Image.asset(logo)),
               ),
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(top: 50, right: 60),
+                padding: const EdgeInsets.only(top: 50, right: 10),
                 child: SingleChildScrollView(
                   child: Container(
                     // height: double.infinity,
@@ -136,7 +121,7 @@ class _WebForgetPageState extends State<WebForgetPage> {
 
                         SizedBox(height: 70),
 
-                        signIn(),
+                        forgotPageUi(),
 
                         // select_country.map((e) => Text(e.text)).toList(),
                       ],
@@ -149,52 +134,71 @@ class _WebForgetPageState extends State<WebForgetPage> {
         ));
   }
 
-  Widget signIn() {
+  Widget forgotPageUi() {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          // edit(),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 80, vertical: 0),
-                child: silverGradient('Recover Password', 28),
-              )),
-          SizedBox(height: 50),
-          EcoTextField(
-            upperText: "Your ID",
-            hinttext: 'wayne123',
-            preIcons: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(userIcon),
-            ),
-          ),
-          SizedBox(height: 30),
-          // EcoTextField(
-          //   isPassword: true,
-          //   upperText: "Password",
-          //   postIcons: Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     child: Image.asset(eye_open),
-          //   ),
-          //   preIcons: Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     child: Image.asset(unlockIcon),
-          //   ),
-          // ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+          children: [
+            // edit(),
+            Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                  child: silverGradient(
+                      'Recover Password',
+                      ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 28
+                          : 16),
+                )),
+            SizedBox(height: 50),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 20),
-            child: PrimaryButton(
-              title: "Continue",
-              onPress: () {},
-              width: double.infinity,
+            EcoMobileTextField(
+              upperText: "Mobile Number",
+              controller: phoneController,
+              isoCode: isoCode,
+              onChanged: (p) {
+                print("okk ${p!.dialCode}");
+                isoCode = p.dialCode;
+              },
             ),
-          ),
+            SizedBox(height: 50),
+            EcoTextField(
+              upperText: "Your ID",
+              hinttext: 'wayne123',
+              preIcons: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(userIcon),
+              ),
+            ),
+            SizedBox(height: 30),
 
-          SizedBox(height: 20),
-        ],
+            // EcoTextField(
+            //   isPassword: true,
+            //   upperText: "Password",
+            //   postIcons: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Image.asset(eye_open),
+            //   ),
+            //   preIcons: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Image.asset(unlockIcon),
+            //   ),
+            // ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              child: PrimaryButton(
+                title: "Continue",
+                onPress: () {},
+                width: double.infinity,
+              ),
+            ),
+
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

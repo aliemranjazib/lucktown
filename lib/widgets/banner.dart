@@ -37,9 +37,9 @@ class _BannerAreaState extends State<BannerArea> {
             .map((e) => Container(
                   child: Image.network(
                     e,
-                    width: double.infinity,
-                    height: 300,
-                    fit: BoxFit.fill,
+                    // width: double.infinity,
+                    // height: 300,
+                    // fit: BoxFit.fill,
                   ),
                   // child: Image.network(
                   //   e,

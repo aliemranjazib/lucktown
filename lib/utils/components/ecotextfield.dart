@@ -56,32 +56,42 @@ class EcoTextField extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            child: GradientText(
+            child: Text(
               upperText!,
               style: TextStyle(
                   fontSize: 18,
+                  color: Color(0xffFCD877),
                   fontFamily: "gotham-light",
                   fontWeight: FontWeight.w400),
-              gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  // tileMode: TileMode.clamp,
-                  colors: [
-                    Color(0xffBD8E37).withOpacity(1),
-                    Color(0xffFCD877).withOpacity(1),
-                    Color(0xFffFFFD1).withOpacity(1),
-                    // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
-                    Color(0xffC1995C).withOpacity(1),
-                  ]),
             ),
+            // child: GradientText(
+            //   upperText!,
+            //   style: TextStyle(
+            //       fontSize: 18,
+            //       fontFamily: "gotham-light",
+            //       fontWeight: FontWeight.w400),
+            //   gradient: LinearGradient(
+            //       begin: Alignment.bottomCenter,
+            //       end: Alignment.topCenter,
+            //       // tileMode: TileMode.clamp,
+            //       colors: [
+            //         Color(0xffBD8E37).withOpacity(1),
+            //         Color(0xffFCD877).withOpacity(1),
+            //         Color(0xFffFFFD1).withOpacity(1),
+            //         // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+            //         Color(0xffC1995C).withOpacity(1),
+            //       ]),
+            // ),
           ),
           TextFormField(
-            cursorColor: Color(0xffBD8E37),
+            cursorColor: Color(0xffFCD877),
             onChanged: onChanged,
             style: TextStyle(
-                // color: Colors.white,
-                fontSize: 18,
-                foreground: Paint()..shader = linearGradient),
+              // color: Colors.white,
+              fontSize: 18,
+              // foreground: Paint()..shader = linearGradient,
+              color: Color(0xffFCD877),
+            ),
             enabled: enable == true ? true : enable,
             maxLines: maxlines == null ? 1 : maxlines,
             focusNode: focusNode,
@@ -217,17 +227,17 @@ class EcoMobileTextField extends StatelessWidget {
             inputDecoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xffFCD877),
+                  color: Color(0xFCD877),
                 ),
               ),
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xffFCD877),
+                  color: Color(0xFCD877),
                 ),
               ),
               border: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xffFCD877),
+                  color: Color(0xFCD877),
                 ),
               ),
             ),

@@ -41,6 +41,12 @@ dependencies:
   shared_preferences: ^2.0.15
   url_launcher: ^6.1.6
   peanut: ^4.3.0
+  is_first_run: ^1.0.0
+  intl: ^0.17.0
+  provider: ^6.0.4
+  connectivity_plus: ^3.0.2
+  connectivity_plus_web: ^1.2.5
+  
   # pager: ^0.0.5
 
   # number_paginator: ^0.2.2

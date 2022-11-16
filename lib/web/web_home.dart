@@ -1,27 +1,27 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/models/product_model.dart';
+import 'package:flutter_application_lucky_town/models/profile_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
+import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
+import 'package:flutter_application_lucky_town/web/product_detail_page.dart';
+import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
+import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
+import 'package:flutter_application_lucky_town/web_menue/header.dart';
 import 'package:flutter_application_lucky_town/widgets/banner.dart';
 import 'package:flutter_application_lucky_town/widgets/menue_bar.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:multiple_result/multiple_result.dart';
-import 'package:responsive_framework/responsive_framework.dart';
-import 'dart:convert';
-import 'package:flutter_application_lucky_town/models/user_session_model.dart';
-
-import 'package:flutter_application_lucky_town/web/web_signin.dart';
 import 'package:http/http.dart' as http;
+import 'package:multiple_result/multiple_result.dart';
+import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import '../utils/components/custom_toast.dart';
-import '../utils/constants/api_constants.dart';
-import 'dart:html';
 import '../utils/components/small_button.dart';
+import '../utils/constants/api_constants.dart';
 
 List<Products> gProducts = [];
-String homeAuthToken =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Njc0NTIxOTYsImlzcyI6IiIsImV4cCI6MTY2NzUzODU5NiwidXNlclRva2VuIjoidndvWTdLTjVjeTNnYWprWkhpY2xPVjFlM2JHRnQyb1laaUNjTjRuclI4d2RYcmpQelZZTm9TSWtYOTZPdVpUaHVEeWlDQUhJSDFkajQ2dUg5bjl0WFdpdjNzcmpQMHZvVGRlWTVrTTQ2N3YxcmdDU1FiUDk5WEJobnVPTUpkRWJ3aE5SSDFHeWF3Y3paSXZSbjR3eFc0dUs2UXRub1ZkbkRuSWowZUN5TGdOQlE3V1pHQk83UmJTeXR2aWowdjdyQlIzZUloUU8iLCJ1c2VyVHlwZSI6Im1lbWJlciIsInVzZXJBdXRoIjoiUTE0aTZkVnFoTTI2S1daYldmbUt0WEc2ZXVXa3RqVTBwcDZHVXluOFg3M0lPY3l6MEZmTjdMUjRBZkoyazVmaTBRSkRtSU5OQkxmelJjTXdvZW1IdGgxQk9YZFdKNm9uTzVyOFFyMGdwOFFhSkV5UzBhTW5JZGFHR0VSMEJQYVBteXNQOUNNNFllR3pKTkFjWkxVMmdtdll1RU5hTkFoR0xUcmtSQkJzUFBJY2ZXc0lQcmJPWnlhVzJ5ZXF4MEpab1Q3am1mOHAifQ.S1bnOW3aOHeY9CeDknHTGkBRL8jZvxuD2PVUBVq2RyQ";
 
 class WebHomePage extends StatefulWidget {
   @override
@@ -59,10 +59,63 @@ class _WebHomePageState extends State<WebHomePage> {
   }
 
   List gifs = [];
-
   List<Products> resultProducts = [];
   List<Products> filteredProducts = [];
+  ProfileData profileData = ProfileData();
   int count = 8;
+  Future<String> getToken() async {
+    return await LuckySharedPef.getAuthToken();
+  }
+
+  Future<ProfileData> getProfileInfo() async {
+    if (getToken().toString().isNotEmpty) {
+      try {
+        final response1 = await http.post(
+          Uri.parse('${memberBaseUrl}user/getProfileData'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Authorization": await getToken(),
+
+            // 'Authorization':
+          },
+          body: jsonEncode(<String, dynamic>{"data": {}}),
+        );
+        switch (response1.statusCode) {
+          case 200:
+            setState(() {
+              isLoadingGif = true;
+            });
+            Map<String, dynamic> data = json.decode(response1.body);
+            setState(() {
+              profileData = ProfileData.fromJson(data);
+            });
+            print("coin ${profileData.response!.coinBalance}");
+
+            setState(() {
+              isLoadingGif = false;
+            });
+
+            break;
+          default:
+            final data = json.decode(response1.body);
+            print(response1.statusCode);
+            print(data);
+            setState(() {
+              isLoadingGif = false;
+            });
+
+            CustomToast.customToast(context, data['msg']);
+          // CustomToast.customToast(context, "WENT WRONG");
+        }
+      } catch (e) {
+        setState(() {
+          isLoadingGif = false;
+        });
+        CustomToast.customToast(context, e.toString());
+      }
+    }
+    return profileData;
+  }
 
   filterProducts(String category) {
     for (var i in resultProducts) {
@@ -159,100 +212,114 @@ class _WebHomePageState extends State<WebHomePage> {
   }
 
   Future<Result<Exception, ProductsModel>> getProducts() async {
-    setState(() {
-      isLoadingProducts = true;
-    });
-    try {
-      final response = await http.post(
-        Uri.parse('${memberBaseUrl}game/getProductList'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": homeAuthToken,
-        },
-        body: jsonEncode(<String, dynamic>{
-          "data": {"language": "ch"}
-        }),
-      );
-      switch (response.statusCode) {
-        case 200:
-          setState(() {
-            isLoadingProducts = true;
-          });
-          final data = json.decode(response.body);
-
-          ProductsModel p = ProductsModel.fromJson(data);
-
-          if (p.response!.products!.isNotEmpty) {
-            for (var i in p.response!.products!) {
-              resultProducts.add(Products(
-                  inGameStatus: i.inGameStatus,
-                  pingWithCron: i.pingWithCron,
-                  productAvengerDirect: i.productAvengerDirect,
-                  productImageUrl: i.productImageUrl,
-                  productCategory: i.productCategory,
-                  productCategoryGroup: i.productCategoryGroup,
-                  productCoinEntitled: i.productCoinEntitled,
-                  productCountry: i.productCountry,
-                  productCreatedDatetime: i.productCreatedDatetime,
-                  productCurrency: i.productCurrency,
-                  productDesc: i.productDesc,
-                  productDownBy: i.productDownBy,
-                  productDownTime: i.productDownTime,
-                  productDownTimedAt: i.productDownTimedAt,
-                  productGrouping: i.productGrouping,
-                  productId: i.productId,
-                  productImageUrlGrey: i.productImageUrlGrey,
-                  productMainCommissionPercentage:
-                      i.productMainCommissionPercentage,
-                  productMaintenanceScheduled: i.productMaintenanceScheduled,
-                  productMaintenanceScheduledFrom:
-                      i.productMaintenanceScheduledFrom,
-                  productMaintenanceScheduledTo:
-                      i.productMaintenanceScheduledTo,
-                  productName: i.productName,
-                  productPercentage: i.productPercentage,
-                  productProvider: i.productProvider,
-                  termText: i.termText,
-                  productRewardEntitled: i.productRewardEntitled,
-                  productSelfCommissionPercentage:
-                      i.productSelfCommissionPercentage,
-                  productSequence: i.productSequence,
-                  productStatus: i.productStatus,
-                  productTest: i.productTest,
-                  productType: i.productType,
-                  productUpBy: i.productUpBy,
-                  productUpTime: i.productUpTime,
-                  productUpTimedAt: i.productUpTimedAt,
-                  productUplineCommissionPercentage:
-                      i.productUplineCommissionPercentage,
-                  termStatus: i.termStatus));
-            }
+    if (getToken().toString().isNotEmpty) {
+      setState(() {
+        isLoadingProducts = true;
+      });
+      try {
+        final response = await http.post(
+          Uri.parse('${memberBaseUrl}game/getProductList'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Authorization": await getToken(),
+          },
+          body: jsonEncode(<String, dynamic>{
+            "data": {"language": "my"}
+          }),
+        );
+        switch (response.statusCode) {
+          case 200:
             setState(() {
-              gProducts = resultProducts;
+              isLoadingProducts = false;
             });
-          }
+            print("okkk ${response.statusCode}");
 
-          print("ooo ${resultProducts.first.productImageUrl}");
-          // Navigator.pushNamed(context, web_otp_page,
-          //     arguments: data['response']['authToken']);
+            final data = json.decode(response.body);
+            ProductsModel p = ProductsModel.fromJson(data);
+            print("ppp ${p.msg}");
 
-          return Success(ProductsModel.fromJson(data));
-        default:
-          print(Exception(response.reasonPhrase));
-          final data = json.decode(response.body);
-          //Interactive toast, set [isIgnoring] false.
-          setState(() {
-            isLoadingProducts = false;
-          });
-          CustomToast.customToast(context, "${data['msg']}");
+            // var m=Products.fromJson(json)
+            if (p.response!.products!.isNotEmpty) {
+              for (var i in p.response!.products!) {
+                print(i.productName);
+                setState(() {
+                  resultProducts.add(Products(
+                      inGameStatus: i.inGameStatus,
+                      pingWithCron: i.pingWithCron,
+                      productAvengerDirect: i.productAvengerDirect,
+                      productImageUrl: i.productImageUrl,
+                      productCategory: i.productCategory,
+                      productCategoryGroup: i.productCategoryGroup,
+                      productCoinEntitled: i.productCoinEntitled,
+                      productCountry: i.productCountry,
+                      productCreatedDatetime: i.productCreatedDatetime,
+                      productCurrency: i.productCurrency,
+                      productDesc: i.productDesc,
+                      productDownBy: i.productDownBy,
+                      productDownTime: i.productDownTime,
+                      productDownTimedAt: i.productDownTimedAt,
+                      productGrouping: i.productGrouping,
+                      productId: i.productId,
+                      productImageUrlGrey: i.productImageUrlGrey,
+                      productMainCommissionPercentage:
+                          i.productMainCommissionPercentage,
+                      productMaintenanceScheduled:
+                          i.productMaintenanceScheduled,
+                      productMaintenanceScheduledFrom:
+                          i.productMaintenanceScheduledFrom,
+                      productMaintenanceScheduledTo:
+                          i.productMaintenanceScheduledTo,
+                      productName: i.productName,
+                      productPercentage: i.productPercentage,
+                      productProvider: i.productProvider,
+                      termText: i.termText,
+                      productRewardEntitled: i.productRewardEntitled,
+                      productSelfCommissionPercentage:
+                          i.productSelfCommissionPercentage,
+                      productSequence: i.productSequence,
+                      productStatus: i.productStatus,
+                      productTest: i.productTest,
+                      productType: i.productType,
+                      productUpBy: i.productUpBy,
+                      productUpTime: i.productUpTime,
+                      productUpTimedAt: i.productUpTimedAt,
+                      productUplineCommissionPercentage:
+                          i.productUplineCommissionPercentage,
+                      termStatus: i.termStatus));
+                });
+              }
+              setState(() {
+                gProducts = resultProducts;
+              });
+            }
 
-          return Error(Exception(response.reasonPhrase));
+            print("ooo ${gProducts.first.productImageUrl}");
+            // Navigator.pushNamed(context, web_otp_page,
+            //     arguments: data['response']['authToken']);
+
+            return Success(ProductsModel.fromJson(data));
+          default:
+            print(Exception(response.reasonPhrase));
+            print("status code${response.statusCode}");
+            final data = json.decode(response.body);
+            //Interactive toast, set [isIgnoring] false.
+            setState(() {
+              isLoadingProducts = false;
+            });
+            CustomToast.customToast(context, "${data['msg']}");
+
+            return Error(Exception(response.reasonPhrase));
+        }
+      } catch (e) {
+        // catch all exceptions (not just SocketException)
+        // 4. return Error here too
+
+        CustomToast.customToast(context, e.toString());
+        print(Error(Exception()));
+        return Error(Exception("NOT OK"));
       }
-    } catch (e) {
-      // catch all exceptions (not just SocketException)
-      // 4. return Error here too
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("${Exception("SOMETHING WENT WRONG")}")));
+    } else {
+      CustomToast.customToast(context, "auth token is empty");
       print(Error(Exception()));
       return Error(Exception("NOT OK"));
     }
@@ -267,7 +334,7 @@ class _WebHomePageState extends State<WebHomePage> {
         Uri.parse('${memberBaseUrl}Banner/list'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": homeAuthToken
+          "Authorization": await getToken(),
 
           // 'Authorization':
         },
@@ -313,132 +380,110 @@ class _WebHomePageState extends State<WebHomePage> {
     }
   }
 
-  // getData() {
-  //   getProducts().then((Result<Exception, ProductsModel> value) {
-  //     value.
-  //     print(value.)
-  //   });
-  // }
-
   @override
   void initState() {
     getSliderImages();
+    // print('ttt ${LuckySharedPef.getAuthToken()}');
+    getToken();
+    // print(getToken());
     getProducts();
-    print('ttt ${LuckySharedPef.getAuthToken()}');
+    getProfileInfo();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     // getProducts();
+    print('iii ${LuckySharedPef.getAuthToken()}');
+
     // final sw = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.black,
-      body: resultProducts.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  MenuBar(),
-                  BannerArea(gifs),
-                  SizedBox(height: 12),
-                  Row(
+      drawer: sideMenu(),
+      key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // MenuBar(),
+            Header(),
+            // Text(profileData.response.)
+            gifs.isNotEmpty
+                ? BannerArea(gifs)
+                : Center(child: CircularProgressIndicator()),
+            SizedBox(height: 12),
+            gProducts.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : Row(
                     children: [
-                      Expanded(
-                        child: Container(
-                          // height: 1048,
-                          width: 200,
-                          alignment: Alignment.topCenter,
-                          decoration: BoxDecoration(color: Color(0xff292929)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              // mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Image.asset(avatar),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          "kktt005a",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Image.asset(qrIcon),
-                                        SizedBox(width: 10),
-                                        Image.asset(malaysia,
-                                            height: 35, width: 35),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                info(),
-                                info(),
-                                info(),
-                                SizedBox(height: 10),
-                                coin_chips(),
-                                coin_chips(),
-                                coin_chips(),
-                                SizedBox(height: 30),
-
-                                home_container(() {}),
-
-                                SizedBox(height: 50),
-                                Container(
-                                  height: 400,
-                                  child: GridView(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                    ),
+                      ResponsiveVisibility(
+                        visible: true,
+                        hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+                        child: Expanded(
+                          child: Container(
+                            // height: 1048,
+                            width: 200,
+                            alignment: Alignment.topCenter,
+                            decoration: BoxDecoration(color: Color(0xff292929)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                // mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      selection(popular, 'popular', () {
-                                        sIndex = 'popular';
-                                        print(sIndex);
-                                      }),
-                                      selection(favourite, 'favourite', () {
-                                        sIndex = 'favourite';
-                                        print(sIndex);
-                                      }),
-                                      selection(LiveCasino, 'Live Casino', () {
-                                        sIndex = 'casino';
-                                        filterProducts("LIVECASINO");
-                                        print(sIndex);
-                                      }),
-                                      selection(egame, 'Egame', () {
-                                        sIndex = 'egame';
-                                        filterProducts("EGAMES");
-                                      }),
-                                      selection(sport, 'Sport', () {
-                                        sIndex = 'sport';
-                                        filterProducts("SPORT");
-                                      }),
-                                      selection(lottery, 'Lottery', () {
-                                        sIndex = 'lottery';
-                                      }),
+                                      Row(
+                                        children: [
+                                          Image.asset(avatar),
+                                          SizedBox(width: 10),
+                                          // Text(
+                                          //   userModel!.memberUsername!,
+                                          //   style: TextStyle(fontSize: 16),
+                                          // ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Image.asset(qrIcon),
+                                          SizedBox(width: 10),
+                                          Image.asset(malaysia,
+                                              height: 35, width: 35),
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                )
-                                // GridView.count(
-                                //   crossAxisCount: 5,
-                                //   children: [
-                                //     selection(),
-                                //     selection(),
-                                //     selection(),
-                                //     selection(),
-                                //     selection(),
-                                //   ],
-                                // ),
-                              ],
+                                  SizedBox(height: 20),
+                                  // info(
+                                  //     title: "LID",
+                                  //     value: userModel!.memberUsername!),
+                                  // info(title: "Nickname", value: "oooo"),
+                                  // info(
+                                  //     title: "Referral",
+                                  //     value: userModel!.refMemberName!),
+                                  // SizedBox(height: 10),
+                                  coin_chips(
+                                    title: "Chips",
+                                    value: profileData.response!.coinBalance!,
+                                  ),
+                                  coin_chips(
+                                    title: "Cash",
+                                    value: profileData.response!.walletBalance!,
+                                  ),
+                                  coin_chips(
+                                    title: "Coin",
+                                    value:
+                                        profileData.response!.interestBalance!,
+                                  ),
+                                  SizedBox(height: 30),
+                                  join_nowButton(() {}),
+                                  SizedBox(height: 50),
+                                  sidebar(context)
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -481,7 +526,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                         InkWell(
                                           onTap: ((currentPage + 1) *
                                                       productsPerPage) <
-                                                  resultProducts.length
+                                                  gProducts.length
                                               ? nextPage
                                               : null,
                                           child: Container(
@@ -501,25 +546,26 @@ class _WebHomePageState extends State<WebHomePage> {
                                   ],
                                 ),
                               ),
-                              Container(
-                                // width: double.infinity,
-                                // height: 300,
-                                // decoration: BoxDecoration(color: Color(0xff292929)),
+                              ResponsiveVisibility(
+                                visible: true,
+                                hiddenWhen: [
+                                  Condition.largerThan(name: MOBILE)
+                                ],
                                 child: GridView.builder(
                                   shrinkWrap: true,
-                                  // padding: EdgeInsets.all(20),
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    mainAxisExtent: 385,
-                                    crossAxisSpacing: 120,
-                                    // mainAxisSpacing: 160,
+                                    crossAxisCount: 2,
+                                    mainAxisExtent:
+                                        MediaQuery.of(context).size.height *
+                                            0.5,
+                                    crossAxisSpacing:
+                                        MediaQuery.of(context).size.width *
+                                            0.07,
                                   ),
-                                  itemCount: productsPerPage,
+                                  itemCount: gProducts.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    print(
-                                        resultProducts[index].productImageUrl!);
                                     return Container(
                                       // height: 134,
                                       // width: 200,
@@ -535,8 +581,9 @@ class _WebHomePageState extends State<WebHomePage> {
                                               size: Size.square(
                                                   200), // Image radius
                                               child: Image.network(
-                                                resultProducts[index]
-                                                    .productImageUrl!,
+                                                gProducts[index]
+                                                        .productImageUrl ??
+                                                    "https://scontent.flhe11-1.fna.fbcdn.net/v/t39.30808-1/291321322_378298201059895_267225053697338827_n.png?stp=dst-png_p120x120&_nc_cat=106&ccb=1-7&_nc_sid=dbb9e7&_nc_ohc=K04AqBLJi9oAX9_zEh4&_nc_ht=scontent.flhe11-1.fna&oh=00_AfAerzR76y4VCuovsw2gGXiskoTUMvRSL57Awb720voYcw&oe=6378128B",
                                                 height: 200,
                                                 width: 200,
                                                 fit: BoxFit.contain,
@@ -545,7 +592,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                           ),
 
                                           // CachedNetworkImage(
-                                          //   imageUrl: resultProducts[index +
+                                          //   imageUrl: gProducts[index +
                                           //           (currentPage * productsPerPage)]
                                           //       .productImageUrl!,
                                           //   placeholder: (context, url) =>
@@ -556,23 +603,23 @@ class _WebHomePageState extends State<WebHomePage> {
                                           //   width: 200,
                                           //   fit: BoxFit.contain,
                                           // ),
-                                          Text(
-                                            resultProducts[index +
-                                                    (currentPage *
-                                                        productsPerPage)]
-                                                .productName!,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontFamily: gotham_light),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              gProducts[index].productName ??
+                                                  "no name",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontFamily: gotham_light),
+                                            ),
                                           ),
                                           Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              resultProducts[index +
-                                                      (currentPage *
-                                                          productsPerPage)]
-                                                  .productCategory!,
+                                              gProducts[index]
+                                                      .productCategory ??
+                                                  "no category",
                                               style: TextStyle(
                                                   color: Colors.white
                                                       .withOpacity(0.5),
@@ -648,20 +695,201 @@ class _WebHomePageState extends State<WebHomePage> {
                                           // ),
 
                                           SizedBox(height: 5),
-                                          home_container(() {
+                                          join_nowButton(() {
                                             // Navigator.pushNamed(
                                             //   context,
                                             //   web_product_detail,
                                             // );
                                             Navigator.pushNamed(
                                                 context, web_product_detail,
-                                                arguments:
-                                                    resultProducts[index]);
+                                                arguments: gProducts[index]);
                                           }),
                                         ],
                                       ),
                                     );
                                   },
+                                ),
+                              ),
+                              ResponsiveVisibility(
+                                visible: true,
+                                visibleWhen: [
+                                  Condition.largerThan(name: MOBILE)
+                                ],
+                                child: Container(
+                                  // width: double.infinity,
+                                  // height: 300,
+                                  // decoration: BoxDecoration(color: Color(0xff292929)),
+                                  child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: ScrollPhysics(),
+                                    // padding: EdgeInsets.all(20),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 4,
+                                      mainAxisExtent:
+                                          MediaQuery.of(context).size.height *
+                                              0.5,
+                                      crossAxisSpacing:
+                                          MediaQuery.of(context).size.width *
+                                              0.07,
+                                      // mainAxisSpacing: 160,
+                                    ),
+                                    itemCount: productsPerPage,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      // print(gProducts[index].productImageUrl!);
+                                      return Container(
+                                        // height: 134,
+                                        // width: 200,
+                                        constraints:
+                                            BoxConstraints(maxWidth: 200),
+                                        child: Column(
+                                          children: [
+                                            // NetworkImage(url)
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      20), // Image border
+                                              child: SizedBox.fromSize(
+                                                size: Size.square(
+                                                    200), // Image radius
+                                                child: Image.network(
+                                                  gProducts[index +
+                                                              (currentPage *
+                                                                  productsPerPage)]
+                                                          .productImageUrl ??
+                                                      "https://scontent.flhe11-1.fna.fbcdn.net/v/t39.30808-1/291321322_378298201059895_267225053697338827_n.png?stp=dst-png_p120x120&_nc_cat=106&ccb=1-7&_nc_sid=dbb9e7&_nc_ohc=K04AqBLJi9oAX9_zEh4&_nc_ht=scontent.flhe11-1.fna&oh=00_AfAerzR76y4VCuovsw2gGXiskoTUMvRSL57Awb720voYcw&oe=6378128B",
+                                                  height: 200,
+                                                  width: 200,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+
+                                            // CachedNetworkImage(
+                                            //   imageUrl: gProducts[index +
+                                            //           (currentPage * productsPerPage)]
+                                            //       .productImageUrl!,
+                                            //   placeholder: (context, url) =>
+                                            //       CircularProgressIndicator(),
+                                            //   errorWidget: (context, url, error) =>
+                                            //       Icon(Icons.error),
+                                            //   height: 200,
+                                            //   width: 200,
+                                            //   fit: BoxFit.contain,
+                                            // ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                gProducts[index +
+                                                            (currentPage *
+                                                                productsPerPage)]
+                                                        .productName ??
+                                                    "no name",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                    fontFamily: gotham_light),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                gProducts[index +
+                                                            (currentPage *
+                                                                productsPerPage)]
+                                                        .productCategory ??
+                                                    "no category",
+                                                style: TextStyle(
+                                                    color: Colors.white
+                                                        .withOpacity(0.5),
+                                                    fontSize: 16,
+                                                    fontFamily: gotham_light),
+                                              ),
+                                            ),
+                                            // Row(
+                                            //   mainAxisAlignment:
+                                            //       MainAxisAlignment.spaceBetween,
+                                            //   children: [
+                                            //     Row(
+                                            //       children: [
+                                            //         Text(
+                                            //           "4.5",
+                                            //           style: TextStyle(
+                                            //               color: Colors.white,
+                                            //               fontSize: 16,
+                                            //               fontFamily:
+                                            //                   gotham_light),
+                                            //         ),
+                                            //         RatingBar.builder(
+                                            //           initialRating: 3,
+                                            //           minRating: 1,
+                                            //           itemSize: 20,
+                                            //           direction: Axis.horizontal,
+                                            //           allowHalfRating: true,
+                                            //           itemCount: 5,
+                                            //           itemPadding:
+                                            //               EdgeInsets.symmetric(
+                                            //                   horizontal: 0.0),
+                                            //           itemBuilder: (context, _) =>
+                                            //               Icon(
+                                            //             Icons.star,
+                                            //             size: 14,
+                                            //             color: Colors.amber,
+                                            //           ),
+                                            //           onRatingUpdate: (rating) {
+                                            //             print(rating);
+                                            //           },
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //     ResponsiveVisibility(
+                                            //         visible: true,
+                                            //         hiddenWhen: const [
+                                            //           Condition.smallerThan(
+                                            //               name: TABLET)
+                                            //         ],
+                                            //         child: Padding(
+                                            //           padding:
+                                            //               const EdgeInsets.all(
+                                            //                   5.0),
+                                            //           child: Container(
+                                            //             height: 34,
+                                            //             width: 34,
+                                            //             decoration: BoxDecoration(
+                                            //                 color:
+                                            //                     Color(0xff252A2D),
+                                            //                 shape:
+                                            //                     BoxShape.circle,
+                                            //                 image:
+                                            //                     DecorationImage(
+                                            //                   scale: 1,
+                                            //                   // fit: BoxFit.contain,
+                                            //                   image: AssetImage(
+                                            //                     favourite,
+                                            //                   ),
+                                            //                 )),
+                                            //           ),
+                                            //         )),
+                                            //   ],
+                                            // ),
+
+                                            SizedBox(height: 5),
+                                            join_nowButton(() {
+                                              // Navigator.pushNamed(
+                                              //   context,
+                                              //   web_product_detail,
+                                              // );
+                                              Navigator.pushNamed(
+                                                  context, web_product_detail,
+                                                  arguments: gProducts[index]);
+                                            }),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
@@ -671,9 +899,47 @@ class _WebHomePageState extends State<WebHomePage> {
                       SizedBox(width: 20),
                     ],
                   ),
-                ],
-              ),
-            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container sidebar(BuildContext context) {
+    return Container(
+      height: 400,
+      child: GridView(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount:
+              ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 2 : 1,
+        ),
+        children: [
+          selection(popular, 'popular', () {
+            sIndex = 'popular';
+            print(sIndex);
+          }),
+          selection(favourite, 'favourite', () {
+            sIndex = 'favourite';
+            print(sIndex);
+          }),
+          selection(LiveCasino, 'Live Casino', () {
+            sIndex = 'casino';
+            filterProducts("LIVECASINO");
+            print(sIndex);
+          }),
+          selection(egame, 'Egame', () {
+            sIndex = 'egame';
+            filterProducts("EGAMES");
+          }),
+          selection(sport, 'Sport', () {
+            sIndex = 'sport';
+            filterProducts("SPORT");
+          }),
+          selection(lottery, 'Lottery', () {
+            sIndex = 'lottery';
+          }),
+        ],
+      ),
     );
   }
 
@@ -698,8 +964,13 @@ class _WebHomePageState extends State<WebHomePage> {
 }
 
 class coin_chips extends StatelessWidget {
+  final String title;
+  final String value;
+
   const coin_chips({
     Key? key,
+    required this.title,
+    required this.value,
   }) : super(key: key);
 
   @override
@@ -713,13 +984,13 @@ class coin_chips extends StatelessWidget {
             children: [
               // SizedBox(width: 5),
               Text(
-                "Chips",
+                "$title",
                 style: TextStyle(fontSize: 16),
               ),
             ],
           ),
         ),
-        silverGradient("THB 0.00 ", 16),
+        silverGradient("$value", 16),
         Image.asset(coin),
         // Container(),
       ],
@@ -728,8 +999,12 @@ class coin_chips extends StatelessWidget {
 }
 
 class info extends StatelessWidget {
+  final String title;
+  final String value;
   const info({
     Key? key,
+    required this.title,
+    required this.value,
   }) : super(key: key);
 
   @override

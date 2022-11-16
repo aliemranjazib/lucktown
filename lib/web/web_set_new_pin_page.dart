@@ -4,13 +4,13 @@ import 'package:flutter_application_lucky_town/models/user_session_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
-import 'package:flutter_application_lucky_town/web/web_signin.dart';
+import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:http/http.dart' as http;
+import 'package:responsive_framework/responsive_framework.dart';
 import '../utils/components/custom_toast.dart';
 import '../utils/components/gradient_text.dart';
 import '../utils/constants/api_constants.dart';
-import 'dart:html';
 
 class WebSetNewPinPage extends StatefulWidget {
   // String? image;
@@ -43,7 +43,7 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
   @override
   void initState() {
     super.initState();
-    print("ppp $tempAuthKey");
+    // print("ppp $tempAuthKey");
     // tokenKey = widget.data;
     // print("my token key ${widget.data}");
   }
@@ -78,26 +78,27 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
             isLoading = true;
           });
           Map<String, dynamic> data = json.decode(response1.body);
-
           CustomToast.customToast(context, data['msg']);
           UserSessionModel us = UserSessionModel.fromJson(data);
           print(response1.statusCode);
-          print("eeee $us");
-          String currentSession = window.localStorage['authSession'] =
-              data['response']['authToken'];
+          LuckySharedPef.saveAuthToken(data['response']['authToken']);
+
+          // print("eeee $us");
+          // String currentSession = window.localStorage['authSession'] =
+          //     data['response']['authToken'];
 
           // print("ooo ${dau.getAllUsers()}");
+          // Future.delayed(
+          //     Duration(
+          //       seconds: 1,
+          //     ), () {
+          //   LuckySharedPef.saveAuthToken(data['response']['authToken']);
+          //   //print("ccc ${LuckySharedPef.getAuthToken()}");
+          //   // print()
+          // });
           Future.delayed(
               Duration(
                 seconds: 1,
-              ), () {
-            LuckySharedPef.saveAuthToken(data['response']['authToken']);
-            print("ccc $currentSession");
-            // print()
-          });
-          Future.delayed(
-              Duration(
-                seconds: 2,
               ), () {
             String aa = LuckySharedPef.getAuthToken();
             print("ccc $aa");
@@ -134,17 +135,21 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
         backgroundColor: Colors.black,
         body: Row(
           children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  image: DecorationImage(
-                    image: AssetImage(tabletsidebar),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
+            ResponsiveVisibility(
+              visible: true,
+              hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+              child: Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    image: DecorationImage(
+                      image: AssetImage(tabletsidebar),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                    ),
                   ),
+                  child: Center(child: Image.asset(logo)),
                 ),
-                child: Center(child: Image.asset(logo)),
               ),
             ),
             Expanded(
