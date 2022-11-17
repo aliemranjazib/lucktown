@@ -3,6 +3,7 @@ import 'package:flutter_application_lucky_town/models/product_model.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/utils/routes/lucky_routes.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart';
 import 'package:flutter_application_lucky_town/web/check_auth.dart';
 import 'package:flutter_application_lucky_town/web/login_otp.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
@@ -70,8 +71,13 @@ class MyApp extends StatelessWidget {
               return WebSetNewPinPage();
             case web_scaffold_page:
               return WebScaffold();
+<<<<<<< HEAD
             case web_topup_usdt_page:
               return TopUpMethodScreen();
+=======
+            case web_profile_page:
+              return ProfilePage();
+>>>>>>> 20116f9e039224bdc6fd26a07a2fec3922a76d2f
             default:
               return const SizedBox.shrink();
           }
@@ -96,10 +102,17 @@ class MyApp extends StatelessWidget {
         ],
       ),
       // home: web_scaffold_page,
+<<<<<<< HEAD
       // initialRoute: LuckySharedPef.getAuthToken().isEmpty
       //     ? web_scaffold_page
       //     : web_home_Page,
       initialRoute: web_topup_usdt_page,
+=======
+      initialRoute: 
+      LuckySharedPef.getAuthToken().isEmpty
+          ? web_scaffold_page
+          : web_home_Page,
+>>>>>>> 20116f9e039224bdc6fd26a07a2fec3922a76d2f
       // home: ResponsiveLayout(
       //     mobileScaffold: MobileScaffold(),
       //     tabletScaffold: TabletScaffold(),
