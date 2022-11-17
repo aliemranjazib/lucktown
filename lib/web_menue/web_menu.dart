@@ -27,10 +27,10 @@ class _WebMenuState extends State<WebMenu> {
                       text: value.menuItems[index],
                       press: () {
                         print("qqq ${value.menuItems[index]}");
-                        if (value.menuItems[index] == "Contact") {
+                        if (value.menuItems[index] == "Home") {
                           Navigator.pushNamed(context, web_scaffold_page);
                         } else if (value.menuItems[index] == "Profile") {
-                          Navigator.pushNamed(context, 'ProfilePage');
+                          Navigator.pushNamed(context, web_profile_page);
                         }
                         value.saveIndex(index, () {
                           // print("qqq ${value.selectedIndex}");

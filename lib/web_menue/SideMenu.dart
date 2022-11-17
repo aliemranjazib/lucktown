@@ -40,6 +40,16 @@ class _sideMenuState extends State<sideMenu> {
                               .menuIcons[index],
                       press: () {
                         setState(() {
+                          if (Provider.of<MenuProvider>(context, listen: false)
+                                  .menuItems[index] ==
+                              "Home") {
+                            Navigator.pushNamed(context, web_scaffold_page);
+                          } else if (Provider.of<MenuProvider>(context,
+                                      listen: false)
+                                  .menuItems[index] ==
+                              "Profile") {
+                            Navigator.pushNamed(context, web_profile_page);
+                          }
                           Provider.of<MenuProvider>(context, listen: false)
                               .saveIndex(
                             index,

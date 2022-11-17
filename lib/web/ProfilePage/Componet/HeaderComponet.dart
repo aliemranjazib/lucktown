@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 
 class ProfileHeader extends StatelessWidget {
+  final String title;
+  final String lid;
+  final String nick;
+  final String reffercal;
+
   const ProfileHeader({
     Key? key,
+    required this.title,
+    required this.lid,
+    required this.nick,
+    required this.reffercal,
   }) : super(key: key);
 
   @override
@@ -15,24 +25,32 @@ class ProfileHeader extends StatelessWidget {
           padding: const EdgeInsets.only(left: kDefaultPadding),
           child: Container(
             height: kMaxWidth / 7,
-            
             color: kDarkBlackColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Image.asset(
-                  'assets/images/Mask group.png',
-                  scale: 2,
+                CircleAvatar(
+                  child: Image.asset(
+                    'assets/images/avatar-01.png',
+                    scale: 2,
+                  ),
                 ),
-                SizedBox(width: kDefaultPadding,),
+                SizedBox(
+                  width: kDefaultPadding,
+                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('kktt005a',style: TextStyle(color: Colors.white),),
-                    Text('LID:903',style: TextStyle(color: Colors.white)),
-                    Text('Nickname:kktt00005',style: TextStyle(color: Colors.white)),
-                    Text('Referral:kktt0004',style: TextStyle(color: Colors.white)),
+                    Text(
+                      '$title',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text('LID:$lid', style: TextStyle(color: Colors.white)),
+                    Text('Nickname:$nick',
+                        style: TextStyle(color: Colors.white)),
+                    Text('Referral:$reffercal',
+                        style: TextStyle(color: Colors.white)),
                   ],
                 )
               ],
@@ -46,21 +64,24 @@ class ProfileHeader extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-                Container(
-              width: 70,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(image: AssetImage('assets/images/Flag_of_Malaysia 1.png',), )
-              ),),
-            Container(
-              width: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: DecorationImage(image: AssetImage('assets/images/barCode.png'), scale: 2)
-              ),),
-           
-              
-          ],),
+              Container(
+                width: 70,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage(malaysia),
+                    )),
+              ),
+              Container(
+                width: 100,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/barcode.png'),
+                        scale: 2)),
+              ),
+            ],
+          ),
         ),
       ],
     );
