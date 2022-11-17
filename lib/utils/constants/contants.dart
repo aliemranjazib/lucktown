@@ -18,6 +18,7 @@ const String web_forget_page = '/web_forget';
 const String web_set_new_pin_page = '/web_set_pin';
 const String web_product_detail = '/web_detail_page';
 const String web_profile_page = '/web_profile_page';
+const String web_topup_usdt_page = '/web_topup_usdt_page';
 
 //mobile
 // const String mobilehomePage = '/mobilehome';

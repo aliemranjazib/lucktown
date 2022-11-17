@@ -89,7 +89,7 @@ class _WebHomePageState extends State<WebHomePage> {
             setState(() {
               profileData = ProfileData.fromJson(data);
             });
-            print("coin ${profileData.response!.coinBalance}");
+            print("coin ${profileData.response!.accounts!.first.accountName}");
 
             setState(() {
               isLoadingGif = false;

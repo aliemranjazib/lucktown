@@ -70,6 +70,8 @@ class MyApp extends StatelessWidget {
               return WebSetNewPinPage();
             case web_scaffold_page:
               return WebScaffold();
+            case web_topup_usdt_page:
+              return TopUpMethodScreen();
             default:
               return const SizedBox.shrink();
           }
@@ -94,9 +96,10 @@ class MyApp extends StatelessWidget {
         ],
       ),
       // home: web_scaffold_page,
-      initialRoute: LuckySharedPef.getAuthToken().isEmpty
-          ? web_scaffold_page
-          : web_home_Page,
+      // initialRoute: LuckySharedPef.getAuthToken().isEmpty
+      //     ? web_scaffold_page
+      //     : web_home_Page,
+      initialRoute: web_topup_usdt_page,
       // home: ResponsiveLayout(
       //     mobileScaffold: MobileScaffold(),
       //     tabletScaffold: TabletScaffold(),

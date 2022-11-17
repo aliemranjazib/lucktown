@@ -1,4 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class SelectButton extends StatelessWidget {
+  final String title;
+  final Function onPress;
+  final double width;
+  bool loading;
+
+  SelectButton({
+    Key? key,
+    required this.title,
+    required this.onPress,
+    required this.width,
+    this.loading = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onPress();
+      },
+      child: Container(
+        height: 40,
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Color(0xffFCD877),
+          gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              // tileMode: TileMode.clamp,
+              colors: [
+                Color(0xBD8E37).withOpacity(1),
+                Color(0xFCD877).withOpacity(1),
+                Color(0xFFFFD1).withOpacity(1),
+                // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+                Color(0xC1995C).withOpacity(1),
+              ]),
+        ),
+        child: loading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+              )
+            : Center(
+                child: Text(title,
+                    style:
+                        GoogleFonts.roboto(fontSize: 15, color: Colors.black)),
+              ),
+      ),
+    );
+  }
+}
 
 class PrimaryButton extends StatefulWidget {
   final String title;
@@ -31,17 +86,17 @@ class _PrimaryButtonState extends State<PrimaryButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Color(0xffFCD877),
-          // gradient: LinearGradient(
-          //     begin: Alignment.bottomCenter,
-          //     end: Alignment.topCenter,
-          //     // tileMode: TileMode.clamp,
-          //     colors: [
-          //       Color(0xBD8E37).withOpacity(1),
-          //       Color(0xFCD877).withOpacity(1),
-          //       Color(0xFFFFD1).withOpacity(1),
-          //       // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
-          //       Color(0xC1995C).withOpacity(1),
-          //     ]),
+          gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              // tileMode: TileMode.clamp,
+              colors: [
+                Color(0xBD8E37).withOpacity(1),
+                Color(0xFCD877).withOpacity(1),
+                Color(0xFFFFD1).withOpacity(1),
+                // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+                Color(0xC1995C).withOpacity(1),
+              ]),
         ),
         child: widget.loading
             ? Center(
@@ -94,17 +149,16 @@ class _GameDetailPageButtonState extends State<GameDetailPageButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(0),
           color: Color(0xffFCD877),
-
-          // gradient: LinearGradient(
-          //     begin: Alignment.bottomCenter,
-          //     end: Alignment.topCenter,
-          //     // tileMode: TileMode.clamp,
-          //     colors: [
-          //       Color(0xffBD8E37),
-          //       Color(0xffF0BC2F),
-          //       Color(0xffFFFFD1),
-          //       Color(0xff835919)
-          //     ]),
+          gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              // tileMode: TileMode.clamp,
+              colors: [
+                Color(0xffBD8E37),
+                Color(0xffF0BC2F),
+                Color(0xffFFFFD1),
+                Color(0xff835919)
+              ]),
         ),
         child: widget.loading
             ? Center(

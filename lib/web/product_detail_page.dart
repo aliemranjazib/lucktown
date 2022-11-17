@@ -40,6 +40,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   bool isRunning = false;
   bool isLoadingGif = false;
   String? url;
+  List<String> topupMethods = [
+    "Instant Top Up",
+    "Top Up Bank Transfer",
+    "Top Up USDT",
+    "Withdraw"
+  ];
   final headfontSize = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
@@ -55,6 +61,38 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return await LuckySharedPef.getAuthToken();
   }
 
+  showBoxDialogue() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          // title: Text("data"),
+          title: Image.network(
+            logo,
+            width: 100,
+            height: 50,
+          ),
+          children: [
+            ...List.generate(
+                topupMethods.length,
+                (index) => Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: SelectButton(
+                          title: topupMethods[index],
+                          onPress: () {
+                            print(topupMethods[index]);
+                            if (topupMethods[index] == "Top Up USDT") {
+                              Navigator.pushNamed(context, web_topup_usdt_page);
+                            }
+                          },
+                          width: double.infinity),
+                    ))
+          ],
+        );
+      },
+    );
+  }
+
   Future<AvailableCredits> getAvailableCredit() async {
     try {
       final response1 = await http.post(
@@ -66,7 +104,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           // 'Authorization':
         },
         body: jsonEncode(<String, dynamic>{
-          "data": {"productId": "69", "pullCredit": "true"}
+          "data": {"productId": widget.product!.productId, "pullCredit": "true"}
         }),
       );
       switch (response1.statusCode) {
@@ -107,6 +145,103 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     return _availablecredit;
   }
+
+  // Future<String> getTopUpMethods() async {
+  //   try {
+  //     final response1 = await http.post(
+  //       Uri.parse('${memberBaseUrl}user/getTopupMethod'),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //         "Authorization": await getToken(),
+  //         // 'Authorization':
+  //       },
+  //       body: jsonEncode(<String, dynamic>{
+  //         "data": {
+  //           "targetUniqueKey":
+  //               "kVRT0VFaftUW19n3GpIquuXOwrRhz5y9N7R1m3BHcshbN0O9XU0BtyATyYsyeq85RJLpgB0TQSO5sDO7Mzevz5imKwrS81gDvRnabrrER8Qiyz8vqb5AlcKSEI4ztljuQA47TUYo0UjtTvk3SpEPkQwG7fO4xL0KhALq4L8B4lou4gc8iBmJo1GQQImjN7wrdhW6vmJK",
+  //           "amount": "10"
+  //         }
+  //       }),
+  //     );
+  //     switch (response1.statusCode) {
+  //       case 200:
+  //         setState(() {
+  //           print(response1.statusCode);
+  //           isLoadingGif = true;
+  //         });
+  //         Map<String, dynamic> data = json.decode(response1.body);
+  //         setState(() {
+  //           // topupMethods = data['response']['list'];
+  //           for (var element in data['response']['list']) {
+  //             print(element['code']);
+  //             topupMethods.add(element['code']);
+  //           }
+  //         });
+  //         // print("topupMethods ${topupMethods}");
+  //         // showBoxDialogue();
+  //         showDialog(
+  //           context: context,
+  //           builder: (context) {
+  //             return SimpleDialog(
+  //               // title: Text("data"),
+  //               title: Image.network(
+  //                 logo,
+  //                 width: 100,
+  //                 height: 50,
+  //               ),
+  //               children: [
+  //                 ...List.generate(
+  //                     topupMethods.length,
+  //                     (index) => Padding(
+  //                           padding: const EdgeInsets.all(14.0),
+  //                           child: SelectButton(
+  //                               title: topupMethods[index],
+  //                               onPress: () {},
+  //                               width: double.infinity),
+  //                         ))
+  //               ],
+  //               // height: 200,
+  //               // width: 200,
+  //               // decoration: BoxDecoration(
+  //               //   color: Color(0xff231F20),
+  //               // ),
+  //               // child: Column(
+  //               //   children: [
+  //               //     ...List.generate(
+  //               //         topupMethods.length,
+  //               //         (index) => PrimaryButton(
+  //               //             title: topupMethods[index], onPress: () {}, width: 50))
+  //               //   ],
+  //               // ),
+  //             );
+  //           },
+  //         );
+
+  //         setState(() {
+  //           isLoadingGif = false;
+  //         });
+
+  //         break;
+  //       default:
+  //         final data = json.decode(response1.body);
+  //         print(response1.statusCode);
+  //         print(data);
+  //         setState(() {
+  //           isLoadingGif = false;
+  //         });
+
+  //         CustomToast.customToast(context, data['msg']);
+  //       // CustomToast.customToast(context, "WENT WRONG");
+  //     }
+  //   } catch (e) {
+  //     setState(() {
+  //       isLoadingGif = false;
+  //     });
+  //     CustomToast.customToast(context, e.toString());
+  //   }
+
+  //   return "";
+  // }
 
   Future<void> _launchInBrowser(Uri url) async {
     if (!await launchUrl(
@@ -182,7 +317,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           "data": {
             "productId": widget.product!.productId,
             "amountTransfer": '0',
-            'viewType': "mobile",
+            'viewType': "web",
           }
         }),
       );
@@ -197,12 +332,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           // _launchInBrowser(Uri.parse(data['response']['gameDetails']['Url']));
           // String a = Uri.parse(data['response']['gameDetails']['Url']);
           window.open(data['response']['gameDetails']['Url'], 'foo');
+          getAvailableCredit();
           setState(() {
             isLoading = false;
             isRunning = true;
+
             gameStatus = _availablecredit.response!.inGameStatus;
             url = data['response']['gameDetails']['Url'];
           });
+          break;
+        case 400:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          print(data);
+          setState(() {
+            isLoading = false;
+          });
+
+          CustomToast.customToast(context, data['msg']);
           break;
         default:
           final data = json.decode(response1.body);
@@ -236,7 +383,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
-            "productId": 69,
+            "productId": widget.product!.productId,
           }
         }),
       );
@@ -248,13 +395,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           print(response1.statusCode);
           Map<String, dynamic> data = json.decode(response1.body);
           // CustomToast.customToast(context, data['msg']);
-          window.close();
+          // window.close();
           CustomToast.customToast(context, data['msg']);
           // print("ppp ${data['response']['gameDetails']['Url']}");
-          var other = window.open(url!, 'foo');
+          // var other = window.open(url!, 'foo');
 // Closes other window, as it is script-closeable.
-          other.close();
-          print(other.closed);
+          // other.close();
+          getAvailableCredit();
+
+          // print(other.closed);
           setState(() {
             isLoadingClose = false;
             isRunning = false;
@@ -283,7 +432,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   void initState() {
     // getToken();
-    playGame();
+    // playGame();
     getProfileInfo();
     getAvailableCredit();
     super.initState();
@@ -331,7 +480,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ),
               Image.network(
-                widget.product!.productImageUrl!,
+                widget.product!.productImageUrl ??
+                    "https://cdn.sanity.io/images/0vv8moc6/dermatologytimes/d198c3b708a35d9adcfa0435ee12fe454db49662-640x400.png",
                 width: double.infinity,
                 height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
                     ? 301
@@ -393,24 +543,31 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  // width: 100,
-                                                  // height: 100,
-                                                  decoration: BoxDecoration(
-                                                      color: Color(0xff292929),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            38.0),
-                                                    child: Row(
-                                                      children: [
-                                                        Image.asset(topup),
-                                                        silverGradient(
-                                                            'Top Up', 16),
-                                                      ],
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    showBoxDialogue();
+                                                    // showBoxDialogue();
+                                                  },
+                                                  child: Container(
+                                                    // width: 100,
+                                                    // height: 100,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xff292929),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20)),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              38.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Image.asset(topup),
+                                                          silverGradient(
+                                                              'Top Up', 16),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -558,7 +715,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             children: [
                                               Expanded(
                                                 child: InkWell(
-                                                  onTap: () {},
+                                                  onTap: () {
+                                                    showBoxDialogue();
+                                                  },
                                                   child: Container(
                                                     // width: 154,
                                                     alignment: Alignment.center,
@@ -709,9 +868,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             title: gameStatus == "" ? "Start" : "Close",
                             onPress: () {
                               setState(() {
-                                gameStatus == "" ? playGame() : closeGame();
+                                // gameStatus == "" ? playGame() : closeGame();
+                                if (gameStatus == "") {
+                                  playGame();
+                                } else if (gameStatus == "inGame") {
+                                  closeGame();
+                                }
                               });
-                              getAvailableCredit();
+                              // getAvailableCredit();
                             },
                             width: double.infinity),
                         SizedBox(height: 20),

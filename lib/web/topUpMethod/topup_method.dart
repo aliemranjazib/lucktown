@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
+import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -61,29 +62,42 @@ class TopUpMethodScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                  SizedBox(height: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          hintText: 'Amount (THB)    0.00',
+                          hintStyle: TextStyle(color: Colors.black),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                    ),
+                  ),
                   SizedBox(height: 30),
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: silverGradientRobto(
+                          'Platform', 16, FontWeight.normal)),
+                  SizedBox(height: 20),
                   Container(
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10)),
                     child: TextFormField(
                       decoration: InputDecoration(
-                          labelText: 'Amount (THB)    0.00',
+                          hintText: 'balance',
+                          hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10))),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Amount (THB)    0.00',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                    ),
-                  ),
+                  // Spacer(),
+                  SizedBox(height: 60),
+
+                  PrimaryButton(
+                      title: 'Next', onPress: () {}, width: double.infinity)
                 ],
               ),
             ),
