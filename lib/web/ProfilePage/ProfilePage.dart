@@ -14,6 +14,7 @@ import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:responsive_framework/responsive_framework.dart';
 import '../../utils/constants/api_constants.dart';
 import '../../utils/constants/contants.dart';
 import '../../web_menue/header.dart';
@@ -152,129 +153,37 @@ class _ProfilePageState extends State<ProfilePage> {
                           nick: "nick",
                           reffercal: "pppp",
                         ),
-                        CompleteTextBar(
-                          chips: profileData.response!.coinBalance!,
-                          cash: profileData.response!.walletBalance!,
-                          coin: profileData.response!.interestBalance!,
-                          stage: "stage",
-                        ),
-                        HomeScreenCatagory(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            BigBOxComponets(),
-                            Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        showBoxDialogue();
-                                      },
-                                      child: smallcontainer(
-                                          'Top up / WithDraw',
-                                          Icon(
-                                            Icons
-                                                .account_balance_wallet_rounded,
-                                            color: kPrimaryColor,
-                                            size: 30,
-                                          )),
-                                    ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    smallcontainer(
-                                        'Transfer',
-                                        Icon(
-                                          Icons.compare_arrows,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    InkWell(
-                                      onTap: () {},
-                                      child: smallcontainer(
-                                          'Bank Account',
-                                          Icon(
-                                            Icons.account_balance_outlined,
-                                            color: kPrimaryColor,
-                                            size: 30,
-                                          )),
-                                    ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    smallcontainer(
-                                        'Currency Exchange',
-                                        Icon(
-                                          Icons.currency_bitcoin,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    smallcontainer(
-                                        'Help Desk',
-                                        Icon(
-                                          Icons.headphones_outlined,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    smallcontainer(
-                                        'Promotion',
-                                        Icon(
-                                          Icons.card_giftcard_outlined,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    smallcontainer(
-                                        'VIP',
-                                        Icon(
-                                          Icons.card_giftcard,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    smallcontainer(
-                                        'Setting',
-                                        Icon(
-                                          Icons.settings,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                        if (ResponsiveWrapper.of(context)
+                                .isLargerThan('Tablet') ||
+                            ResponsiveWrapper.of(context).isTablet ||
+                            ResponsiveWrapper.of(context).isDesktop)
+                          CompleteTextBar(
+                            chips: profileData.response!.coinBalance!,
+                            cash: profileData.response!.walletBalance!,
+                            coin: Hnadcoin,
+                            stage: "stage",
+                          ),
+                        if (ResponsiveWrapper.of(context).isMobile || ResponsiveWrapper.of(context).isSmallerThan('Mobile'))
+                          CompleteTextBarMobileView(
+                            chips: profileData.response!.coinBalance!,
+                            cash: profileData.response!.walletBalance!,
+                            coin: Hnadcoin,
+                            stage: "stage",
+                          ),
+                        if (ResponsiveWrapper.of(context)
+                                .isLargerThan('Tablet') ||
+                            ResponsiveWrapper.of(context).isTablet ||
+                            ResponsiveWrapper.of(context).isDesktop)
+                          HomeScreenCatagory(),
+                        if (ResponsiveWrapper.of(context).isMobile)
+                          HomeScreenCatagoryMobileView(),
+                        if (ResponsiveWrapper.of(context)
+                                .isLargerThan('Tablet') ||
+                            ResponsiveWrapper.of(context).isTablet ||
+                            ResponsiveWrapper.of(context).isDesktop)
+                          HomeScreenOptionsDesktopView(),
+                        if (ResponsiveWrapper.of(context).isMobile)
+                          HomeScreenOptionsMobileView(),
                       ],
                     ),
                     SizedBox(
@@ -397,6 +306,185 @@ class _ProfilePageState extends State<ProfilePage> {
               ));
   }
 
+  // Home Screen Options Desktop View
+
+  Widget HomeScreenOptionsDesktopView() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        BigBOxComponetsDeskTopView(),
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  onTap: () {
+                    showBoxDialogue();
+                  },
+                  child: smallcontainer(
+                      'Top up / WithDraw',
+                      topUp,
+                      
+                      ),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer(
+                    'Transfer',
+                    transfer),
+                SizedBox(
+                  width: 12,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: smallcontainer(
+                      'Bank Account',
+                      bank,
+                      
+                      ),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                smallcontainer(
+                    'Currency Exchange',
+                    CurrencyExchange,
+                    ),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer(
+                    'Help Desk',
+                    helpDesk
+                    ),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer(
+                    'Promotion',
+                    promotion),
+                SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                smallcontainer(
+                    'VIP',
+                    vip),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer(
+                    'Setting',
+                    setting),
+                SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+// Desk View Option
+
+  // Home Screen Options MObile View
+
+  Widget HomeScreenOptionsMobileView() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BigBOxComponets(),
+        Column(
+          children: [
+        HomeScreenCatagoryMobileView1(),
+            Row(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        showBoxDialogue();
+                      },
+                      child: smallcontainer(
+                          'Top up / WithDraw',
+                         topUp,),
+                    ),
+                    SizedBox(
+                      width: 12,
+                    ),
+                      InkWell(
+                      onTap: () {},
+                      child: smallcontainer(
+                          'Bank Account',
+                          bank),
+                    ),
+                     smallcontainer(
+                        'Help Desk',
+                       helpDesk),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    smallcontainer(
+                        'VIP',
+                       vip),
+                  
+                  
+                    SizedBox(
+                      width: 12,
+                    ),
+                    
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                      smallcontainer(
+                        'Transfer',
+                        transfer),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    smallcontainer(
+                        'Currency Exchange',
+                       CurrencyExchange),
+                    SizedBox(
+                      width: 12,
+                    ),
+                   
+                    smallcontainer(
+                        'Promotion',
+                        promotion),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    smallcontainer(
+                        'Setting',
+                        setting),
+                  ],
+                ),
+              ],
+            )
+          ],
+        )
+      ],
+    );
+  }
+
   Widget RowData() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -417,11 +505,11 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget smallcontainer(String title, Icon icon) {
+  Widget smallcontainer(String title, String ImagePath) {
     return Column(
       children: [
         Container(
-          width: kMaxWidth / 4,
+          width: kMaxWidth / 5,
           height: kDefaultPadding * 5,
           decoration: BoxDecoration(
               color: Color(0xff252A2D),
@@ -429,7 +517,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              icon,
+              Image.asset(ImagePath,scale: 1.4,),
               silverGradientRobto(title, 20, FontWeight.normal),
             ],
           ),

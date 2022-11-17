@@ -10,7 +10,7 @@ class HomeScreenCatagory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 80, right: kMaxWidth / 1.8),
+      padding: const EdgeInsets.only(top: 80, right: kMaxWidth/2.2 ),
       child: Container(
         width: kMaxWidth / 2,
         height: kDefaultPadding * 2.8,
@@ -33,3 +33,64 @@ class HomeScreenCatagory extends StatelessWidget {
     );
   }
 }
+
+
+// For Mobile //
+
+
+
+class HomeScreenCatagoryMobileView extends StatelessWidget {
+  const HomeScreenCatagoryMobileView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, left: kDefaultPadding ),
+      child: Container(
+        width: kMaxWidth / 2,
+        height: kDefaultPadding * 2.8,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            silverGradientRobto(
+              '每日签到 / Daily Check-in',
+              16,
+              FontWeight.normal,
+            ),
+          
+          ],
+        ),
+      ),
+    );
+  }
+}
+class HomeScreenCatagoryMobileView1 extends StatelessWidget {
+  const HomeScreenCatagoryMobileView1({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, left: kDefaultPadding ),
+      child: Container(
+        width: kMaxWidth / 2,
+        height: kDefaultPadding * 2.8,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+          
+            silverGradientRobto(
+              '快速行动 / Quick Access',
+              16,
+              FontWeight.normal,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
