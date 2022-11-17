@@ -103,10 +103,16 @@ class MyApp extends StatelessWidget {
       // initialRoute: LuckySharedPef.getAuthToken().isEmpty
       //     ? web_scaffold_page
       //     : web_home_Page,
+
       // initialRoute: web_profile_page,
       initialRoute: LuckySharedPef.getAuthToken().isEmpty
           ? web_scaffold_page
           : web_home_Page,
+
+      // initialRoute: web_topup_usdt_page,
+      // initialRoute: LuckySharedPef.getAuthToken().isEmpty
+      //     ? web_scaffold_page
+      //     : web_home_Page,
 
       // home: ResponsiveLayout(
       //     mobileScaffold: MobileScaffold(),
