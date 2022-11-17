@@ -3,10 +3,14 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "87aaad774ef599109f100cb599fb9c9f",
+  "assets/AssetManifest.json": "3b3c6a97dcff587717fe63fef1e9284a",
+"assets/assets/images/address-card.svg": "d13bad49b851e056189d0e4594c028c1",
+"assets/assets/images/AG2.png": "29db77d3f2e7e8ea67eb9dea3a94c2fb",
 "assets/assets/images/arrow-left.png": "b7edeac1e345823e340b3deceb92e158",
+"assets/assets/images/avatar-01.png": "d13bad49b851e056189d0e4594c028c1",
 "assets/assets/images/avatar.png": "64e805cfa73669bc2549dcb64014a086",
 "assets/assets/images/BACKGROUND_2.png": "8652948399c0aa2f7d5378a825a1d9bd",
+"assets/assets/images/barcode.png": "7704925297cf6eb6f1b7c4650b6d8fbf",
 "assets/assets/images/bg.png": "a93f94bc4a109b47542c97f4916112d3",
 "assets/assets/images/casino.png": "9613002905f65c158515afbaf844f320",
 "assets/assets/images/chat.png": "d354176ac3736f14305c3533248494e7",
@@ -23,6 +27,7 @@ const RESOURCES = {
 "assets/assets/images/Frame.png": "d110baa5c126de9639fd046147a0eda2",
 "assets/assets/images/Frame_svg.svg": "dc58ae4d119df9b93fb0b451c1bd60e5",
 "assets/assets/images/gift.png": "4d8eac5c6c796a5af9797d5bbc8c10c4",
+"assets/assets/images/gift_n.png": "e41b4fec1ce97a4adb2b06f3a88e9528",
 "assets/assets/images/girl.png": "41500caf550c0d1c7b91d120947ecffb",
 "assets/assets/images/google.png": "de67047ab0fa9435f3b73dc36d39a71a",
 "assets/assets/images/line.png": "bc16a881b229d62830965ad786ea4622",
@@ -41,6 +46,7 @@ const RESOURCES = {
 "assets/assets/images/Rectangle%25204153.png": "83e159010cedf5c0641962e8c0091bad",
 "assets/assets/images/search.png": "cf24e852e676dd82349c95a7170bd9c0",
 "assets/assets/images/singapore.png": "a798f8297a3ed77b2174ad88cbf2c52f",
+"assets/assets/images/spin.png": "afc71274275aa620370ad994c0d192c7",
 "assets/assets/images/sport.png": "270fa69438e442763d0fb83ce7d8ac20",
 "assets/assets/images/star.png": "46019a01e176c8971b11a254e0386420",
 "assets/assets/images/subtract.png": "816931317c335cf02869793df4620546",
@@ -330,9 +336,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "e81b4b5186d16be66c1eb1270a4a4cc2",
-"/": "e81b4b5186d16be66c1eb1270a4a4cc2",
-"main.dart.js": "45722eed444e376b0266dd107b6494a2",
+"index.html": "fc09a6f8512a220f7cbf0cf6a602eebd",
+"/": "fc09a6f8512a220f7cbf0cf6a602eebd",
+"main.dart.js": "847e3386877874e25bf73cb61b70dee8",
 "manifest.json": "43c2c4f002e72595606a862fcf94652b",
 "version.json": "029bbf2d2f2beed5e7e1421aa4587bcd"
 };
