@@ -3,6 +3,7 @@ import 'package:flutter_application_lucky_town/models/product_model.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/utils/routes/lucky_routes.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart';
 import 'package:flutter_application_lucky_town/web/check_auth.dart';
 import 'package:flutter_application_lucky_town/web/login_otp.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
@@ -70,6 +71,8 @@ class MyApp extends StatelessWidget {
               return WebSetNewPinPage();
             case web_scaffold_page:
               return WebScaffold();
+            case web_profile_page:
+              return ProfilePage();
             default:
               return const SizedBox.shrink();
           }
@@ -94,7 +97,8 @@ class MyApp extends StatelessWidget {
         ],
       ),
       // home: web_scaffold_page,
-      initialRoute: LuckySharedPef.getAuthToken().isEmpty
+      initialRoute: 
+      LuckySharedPef.getAuthToken().isEmpty
           ? web_scaffold_page
           : web_home_Page,
       // home: ResponsiveLayout(

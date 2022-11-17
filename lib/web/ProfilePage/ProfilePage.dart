@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:news/SliverGradient.dart';
-import 'package:news/components/web_menu.dart';
-import 'package:news/constants.dart';
-import 'package:news/screens/main/ProfilePage/Componet/BigBoxComponet.dart';
-import 'package:news/screens/main/ProfilePage/Componet/CompleteTextBar.dart';
-import 'package:news/screens/main/ProfilePage/Componet/HeaderComponet.dart';
-import 'package:news/screens/main/ProfilePage/Componet/HomeScreenCatagory.dart';
+import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/BigBoxComponet.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/CompleteTextBar.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HeaderComponet.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HomeScreenCatagory.dart';
+import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
+
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key key}) : super(key: key);
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

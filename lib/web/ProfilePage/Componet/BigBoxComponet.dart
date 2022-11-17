@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:news/SliverGradient.dart';
-import 'package:news/constants.dart';
+import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
+import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
+
 
 class BigBOxComponets extends StatelessWidget {
   const BigBOxComponets({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

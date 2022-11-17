@@ -4,7 +4,7 @@ class ProfileTextBarComponet extends StatelessWidget {
   final String title;
   Icon icon = Icon(Icons.abc);
   bool yesicon = false;
-  ProfileTextBarComponet({this.title, this.icon, this.yesicon});
+  ProfileTextBarComponet({required this.title, required this.icon, required this.yesicon});
 
   @override
   Widget build(BuildContext context) {

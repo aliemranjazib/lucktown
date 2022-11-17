@@ -30,7 +30,7 @@ class _WebMenuState extends State<WebMenu> {
                         if (value.menuItems[index] == "Contact") {
                           Navigator.pushNamed(context, web_scaffold_page);
                         } else if (value.menuItems[index] == "Profile") {
-                          Navigator.pushNamed(context, web_home_Page);
+                          Navigator.pushNamed(context, 'ProfilePage');
                         }
                         value.saveIndex(index, () {
                           // print("qqq ${value.selectedIndex}");
