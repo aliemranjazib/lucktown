@@ -290,7 +290,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
               Duration(
                 seconds: 1,
               ), () {
-            LuckySharedPef.saveAuthToken(data['response']['authToken']);
+            LuckySharedPef.saveAuthToken(response1.body);
           });
           // String? otp = data['response']['userToken'];
 
@@ -299,9 +299,15 @@ class _WebSignInPageState extends State<WebSignInPage> {
                 seconds: 2,
               ), () {
             String aa = LuckySharedPef.getAuthToken();
-            print("ccc $aa");
+            Map<String, dynamic> decodedata = jsonDecode(aa);
+            print(decodedata);
+            // UserSessionModel t = UserSessionModel.fromJson(decodedata);
+            // UserModel.fromJson();
+            // Response um = Response.fromJson(decodedata['response']);
+            // print(um);
+            // print("ccc ${um.response!.user!.memberUsername}");
 
-            Navigator.pushNamed(context, web_home_Page);
+            // Navigator.pushNamed(context, web_home_Page);
             // print()
           });
           // await IsFirstRun.isFirstRun()
@@ -309,7 +315,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
           //         arguments: data['response']['userToken'])
           //     : Navigator.pushNamed(context, web_home_Page);
 
-          // Navigator.pushNamed(context, web_home_Page);
+          Navigator.pushNamed(context, web_home_Page);
           setState(() {
             isLoading = false;
           });
@@ -441,6 +447,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
   @override
   Widget build(BuildContext context) {
     s();
+    print("bbbb ${jsonDecode(LuckySharedPef.getAuthToken())['msg']}");
     // Provider.of<SelectCountry>(context);
     return Scaffold(
       backgroundColor: Colors.black,

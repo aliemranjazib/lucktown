@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/TextBarComponet.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 
-
-
 // ************* for DeskTop ******************//
 class CompleteTextBar extends StatelessWidget {
   final String chips;
@@ -26,7 +24,6 @@ class CompleteTextBar extends StatelessWidget {
       width: kMaxWidth,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        
         children: [
           ProfileTextBarComponet(
             title: 'Chips',
@@ -74,7 +71,6 @@ class CompleteTextBar extends StatelessWidget {
   }
 }
 
-
 /* for Mobile and Tablet*/
 
 class CompleteTextBarMobileView extends StatelessWidget {
@@ -99,55 +95,56 @@ class CompleteTextBarMobileView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
               ProfileTextBarComponet(
-            title: 'Chips',
-            ImagePath: coin,
-            yesicon: false,
+                title: 'Chips',
+                ImagePath: coin,
+                yesicon: false,
+              ),
+              ProfileTextBarComponet(
+                title: 'THB $chips',
+                ImagePath: coin,
+                yesicon: true,
+              ),
+              ProfileTextBarComponet(
+                title: 'Cash',
+                ImagePath: coin,
+                yesicon: false,
+              ),
+              ProfileTextBarComponet(
+                title: 'THB $chips',
+                ImagePath: coin,
+                yesicon: true,
+              ),
+            ],
           ),
-          ProfileTextBarComponet(
-            title: 'THB $chips',
-            ImagePath: coin,
-            yesicon: true,
-          ),
-          ProfileTextBarComponet(
-            title: 'Cash',
-            ImagePath: coin,
-            yesicon: false,
-          ),
-          ProfileTextBarComponet(
-            title: 'THB $chips',
-            ImagePath: coin,
-            yesicon: true,
-          ),
-          ],
-        ),
-         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-           ProfileTextBarComponet(
-            title: 'Coin',
-            ImagePath: coin,
-            yesicon: false,
-          ),
-          ProfileTextBarComponet(
-            title: 'THB',
-            ImagePath: coin,
-            yesicon: true,
-          ),
-          ProfileTextBarComponet(
-            title: 'Stage',
-            ImagePath: coin,
-            yesicon: false,
-          ),
-          ProfileTextBarComponet(
-            title: '$stage',
-            ImagePath: coin,
-            yesicon: true,
-          ),
-         ],)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ProfileTextBarComponet(
+                title: 'Coin',
+                ImagePath: coin,
+                yesicon: false,
+              ),
+              ProfileTextBarComponet(
+                title: 'THB',
+                ImagePath: coin,
+                yesicon: true,
+              ),
+              ProfileTextBarComponet(
+                title: 'Stage',
+                ImagePath: coin,
+                yesicon: false,
+              ),
+              ProfileTextBarComponet(
+                title: '$stage',
+                ImagePath: coin,
+                yesicon: true,
+              ),
+            ],
+          )
         ],
       ),
     );

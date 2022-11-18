@@ -60,6 +60,9 @@ const String transaction = "assets/images/transaction.png";
 const String eye_open = "assets/images/eye_open.png";
 const String bg = "assets/images/bg.png";
 const String logo = "assets/images/logo.png";
+const String pCoin = "assets/images/coin.jpg";
+const String spinMove = "assets/images/spin_move.png";
+const String giftBox = "assets/images/gift_box.png";
 const String mobilebg = "assets/images/Frame.png";
 const String userIcon = "assets/images/user.png";
 const String unlockIcon = "assets/images/unlock.png";
@@ -86,7 +89,7 @@ const String footerbrand = "assets/images/mask-group-1.png";
 
 ////////////////// Profile page //////////////////////
 
-const String gift= "assets/images/gift_n.png";
+const String gift = "assets/images/gift_n.png";
 
 ////////////// COLORS //////////////////////////
 const bgColor = Color(0xF5F5F5);
@@ -97,20 +100,16 @@ const String gotham_light = "gotham-light";
 const String gotham = "gotham";
 final roboto = GoogleFonts.roboto();
 
-
-
 ///// Profile Page Icons /////
-
 
 const String topUp = 'assets/images/topup.png';
 const String transfer = 'assets/images/transfer.png';
 const String bank = 'assets/images/icon_bank.png';
-const String CurrencyExchange= 'assets/images/money-exchange.png';
+const String CurrencyExchange = 'assets/images/money-exchange.png';
 const String helpDesk = 'assets/images/icon_contact.png';
-const String promotion='assets/images/icon_promotion.png';
+const String promotion = 'assets/images/icon_promotion.png';
 const String vip = 'assets/images/icon_vip.png';
 const String setting = 'assets/images/setting.png';
-
 
 List<SelectCountryModel> select_country = [
   SelectCountryModel(text: "Malaysia", image: malaysia),

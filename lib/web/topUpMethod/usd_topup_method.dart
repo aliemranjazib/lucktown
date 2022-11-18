@@ -16,7 +16,10 @@ class TopUpMethodScreen extends StatelessWidget {
               child: Row(
                 children: [
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, web_product_detail);
+                        // Navigator.pop(context);
+                      },
                       padding: EdgeInsets.all(0),
                       icon: Icon(Icons.navigate_before, size: 28)),
                   SizedBox(width: 20),
