@@ -189,6 +189,67 @@ class _ProfilePageState extends State<ProfilePage> {
                           //   HomeScreenOptionsDesktopView(),
                           // if (ResponsiveWrapper.of(context).isMobile)
                           // HomeScreenOptionsMobileView(),
+                          ResponsiveVisibility(
+                            visible: false,
+                            visibleWhen: [Condition.smallerThan(name: TABLET)],
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 8),
+                              child: Container(
+                                width: double.infinity,
+                                height: 85,
+                                decoration: BoxDecoration(
+                                  color: kContainerBg,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            silverGradientRobto(
+                                                'Check-in : Day  5',
+                                                12,
+                                                FontWeight.normal),
+                                            Row(
+                                              children: [
+                                                Image.asset(
+                                                  pCoin,
+                                                  width: 22,
+                                                  height: 22,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                silverGradientRobto('50 MYR',
+                                                    12, FontWeight.normal),
+                                                Image.asset(
+                                                  spinMove,
+                                                  width: 22,
+                                                  height: 22,
+                                                ),
+                                                silverGradientRobto('x1 Spin',
+                                                    12, FontWeight.normal),
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    Image.asset(
+                                      giftBox,
+                                      height: 82,
+                                      width: 82,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
                           Row(
                             children: [
                               ResponsiveVisibility(
@@ -254,7 +315,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       // shrinkWrap: true,
                                       // crossAxisCount: 3,
                                       children: [
-                                        box(topUp, "Top up /Withdraw"),
+                                        box(topUp, "Top up\nWithdraw"),
                                         box(transfer, "Transfer"),
                                         ResponsiveVisibility(
                                             visible: true,
