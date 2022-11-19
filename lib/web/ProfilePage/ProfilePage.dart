@@ -10,14 +10,17 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/BigBoxCo
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/CompleteTextBar.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HeaderComponet.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HomeScreenCatagory.dart';
+import 'package:flutter_application_lucky_town/web/web_home.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:responsive_framework/responsive_framework.dart';
 import '../../utils/constants/api_constants.dart';
 import '../../utils/constants/contants.dart';
 import '../../web_menue/header.dart';
 import '../menue_folder/menueProvider.dart';
+// import '../';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -69,7 +72,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<String> getToken() async {
-    return await LuckySharedPef.getAuthToken();
+    return await jsonDecode(LuckySharedPef.getAuthToken())['response']
+        ['authToken'];
   }
 
   Future<ProfileData> getProfileInfo() async {
@@ -132,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: kDarkBlackColor,
+        backgroundColor: Colors.black,
         drawer: sideMenu(),
         key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
         body: isLoadingGif == true
@@ -141,141 +145,249 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   children: [
                     Header(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // WebMenu(),
-                        // Spacer(),
-                        ProfileHeader(
-                          title: "name",
-                          lid: "lid",
-                          nick: "nick",
-                          reffercal: "pppp",
-                        ),
-                        CompleteTextBar(
-                          chips: profileData.response!.coinBalance!,
-                          cash: profileData.response!.walletBalance!,
-                          coin: profileData.response!.interestBalance!,
-                          stage: "stage",
-                        ),
-                        HomeScreenCatagory(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            BigBOxComponets(),
-                            Column(
-                              children: [
-                                Row(
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // WebMenu(),
+                          // Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ProfileHeader(
+                              title: "name",
+                              lid: "lid",
+                              nick: "nick",
+                              reffercal: "pppp",
+                            ),
+                          ),
+
+                          ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                              ? CompleteTextBar(
+                                  chips: profileData.response!.coinBalance!,
+                                  cash: profileData.response!.walletBalance!,
+                                  coin: Hnadcoin,
+                                  stage: "stage",
+                                )
+                              : CompleteTextBarMobileView(
+                                  chips: profileData.response!.coinBalance!,
+                                  cash: profileData.response!.walletBalance!,
+                                  coin: Hnadcoin,
+                                  stage: "stage",
+                                ),
+                          // HomeScreenCatagory(),
+                          // if (ResponsiveWrapper.of(context)
+                          //         .isLargerThan('Tablet') ||
+                          //     ResponsiveWrapper.of(context).isTablet ||
+                          //     ResponsiveWrapper.of(context).isDesktop)
+                          // if (ResponsiveWrapper.of(context).isMobile)
+                          //   HomeScreenCatagoryMobileView(),
+                          // if (ResponsiveWrapper.of(context)
+                          //         .isLargerThan('Tablet') ||
+                          //     ResponsiveWrapper.of(context).isTablet ||
+                          //     ResponsiveWrapper.of(context).isDesktop)
+                          //   HomeScreenOptionsDesktopView(),
+                          // if (ResponsiveWrapper.of(context).isMobile)
+                          // HomeScreenOptionsMobileView(),
+                          ResponsiveVisibility(
+                            visible: false,
+                            visibleWhen: [Condition.smallerThan(name: TABLET)],
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 8),
+                              child: Container(
+                                width: double.infinity,
+                                height: 85,
+                                decoration: BoxDecoration(
+                                  color: kContainerBg,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    InkWell(
-                                      onTap: () {
-                                        showBoxDialogue();
-                                      },
-                                      child: smallcontainer(
-                                          'Top up / WithDraw',
-                                          Icon(
-                                            Icons
-                                                .account_balance_wallet_rounded,
-                                            color: kPrimaryColor,
-                                            size: 30,
-                                          )),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            silverGradientRobto(
+                                                'Check-in : Day  5',
+                                                12,
+                                                FontWeight.normal),
+                                            Row(
+                                              children: [
+                                                Image.asset(
+                                                  pCoin,
+                                                  width: 22,
+                                                  height: 22,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                silverGradientRobto('50 MYR',
+                                                    12, FontWeight.normal),
+                                                Image.asset(
+                                                  spinMove,
+                                                  width: 22,
+                                                  height: 22,
+                                                ),
+                                                silverGradientRobto('x1 Spin',
+                                                    12, FontWeight.normal),
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    smallcontainer(
-                                        'Transfer',
-                                        Icon(
-                                          Icons.compare_arrows,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    InkWell(
-                                      onTap: () {},
-                                      child: smallcontainer(
-                                          'Bank Account',
-                                          Icon(
-                                            Icons.account_balance_outlined,
-                                            color: kPrimaryColor,
-                                            size: 30,
-                                          )),
-                                    ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
+                                    Image.asset(
+                                      giftBox,
+                                      height: 82,
+                                      width: 82,
+                                    )
                                   ],
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                              ),
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              ResponsiveVisibility(
+                                visible: true,
+                                hiddenWhen: [
+                                  Condition.smallerThan(name: TABLET)
+                                ],
+                                child: Expanded(
+                                  child: Container(
+                                    width: 336,
+                                    height: 306,
+                                    decoration: BoxDecoration(
+                                      color: kContainerBg,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        silverGradientRobto('Check-in : Day  5',
+                                            20, FontWeight.normal),
+                                        Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Image.asset(
+                                                      pCoin,
+                                                      width: 50,
+                                                      height: 50,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    silverGradientRobto(
+                                                        '50 MYR',
+                                                        20,
+                                                        FontWeight.normal),
+                                                    Image.asset(
+                                                      spinMove,
+                                                      width: 50,
+                                                      height: 50,
+                                                    ),
+                                                    silverGradientRobto(
+                                                        'x1 Spin',
+                                                        20,
+                                                        FontWeight.normal),
+                                                  ],
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        Image.asset(giftBox)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                flex: 3,
+                                child: Column(
                                   children: [
-                                    smallcontainer(
-                                        'Currency Exchange',
-                                        Icon(
-                                          Icons.currency_bitcoin,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
+                                    Row(
+                                      // shrinkWrap: true,
+                                      // crossAxisCount: 3,
+                                      children: [
+                                        box(topUp, "Top up\nWithdraw"),
+                                        box(transfer, "Transfer"),
+                                        ResponsiveVisibility(
+                                            visible: true,
+                                            hiddenWhen: [
+                                              Condition.smallerThan(
+                                                  name: TABLET)
+                                            ],
+                                            child: box(bank, "Bank \nAccount")),
+                                      ],
                                     ),
-                                    smallcontainer(
-                                        'Help Desk',
-                                        Icon(
-                                          Icons.headphones_outlined,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
+                                    ResponsiveVisibility(
+                                      visible: false,
+                                      visibleWhen: [
+                                        Condition.smallerThan(name: TABLET)
+                                      ],
+                                      child: Row(
+                                        // shrinkWrap: true,
+                                        // crossAxisCount: 3,
+                                        children: [
+                                          box(topUp, "Top up /Withdraw"),
+                                          box(transfer, "Transfer"),
+                                          ResponsiveVisibility(
+                                              visible: true,
+                                              hiddenWhen: [
+                                                Condition.smallerThan(
+                                                    name: TABLET)
+                                              ],
+                                              child:
+                                                  box(bank, "Bank \nAccount")),
+                                        ],
+                                      ),
                                     ),
-                                    smallcontainer(
-                                        'Promotion',
-                                        Icon(
-                                          Icons.card_giftcard_outlined,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
+                                    Row(
+                                      // shrinkWrap: true,
+                                      // crossAxisCount: 3,
+                                      children: [
+                                        box(CurrencyExchange,
+                                            "Currency\nExchange"),
+                                        box(helpDesk, "Help Desk"),
+                                        ResponsiveVisibility(
+                                            visible: true,
+                                            hiddenWhen: [
+                                              Condition.smallerThan(
+                                                  name: TABLET)
+                                            ],
+                                            child: box(promotion, "Promotion")),
+                                        // box(promotion, "Promotion"),
+                                      ],
+                                    ),
+                                    Row(
+                                      // shrinkWrap: true,
+                                      // crossAxisCount: 3,
+                                      children: [
+                                        box(vip, "VIP"),
+                                        box(setting, "Setting"),
+                                        ResponsiveVisibility(
+                                            visible: true,
+                                            hiddenWhen: [
+                                              Condition.smallerThan(
+                                                  name: TABLET)
+                                            ],
+                                            child:
+                                                Expanded(child: Container())),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    smallcontainer(
-                                        'VIP',
-                                        Icon(
-                                          Icons.card_giftcard,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    smallcontainer(
-                                        'Setting',
-                                        Icon(
-                                          Icons.settings,
-                                          color: kPrimaryColor,
-                                          size: 30,
-                                        )),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: kDefaultPadding,
@@ -397,6 +509,200 @@ class _ProfilePageState extends State<ProfilePage> {
               ));
   }
 
+  Widget box(
+    String imagepath,
+    String text,
+  ) {
+    return Expanded(
+      flex: 1,
+      // fit: FlexFit.loose,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          // height: 10,
+          // width: 300,
+
+          height: 86,
+          // width: 200,
+          // constraints: BoxConstraints(
+          //     minHeight: 86, maxHeight: 86, maxWidth: 235, minWidth: 155),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: kContainerBg,
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    imagepath,
+                    width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                        ? 40
+                        : 20,
+                    height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                        ? 40
+                        : 19,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(width: 10),
+                  silverGradientRobto('$text', 18, FontWeight.normal),
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+
+  // Home Screen Options Desktop View
+
+  Widget HomeScreenOptionsDesktopView() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        BigBOxComponetsDeskTopView(),
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  onTap: () {
+                    showBoxDialogue();
+                  },
+                  child: smallcontainer(
+                    'Top up / WithDraw',
+                    topUp,
+                  ),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer('Transfer', transfer),
+                SizedBox(
+                  width: 12,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: smallcontainer(
+                    'Bank Account',
+                    bank,
+                  ),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                smallcontainer(
+                  'Currency Exchange',
+                  CurrencyExchange,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer('Help Desk', helpDesk),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer('Promotion', promotion),
+                SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                smallcontainer('VIP', vip),
+                SizedBox(
+                  width: 12,
+                ),
+                smallcontainer('Setting', setting),
+                SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
+// Desk View Option
+
+  // Home Screen Options MObile View
+
+  Widget HomeScreenOptionsMobileView() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BigBOxComponets(),
+        Column(
+          children: [
+            HomeScreenCatagoryMobileView1(),
+            Row(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        showBoxDialogue();
+                      },
+                      child: smallcontainer(
+                        'Top up / WithDraw',
+                        topUp,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: smallcontainer('Bank Account', bank),
+                    ),
+                    smallcontainer('Help Desk', helpDesk),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    smallcontainer('VIP', vip),
+                    SizedBox(
+                      width: 12,
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    smallcontainer('Transfer', transfer),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    smallcontainer('Currency Exchange', CurrencyExchange),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    smallcontainer('Promotion', promotion),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    smallcontainer('Setting', setting),
+                  ],
+                ),
+              ],
+            )
+          ],
+        )
+      ],
+    );
+  }
+
   Widget RowData() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -417,11 +723,11 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget smallcontainer(String title, Icon icon) {
+  Widget smallcontainer(String title, String ImagePath) {
     return Column(
       children: [
         Container(
-          width: kMaxWidth / 4,
+          width: kMaxWidth / 5,
           height: kDefaultPadding * 5,
           decoration: BoxDecoration(
               color: Color(0xff252A2D),
@@ -429,7 +735,10 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              icon,
+              Image.asset(
+                ImagePath,
+                scale: 1.4,
+              ),
               silverGradientRobto(title, 20, FontWeight.normal),
             ],
           ),

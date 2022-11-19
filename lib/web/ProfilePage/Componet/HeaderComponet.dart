@@ -21,40 +21,36 @@ class ProfileHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: kDefaultPadding),
-          child: Container(
-            height: kMaxWidth / 7,
-            color: kDarkBlackColor,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  child: Image.asset(
-                    'assets/images/avatar-01.png',
-                    scale: 2,
+        Container(
+          height: kMaxWidth / 7,
+          color: kDarkBlackColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                child: Image.asset(
+                  'assets/images/avatar-01.png',
+                  scale: 2,
+                ),
+              ),
+              SizedBox(
+                width: kDefaultPadding,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$title',
+                    style: TextStyle(color: Colors.white),
                   ),
-                ),
-                SizedBox(
-                  width: kDefaultPadding,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$title',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Text('LID:$lid', style: TextStyle(color: Colors.white)),
-                    Text('Nickname:$nick',
-                        style: TextStyle(color: Colors.white)),
-                    Text('Referral:$reffercal',
-                        style: TextStyle(color: Colors.white)),
-                  ],
-                )
-              ],
-            ),
+                  Text('LID:$lid', style: TextStyle(color: Colors.white)),
+                  Text('Nickname:$nick', style: TextStyle(color: Colors.white)),
+                  Text('Referral:$reffercal',
+                      style: TextStyle(color: Colors.white)),
+                ],
+              )
+            ],
           ),
         ),
         Container(

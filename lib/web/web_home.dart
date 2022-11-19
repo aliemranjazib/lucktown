@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/models/product_model.dart';
 import 'package:flutter_application_lucky_town/models/profile_model.dart';
+import 'package:flutter_application_lucky_town/models/userSignInModel.dart';
+import 'package:flutter_application_lucky_town/models/user_session_model.dart'
+    as ress;
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
@@ -17,6 +20,7 @@ import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/components/custom_toast.dart';
 import '../utils/components/small_button.dart';
 import '../utils/constants/api_constants.dart';
@@ -63,9 +67,45 @@ class _WebHomePageState extends State<WebHomePage> {
   List<Products> filteredProducts = [];
   ProfileData profileData = ProfileData();
   int count = 8;
+  Map<String, dynamic> userInfo = {};
   Future<String> getToken() async {
+    // getdata();
+    return await jsonDecode(LuckySharedPef.getAuthToken())['response']
+        ['authToken'];
+  }
+
+  Future<String> getToken1() async {
+    // getdata();
     return await LuckySharedPef.getAuthToken();
   }
+
+  Future getAllData() async {
+    // getdata();
+    await getToken1().then((value) {
+      setState(() {
+        // res.UserSessionModel um= value;
+        // print(value[''])
+        userInfo = jsonDecode(value);
+        print(userInfo['response']['user']['member_username']);
+        // ress.Response m = ress.Response.fromJson(userInfo['response']);
+        // print("uuuu ${m}");
+        // print(jsonDecode(value));
+        //  print(uu.msg);
+        // print(uu.msg);
+        // print(j['msg']);
+      });
+    });
+  }
+
+// UserSessionModel a=UserSessionModel();
+// print(a.response.);
+  // getdata() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   Map<String, dynamic> userMap = jsonDecode(pref.getString('user') ?? "");
+  //   var user1 = UserSessionModel.fromJson(userMap);
+  //   // LuckySharedPef.saveAuthToken(data['response']['authToken']);
+  //   print("compl ${user1.response!.authToken}");
+  // }
 
   Future<ProfileData> getProfileInfo() async {
     if (getToken().toString().isNotEmpty) {
@@ -105,6 +145,7 @@ class _WebHomePageState extends State<WebHomePage> {
             });
 
             CustomToast.customToast(context, data['msg']);
+            print(data['msg']);
           // CustomToast.customToast(context, "WENT WRONG");
         }
       } catch (e) {
@@ -385,6 +426,7 @@ class _WebHomePageState extends State<WebHomePage> {
     getSliderImages();
     // print('ttt ${LuckySharedPef.getAuthToken()}');
     getToken();
+    getAllData();
     // print(getToken());
     getProducts();
     getProfileInfo();
@@ -395,8 +437,8 @@ class _WebHomePageState extends State<WebHomePage> {
   @override
   Widget build(BuildContext context) {
     // getProducts();
-    print('iii ${LuckySharedPef.getAuthToken()}');
-
+    // print('iii ${LuckySharedPef.getAuthToken()}');
+    // getAllData();
     // final sw = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.black,
@@ -440,10 +482,10 @@ class _WebHomePageState extends State<WebHomePage> {
                                         children: [
                                           Image.asset(avatar),
                                           SizedBox(width: 10),
-                                          // Text(
-                                          //   userModel!.memberUsername!,
-                                          //   style: TextStyle(fontSize: 16),
-                                          // ),
+                                          Text(
+                                            "${userInfo['response']['user']['member_username']}",
+                                            style: TextStyle(fontSize: 16),
+                                          ),
                                         ],
                                       ),
                                       Row(
@@ -461,10 +503,11 @@ class _WebHomePageState extends State<WebHomePage> {
                                   //     title: "LID",
                                   //     value: userModel!.memberUsername!),
                                   // info(title: "Nickname", value: "oooo"),
-                                  // info(
-                                  //     title: "Referral",
-                                  //     value: userModel!.refMemberName!),
-                                  // SizedBox(height: 10),
+                                  info(
+                                      title: "Referral",
+                                      value:
+                                          "${userInfo['response']['user']['refMemberName']}"),
+                                  SizedBox(height: 10),
                                   coin_chips(
                                     title: "Chips",
                                     value: profileData.response!.coinBalance!,
@@ -1012,11 +1055,11 @@ class info extends StatelessWidget {
     return Row(
       children: [
         Text(
-          "LID :",
+          "$title:",
           style: TextStyle(fontSize: 16),
         ),
         Text(
-          "903",
+          "$value",
           style: TextStyle(fontSize: 16),
         ),
       ],

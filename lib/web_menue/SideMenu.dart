@@ -43,7 +43,7 @@ class _sideMenuState extends State<sideMenu> {
                           if (Provider.of<MenuProvider>(context, listen: false)
                                   .menuItems[index] ==
                               "Home") {
-                            Navigator.pushNamed(context, web_scaffold_page);
+                            Navigator.pushNamed(context, web_home_Page);
                           } else if (Provider.of<MenuProvider>(context,
                                       listen: false)
                                   .menuItems[index] ==

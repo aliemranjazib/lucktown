@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/models/product_model.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
@@ -10,13 +12,14 @@ import 'package:flutter_application_lucky_town/web/login_otp.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page.dart';
 import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
-import 'package:flutter_application_lucky_town/web/topUpMethod/topup_method.dart';
+import 'package:flutter_application_lucky_town/web/topUpMethod/usd_topup_method.dart';
 import 'package:flutter_application_lucky_town/web/web_forget_page.dart';
 import 'package:flutter_application_lucky_town/web/web_home.dart';
 import 'package:flutter_application_lucky_town/web/web_otp_screen.dart';
 import 'package:flutter_application_lucky_town/web/select_country/view/web_scaffold.dart';
 import 'package:flutter_application_lucky_town/web/web_set_new_pin_page.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -87,7 +90,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
-        fontFamily: "gotham",
       ),
       builder: (context, widget) => ResponsiveWrapper.builder(
         ClampingScrollWrapper.builder(context, widget!),
@@ -108,10 +110,15 @@ class MyApp extends StatelessWidget {
       //     : web_home_Page,
 
       // initialRoute: web_signin_page,
-      initialRoute: web_scaffold_page,
+      initialRoute: jsonDecode(LuckySharedPef.getAuthToken())['msg'] ==
+              "User Login Success"
+          ? web_home_Page
+          : web_scaffold_page,
 
       // initialRoute: web_topup_usdt_page,
-      // initialRoute: LuckySharedPef.getAuthToken().isEmpty
+      // initialRoute: jsonDecode(LuckySharedPef.getAuthToken())['msg']
+
+      // .isEmpty
       //     ? web_scaffold_page
       //     : web_home_Page,
 
