@@ -110,9 +110,11 @@ class MyApp extends StatelessWidget {
       //     : web_home_Page,
 
       // initialRoute: web_signin_page,
-      initialRoute: jsonDecode(LuckySharedPef.getAuthToken())['msg'] ==
-              "User Login Success"
-          ? web_home_Page
+      initialRoute: LuckySharedPef.getAuthToken().isNotEmpty
+          ? jsonDecode(LuckySharedPef.getAuthToken())['msg'] ==
+                  "User Login Success"
+              ? web_home_Page
+              : web_scaffold_page
           : web_scaffold_page,
 
       // initialRoute: web_topup_usdt_page,
