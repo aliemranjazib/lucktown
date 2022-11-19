@@ -1131,7 +1131,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                           ),
                                                           SizedBox(width: 5),
                                                           Image.asset(
-                                                            coin,
+                                                            pCoin,
                                                             width: 12,
                                                             height: 11,
                                                             fit: BoxFit.cover,
@@ -1149,7 +1149,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                           ),
                                                           SizedBox(width: 5),
                                                           Image.asset(
-                                                            coin,
+                                                            pCoin,
                                                             width: 12,
                                                             height: 11,
                                                             fit: BoxFit.cover,

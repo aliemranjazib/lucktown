@@ -49,6 +49,11 @@ class _sideMenuState extends State<sideMenu> {
                                   .menuItems[index] ==
                               "Profile") {
                             Navigator.pushNamed(context, web_profile_page);
+                          } else if (Provider.of<MenuProvider>(context,
+                                      listen: false)
+                                  .menuItems[index] ==
+                              "Contact") {
+                            Navigator.pushNamed(context, web_contact_main_page);
                           }
                           Provider.of<MenuProvider>(context, listen: false)
                               .saveIndex(

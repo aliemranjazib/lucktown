@@ -16,49 +16,39 @@ class _WebMenuState extends State<WebMenu> {
   Widget build(BuildContext context) {
     return Consumer<MenuProvider>(builder: (context, value, child) {
       return Padding(
-          padding: const EdgeInsets.only(right: 0),
-          child: Row(
-              children: List.generate(
-                  Provider.of<MenuProvider>(
-                    context,
-                  ).menuItems.length,
-                  (index) => WebMenuItem(
-                      isActive: index == value.selectedIndex,
-                      text: value.menuItems[index],
-                      press: () {
-                        print("qqq ${value.menuItems[index]}");
-                        if (value.menuItems[index] == "Home") {
-                          Navigator.pushNamed(context, web_scaffold_page);
-                        } else if (value.menuItems[index] == "Profile") {
-                          Navigator.pushNamed(context, web_profile_page);
-                        }
-                        value.saveIndex(index, () {
-                          // print("qqq ${value.selectedIndex}");
-                          // if (value.selectedIndex == 1) {
-                          //   Navigator.pushNamed(context, web_scaffold_page);
-                          // } else if (value.selectedIndex == 3) {}
-                        });
-                      })
-                  // WebMenuItem(
-                  //     text: Provider.of<MenuProvider>(
-                  //       context,
-                  //     ).menuItems[index],
-                  //     isActive:
-                  //         index == Provider.of<MenuProvider>(context).selectedIndex,
-                  //     press: () {
-                  //       setState(() {
-                  //         Provider.of<MenuProvider>(
-                  //           context,
-                  //         ).saveIndex(index, () {
-                  //           print(index);
-                  //           print(Provider.of<MenuProvider>(
-                  //             context,
-                  //           ).menuItems[index]);
-                  //         });
-                  //       });
-                  //     }))),
-
-                  )));
+        padding: const EdgeInsets.only(right: 0),
+        child: Row(children: [
+          ...List.generate(
+            Provider.of<MenuProvider>(
+              context,
+            ).menuItems.length,
+            (index) => WebMenuItem(
+                isActive: index == value.selectedIndex,
+                text: value.menuItems[index],
+                press: () {
+                  print("qqq ${value.menuItems[index]}");
+                  if (value.menuItems[index] == "Home") {
+                    Navigator.pushNamed(context, web_home_Page);
+                  } else if (value.menuItems[index] == "Profile") {
+                    Navigator.pushNamed(context, web_profile_page);
+                  } else if (value.menuItems[index] == "Contact") {
+                    Navigator.pushNamed(context, web_contact_main_page);
+                  }
+                  value.saveIndex(index, () {
+                    // print("qqq ${value.selectedIndex}");
+                    // if (value.selectedIndex == 1) {
+                    //   Navigator.pushNamed(context, web_scaffold_page);
+                    // } else if (value.selectedIndex == 3) {}
+                  });
+                }),
+          ),
+          IconButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, web_scaffold_page);
+              },
+              icon: Icon(Icons.logout))
+        ]),
+      );
     });
   }
 }

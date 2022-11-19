@@ -991,7 +991,7 @@ class coin_chips extends StatelessWidget {
           ),
         ),
         silverGradient("$value", 16),
-        Image.asset(coin),
+        Image.asset(pCoin),
         // Container(),
       ],
     );

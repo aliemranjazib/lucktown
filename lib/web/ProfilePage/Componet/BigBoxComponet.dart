@@ -31,7 +31,7 @@ class BigBOxComponets extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset(coin),
+              Image.asset(pCoin),
               Image.asset(
                 'assets/images/spin.png',
               )

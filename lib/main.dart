@@ -5,6 +5,7 @@ import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart
 import 'package:flutter_application_lucky_town/utils/routes/lucky_routes.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart';
 import 'package:flutter_application_lucky_town/web/check_auth.dart';
+import 'package:flutter_application_lucky_town/web/contact/contact_main.dart';
 import 'package:flutter_application_lucky_town/web/login_otp.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page.dart';
@@ -75,6 +76,8 @@ class MyApp extends StatelessWidget {
               return TopUpMethodScreen();
             case web_profile_page:
               return ProfilePage();
+            case web_contact_main_page:
+              return ContactMainPage();
 
             default:
               return const SizedBox.shrink();
@@ -104,10 +107,8 @@ class MyApp extends StatelessWidget {
       //     ? web_scaffold_page
       //     : web_home_Page,
 
-      // initialRoute: web_profile_page,
-      initialRoute: LuckySharedPef.getAuthToken().isEmpty
-          ? web_scaffold_page
-          : web_home_Page,
+      // initialRoute: web_signin_page,
+      initialRoute: web_scaffold_page,
 
       // initialRoute: web_topup_usdt_page,
       // initialRoute: LuckySharedPef.getAuthToken().isEmpty
