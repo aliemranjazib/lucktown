@@ -41,7 +41,7 @@ class ProfileHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$title',
+                    'Name $title',
                     style: TextStyle(color: Colors.white),
                   ),
                   Text('LID:$lid', style: TextStyle(color: Colors.white)),

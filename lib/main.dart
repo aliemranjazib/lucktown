@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/models/product_model.dart';
+import 'package:flutter_application_lucky_town/models/user_session_model.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/utils/routes/lucky_routes.dart';
@@ -10,11 +11,12 @@ import 'package:flutter_application_lucky_town/web/check_auth.dart';
 import 'package:flutter_application_lucky_town/web/contact/contact_main.dart';
 import 'package:flutter_application_lucky_town/web/login_otp.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
-import 'package:flutter_application_lucky_town/web/product_detail_page.dart';
+import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
+import 'package:flutter_application_lucky_town/web/product_detail_page/product_detail_page.dart';
 import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
 import 'package:flutter_application_lucky_town/web/topUpMethod/usd_topup_method.dart';
 import 'package:flutter_application_lucky_town/web/web_forget_page.dart';
-import 'package:flutter_application_lucky_town/web/web_home.dart';
+import 'package:flutter_application_lucky_town/web/home/web_home.dart';
 import 'package:flutter_application_lucky_town/web/web_otp_screen.dart';
 import 'package:flutter_application_lucky_town/web/select_country/view/web_scaffold.dart';
 import 'package:flutter_application_lucky_town/web/web_set_new_pin_page.dart';
@@ -34,6 +36,9 @@ void main() async {
       ),
       ChangeNotifierProvider<MenuProvider>(
         create: (context) => MenuProvider(),
+      ),
+      ChangeNotifierProvider<LuckySharedPef>(
+        create: (context) => LuckySharedPef(),
       )
     ],
     child: MyApp(),
@@ -58,7 +63,8 @@ class MyApp extends StatelessWidget {
               return LoginOTPScreen();
             case web_product_detail:
               // return ProductDetailPage();
-              Products data = settings.arguments as Products;
+              ProductsModelResponseProducts data =
+                  settings.arguments as ProductsModelResponseProducts;
               return ProductDetailPage(product: data);
             // return ProductDetailPage();
             case web_usd_topup:
@@ -81,6 +87,8 @@ class MyApp extends StatelessWidget {
               return ProfilePage();
             case web_contact_main_page:
               return ContactMainPage();
+            case web_all_game_transaction_page:
+              return AllGameTransactionPage();
 
             default:
               return const SizedBox.shrink();
@@ -110,12 +118,14 @@ class MyApp extends StatelessWidget {
       //     : web_home_Page,
 
       // initialRoute: web_signin_page,
-      initialRoute: LuckySharedPef.getAuthToken().isNotEmpty
-          ? jsonDecode(LuckySharedPef.getAuthToken())['msg'] ==
-                  "User Login Success"
-              ? web_home_Page
-              : web_scaffold_page
-          : web_scaffold_page,
+      // initialRoute: LuckySharedPef.getAuthToken().isNotEmpty
+      //     ? jsonDecode(LuckySharedPef.getAuthToken())['msg'] ==
+      //             "User Login Success"
+      //         ? web_home_Page
+      //         : web_scaffold_page
+      //     : web_scaffold_page,
+      // initialRoute: ,
+      home: CheckPage(),
 
       // initialRoute: web_topup_usdt_page,
       // initialRoute: jsonDecode(LuckySharedPef.getAuthToken())['msg']
@@ -130,6 +140,67 @@ class MyApp extends StatelessWidget {
       //     webScaffold: WebScaffold()
       //     ),
     );
+  }
+}
+
+UserSessionModel? um;
+
+class CheckPage extends StatefulWidget {
+  const CheckPage({super.key});
+
+  @override
+  State<CheckPage> createState() => _CheckPageState();
+}
+
+class _CheckPageState extends State<CheckPage> {
+  bool isLoading = false;
+  // mm() {
+  //   UserSessionModel? mm = Provider.of<LuckySharedPef>(context).um;
+  //   print("make ${um!.msg}");
+  // }
+
+  checkNavigation() async {
+    setState(() {
+      isLoading = true;
+    });
+    String data = LuckySharedPef.getAuthToken();
+    Map<String, dynamic> info = jsonDecode(data);
+    if (info['msg'] == "User Login Success") {
+      setState(() {
+        um = UserSessionModel.fromJson(info);
+        Navigator.pushNamedAndRemoveUntil(
+            context, web_home_Page, (route) => false);
+        print(um!.msg);
+      });
+    } else {
+      Navigator.pushNamed(
+        context,
+        web_scaffold_page,
+      );
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      checkNavigation();
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // mm();
+    return Scaffold(
+        backgroundColor: Colors.black,
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Center(child: CircularProgressIndicator()));
   }
 }
 

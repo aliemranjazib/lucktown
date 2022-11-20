@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/models/userSignInModel.dart'
     as user;
 import 'package:flutter_application_lucky_town/models/user_session_model.dart';
@@ -25,7 +26,6 @@ import '../../utils/constants/api_constants.dart';
 import 'package:client_information/client_information.dart';
 
 String? tempAuthKey;
-user.User? userModel;
 
 class WebSignInPage extends StatefulWidget {
   @override
@@ -93,7 +93,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
   @override
   void initState() {
     super.initState();
-    getDeviceId().then((value) => print("www ${value.deviceName}"));
+    // getDeviceId().then((value) => print("www ${value.deviceName}"));
   }
 
   saveData() {
@@ -281,7 +281,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
           });
           Map<String, dynamic> data = json.decode(response1.body);
           setState(() {
-            userModel = user.User.fromJson(data['response']['user']);
+            // userModel = user.User.fromJson(data['response']['user']);
           });
           CustomToast.customToast(context, data['msg']);
           // Navigator.pushNamed(context, web_home_Page);
@@ -296,11 +296,16 @@ class _WebSignInPageState extends State<WebSignInPage> {
 
           Future.delayed(
               Duration(
-                seconds: 2,
+                seconds: 1,
               ), () {
             String aa = LuckySharedPef.getAuthToken();
+            print(aa);
             Map<String, dynamic> decodedata = jsonDecode(aa);
-            print(decodedata);
+            setState(() {
+              um = UserSessionModel.fromJson(decodedata);
+              print("tttt ${um!.response!.user!.memberUsername}");
+            });
+            // print(decodedata['user']);
             // UserSessionModel t = UserSessionModel.fromJson(decodedata);
             // UserModel.fromJson();
             // Response um = Response.fromJson(decodedata['response']);
@@ -308,6 +313,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
             // print("ccc ${um.response!.user!.memberUsername}");
 
             // Navigator.pushNamed(context, web_home_Page);
+            Navigator.pushNamed(context, web_home_Page);
             // print()
           });
           // await IsFirstRun.isFirstRun()
@@ -315,7 +321,6 @@ class _WebSignInPageState extends State<WebSignInPage> {
           //         arguments: data['response']['userToken'])
           //     : Navigator.pushNamed(context, web_home_Page);
 
-          Navigator.pushNamed(context, web_home_Page);
           setState(() {
             isLoading = false;
           });

@@ -20,6 +20,7 @@ const String web_product_detail = '/web_detail_page';
 const String web_profile_page = '/web_profile_page';
 const String web_topup_usdt_page = '/web_topup_usdt_page';
 const String web_contact_main_page = '/web_contact_main_page';
+const String web_all_game_transaction_page = '/web_all_game_transaction_page';
 
 //mobile
 // const String mobilehomePage = '/mobilehome';
@@ -49,6 +50,18 @@ const String sport = "assets/images/sport.png";
 
 /////////////////////// PROFILE ///////////////////////////////
 const String gameIcon = "assets/images/AG2.png";
+const String smalLogo = "assets/images/small_logo.png";
+
+/////////////////////////// contacts////////////////////
+const String ccc = "assets/images/chat.png";
+const String pen = "assets/images/pen.png";
+const String contact_avtar_1 = "assets/images/contact_avtar_1.png";
+const String contact_avtar_2 = "assets/images/contact_avtar_2.png";
+const String contact_avtar_3 = "assets/images/contact_avtar_3.png";
+const String contact_avtar_4 = "assets/images/contact_avtar_4.png";
+const String contact_avtar_5 = "assets/images/contact_avtar_5.png";
+const String contact_avtar_6 = "assets/images/contact_avtar_6.png";
+const String contact_search = "assets/images/contact_search.png";
 
 //////////////////// product detail page icons ///////////////
 const String detail_page_banner =

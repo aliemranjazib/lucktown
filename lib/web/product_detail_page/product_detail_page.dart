@@ -2,27 +2,26 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/models/available_credits_model.dart';
 import 'package:flutter_application_lucky_town/models/profile_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
+import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../models/product_model.dart';
-import '../utils/components/custom_toast.dart';
-import '../utils/constants/api_constants.dart';
-
-String temp =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Njg0MzY4MzQsImlzcyI6IiIsImV4cCI6MTY2ODUyMzIzNCwidXNlclRva2VuIjoiQ3ZyS0pnTWkxNm4zY3JMUTdDUnByUktZaWhmOWVwYm5wMjlET2NkM3RXNEZNeU5wSFlVUVg2VjdERVJwelVZNEREY3o4TzlwT2FSNFB4b2dPR2t5c2RQU05QeEpCMmdwQUJ0ZlRrbG9Sc01LeGZZOFR4a2xqME9DdEhuT1VLVjBrYUJtTkJhWk5zVzNlT3RVTmVsU00zclE2ek9Mb3hjc2dBQWFxUnNrZHF5Z2s1bElCUnJzVmJ1QlJjSHBNSU1UQUQ4YVVlTlciLCJ1c2VyVHlwZSI6Im1lbWJlciIsInVzZXJBdXRoIjoiNm1vQ0wxNFViNEloRFROVkhiUUc2QVI4U29WUmxKWXBIYnpGNTRGVG5HQVZleHZ2RnF0Ymx5Z0Z3RXZpOHNwckxQZzVvRU1QMTM0NUp0dTBkUnB6VmNXekd6bUMwRVVJWVp3ZllkM2VlWWRmSnZXc0NSVEJyTjRSSDg1R3BlMnQwNk1QM0FOc2lKM2Q4RXRTczJDSW9OelBVYUZ1ZFFtbE9BaGMyNUUwUGgyR2hOZExRZHd3ZW9OdDc5ck1Vb0hBbElPZDBSbE0ifQ.GuE4PycyHIqy5IdS8gbwJ6mh54i0eSqfrRvaX_wT5PQ";
+import '../../models/product_model.dart';
+import '../../utils/components/custom_toast.dart';
+import '../../utils/constants/api_constants.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  Products? product;
+  ProductsModelResponseProducts? product;
   ProductDetailPage({
     this.product,
   });
@@ -59,11 +58,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   // DateTime datetime = DateTime.now();
   String? date = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
-  Future<String> getToken() async {
-    // getdata();
-    return await jsonDecode(LuckySharedPef.getAuthToken())['response']
-        ['authToken'];
-  }
+  // Future<String> getToken() async {
+  //   // getdata();
+  //   return await jsonDecode(LuckySharedPef.getAuthToken())['response']
+  //       ['authToken'];
+  // }
 
   showBoxDialogue() {
     return showDialog(
@@ -108,7 +107,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Uri.parse('${memberBaseUrl}game/getAvailableCredit'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await getToken(),
+          "Authorization": await um!.response!.authToken!,
 
           // 'Authorization':
         },
@@ -268,7 +267,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Uri.parse('${memberBaseUrl}user/getProfileData'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await getToken(),
+          "Authorization": await um!.response!.authToken!,
 
           // 'Authorization':
         },
@@ -283,7 +282,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           setState(() {
             profileData = ProfileData.fromJson(data);
           });
-          print("coin ${profileData.response!.coinBalance}");
+          print("coin detail ${profileData.response!.gameTransactions}");
 
           setState(() {
             isLoadingGif = false;
@@ -312,6 +311,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   playGame() async {
+    print("pid1 ${widget.product!.productId}");
     setState(() {
       isLoading = true;
     });
@@ -320,13 +320,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Uri.parse('${memberBaseUrl}game/launch'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await getToken(),
+          "Authorization": await um!.response!.authToken!,
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
-            "productId": widget.product!.productId,
-            "amountTransfer": '0',
-            'viewType': "web",
+            "productId": "${widget.product!.productId}",
+            "amountTransfer": "0",
+            "viewType": "mobile"
           }
         }),
       );
@@ -388,7 +388,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         Uri.parse('${memberBaseUrl}game/closeGame'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await getToken(),
+          "Authorization": await um!.response!.authToken!,
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
@@ -438,34 +438,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
   }
 
-  Future<String> getToken1() async {
-    // getdata();
-    return await LuckySharedPef.getAuthToken();
-  }
-
-  Future getAllData() async {
-    // getdata();
-    await getToken1().then((value) {
-      setState(() {
-        // res.UserSessionModel um= value;
-        // print(value[''])
-        userInfo = jsonDecode(value);
-        print(userInfo['response']['user']['member_username']);
-        // ress.Response m = ress.Response.fromJson(userInfo['response']);
-        // print("uuuu ${m}");
-        // print(jsonDecode(value));
-        //  print(uu.msg);
-        // print(uu.msg);
-        // print(j['msg']);
-      });
-    });
-  }
-
   @override
   void initState() {
-    // getToken();
-    // playGame();
-    getAllData();
     getProfileInfo();
     getAvailableCredit();
     super.initState();
@@ -473,50 +447,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    // print("my id ${widget.product!.productImageUrl}");
+    print(um!.response!.authToken);
     return Scaffold(
       backgroundColor: Colors.black,
-      body: (profileData.response == null &&
-              _availablecredit.response == null &&
-              widget.product!.productImageUrl == null &&
-              widget.product!.productName == null)
-          ? CircularProgressIndicator()
-          : Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SingleChildScrollView(
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: profileData.response == null
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 50,
-                          color: Colors.black,
-                          child: Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(Icons.navigate_before)),
-                              ResponsiveVisibility(
-                                  visible: true,
-                                  hiddenWhen: const [
-                                    Condition.smallerThan(name: TABLET)
-                                  ],
-                                  child: Text("Back"))
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Image.asset(
-                              logo,
-                              width: 101,
-                              height: 31,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    topbackbutton(context),
                     Image.network(
                       widget.product!.productImageUrl ??
                           "https://cdn.sanity.io/images/0vv8moc6/dermatologytimes/d198c3b708a35d9adcfa0435ee12fe454db49662-640x400.png",
@@ -619,29 +561,36 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Container(
-                                                        // width: 100,
-                                                        height: 100,
-                                                        decoration: BoxDecoration(
-                                                            color: Color(
-                                                                0xff292929),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(38.0),
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset(
-                                                                  transaction),
-                                                              silverGradient(
-                                                                  'Game Transaction',
-                                                                  16),
-                                                              Text('')
-                                                            ],
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              web_all_game_transaction_page);
+                                                        },
+                                                        child: Container(
+                                                          // width: 100,
+                                                          height: 100,
+                                                          decoration: BoxDecoration(
+                                                              color: Color(
+                                                                  0xff292929),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(38.0),
+                                                            child: Row(
+                                                              children: [
+                                                                Image.asset(
+                                                                    transaction),
+                                                                silverGradient(
+                                                                    'Game Transaction',
+                                                                    16),
+                                                                Text('')
+                                                              ],
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -1130,7 +1079,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                                         DataRow(
                                                                           cells: [
                                                                             DataCell(
-                                                                              Text(e.transactionCreatedDatetime!),
+                                                                              Text(e!.transactionCreatedDatetime!),
                                                                             ),
                                                                             DataCell(
                                                                               Text(e.transactionOwner!),
@@ -1177,7 +1126,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                   padding: const EdgeInsets
                                                       .symmetric(vertical: 8),
                                                   child: Text(
-                                                    pdata.transactionOwner!,
+                                                    pdata!.transactionOwner!,
                                                     style: GoogleFonts.roboto(),
                                                   ),
                                                 ),
@@ -1281,7 +1230,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ],
                 ),
               ),
-            ),
+      ),
     );
   }
 

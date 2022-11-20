@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/models/profile_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
@@ -10,12 +11,14 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/BigBoxCo
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/CompleteTextBar.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HeaderComponet.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HomeScreenCatagory.dart';
-import 'package:flutter_application_lucky_town/web/web_home.dart';
+import 'package:flutter_application_lucky_town/web/home/web_home.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../utils/constants/api_constants.dart';
 import '../../utils/constants/contants.dart';
 import '../../web_menue/header.dart';
@@ -32,12 +35,31 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool isLoadingGif = false;
   ProfileData profileData = ProfileData();
+  Map userInfo = {};
   List<String> topupMethods = [
     "Instant Top Up",
     "Top Up Bank Transfer",
     "Top Up USDT",
     "Withdraw"
   ];
+
+  final headfontSize = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+  final rowfontSize = TextStyle(
+    fontSize: 16,
+  );
+
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      print('Could not launch $url');
+      throw 'Could not launch $url';
+    }
+  }
 
   showBoxDialogue() {
     return showDialog(
@@ -60,7 +82,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPress: () {
                             print(topupMethods[index]);
                             if (topupMethods[index] == "Top Up USDT") {
-                              Navigator.pushNamed(context, web_topup_usdt_page);
+                              // _launchInBrowser(url)
+                              _launchInBrowser(Uri.parse(
+                                  "lt888.live/Payment/cryptoPayment/${um!.response!.user!.memberUniqueKey}"));
+
+                              // Navigator.pushNamed(context, web_topup_usdt_page);
                             }
                           },
                           width: double.infinity),
@@ -71,64 +97,57 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<String> getToken() async {
-    return await jsonDecode(LuckySharedPef.getAuthToken())['response']
-        ['authToken'];
-  }
-
   Future<ProfileData> getProfileInfo() async {
-    if (getToken().toString().isNotEmpty) {
-      try {
-        final response1 = await http.post(
-          Uri.parse('${memberBaseUrl}user/getProfileData'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            "Authorization": await getToken(),
+    setState(() {
+      isLoadingGif = true;
+    });
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}user/getProfileData'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await um!.response!.authToken!,
 
-            // 'Authorization':
-          },
-          body: jsonEncode(<String, dynamic>{"data": {}}),
-        );
-        switch (response1.statusCode) {
-          case 200:
-            setState(() {
-              isLoadingGif = true;
-            });
-            Map<String, dynamic> data = json.decode(response1.body);
-            setState(() {
-              profileData = ProfileData.fromJson(data);
-            });
-            print("coin ${profileData.response!.accounts!.first.accountName}");
+          // 'Authorization':
+        },
+        body: jsonEncode(<String, dynamic>{"data": {}}),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          Map<String, dynamic> data = json.decode(response1.body);
+          setState(() {
+            profileData = ProfileData.fromJson(data);
+          });
+          print("coin ${profileData.response!.accounts!.first!.accountName}");
 
-            setState(() {
-              isLoadingGif = false;
-            });
+          setState(() {
+            isLoadingGif = false;
+          });
 
-            break;
-          default:
-            final data = json.decode(response1.body);
-            print(response1.statusCode);
-            print(data);
-            setState(() {
-              isLoadingGif = false;
-            });
+          break;
+        default:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          print(data);
+          setState(() {
+            isLoadingGif = false;
+          });
 
-            CustomToast.customToast(context, data['msg']);
-          // CustomToast.customToast(context, "WENT WRONG");
-        }
-      } catch (e) {
-        setState(() {
-          isLoadingGif = false;
-        });
-        CustomToast.customToast(context, e.toString());
+          CustomToast.customToast(context, data['msg']);
+        // CustomToast.customToast(context, "WENT WRONG");
       }
+    } catch (e) {
+      setState(() {
+        isLoadingGif = false;
+      });
+      CustomToast.customToast(context, e.toString());
     }
+
     return profileData;
   }
 
   @override
   void initState() {
-    getToken();
     getProfileInfo();
     super.initState();
   }
@@ -155,10 +174,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ProfileHeader(
-                              title: "name",
-                              lid: "lid",
-                              nick: "nick",
-                              reffercal: "pppp",
+                              title:
+                                  "${um!.response!.user!.memberUsername ?? " "}",
+                              lid: "${um!.response!.user!.vipLevelId ?? " "}",
+                              nick:
+                                  "${um!.response!.user!.memberNickname ?? " "}",
+                              reffercal:
+                                  "${um!.response!.user!.refMemberName ?? " "}",
                             ),
                           ),
 
@@ -266,38 +288,38 @@ class _ProfilePageState extends State<ProfilePage> {
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         silverGradientRobto('Check-in : Day  5',
                                             20, FontWeight.normal),
                                         Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Column(
                                               children: [
-                                                Column(
-                                                  children: [
-                                                    Image.asset(
-                                                      pCoin,
-                                                      width: 50,
-                                                      height: 50,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                    silverGradientRobto(
-                                                        '50 MYR',
-                                                        20,
-                                                        FontWeight.normal),
-                                                    Image.asset(
-                                                      spinMove,
-                                                      width: 50,
-                                                      height: 50,
-                                                    ),
-                                                    silverGradientRobto(
-                                                        'x1 Spin',
-                                                        20,
-                                                        FontWeight.normal),
-                                                  ],
-                                                )
+                                                Image.asset(
+                                                  pCoin,
+                                                  width: 50,
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                silverGradientRobto('50 MYR',
+                                                    20, FontWeight.normal),
                                               ],
-                                            )
+                                            ),
+                                            Column(
+                                              children: [
+                                                Image.asset(
+                                                  spinMove,
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
+                                                silverGradientRobto('x1 Spin',
+                                                    20, FontWeight.normal),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                         Image.asset(giftBox)
@@ -440,70 +462,181 @@ class _ProfilePageState extends State<ProfilePage> {
                         )
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(22.0),
-                      child: Container(
-                        width: kMaxWidth / 3,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: Color(0xff252A2D),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(12, 12, 23, 12),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    'Record',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  Text(
-                                    'Status',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                  Text(
-                                    'Top Up',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.white),
-                                  ),
-                                ],
+                    profileData.response == null
+                        ? Center(child: CircularProgressIndicator())
+                        : ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                            ? Container(
+                                // constraints: BoxConstraints(minWidth: 100),
+                                color: Color(0xff121519),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child:
+                                          profileData.response!
+                                                  .walletTransactions!.isEmpty
+                                              ? Center(child: Text("no data"))
+                                              : isLoadingGif
+                                                  ? Container()
+                                                  : DataTable(
+                                                      border: TableBorder(
+                                                          bottom:
+                                                              BorderSide.none),
+                                                      onSelectAll: (b) {},
+                                                      sortColumnIndex: 0,
+                                                      // columnSpacing: 180,
+                                                      sortAscending: true,
+                                                      columns: <DataColumn>[
+                                                        DataColumn(
+                                                          label: Expanded(
+                                                              child: Text(
+                                                                  "Record",
+                                                                  style:
+                                                                      headfontSize)),
+                                                        ),
+                                                        DataColumn(
+                                                          label: Text("Status",
+                                                              style:
+                                                                  headfontSize),
+                                                        ),
+                                                        DataColumn(
+                                                          label: Text("Top Up",
+                                                              style:
+                                                                  headfontSize),
+                                                        ),
+                                                      ],
+                                                      rows: profileData
+                                                          .response!
+                                                          .orderTransactions!
+                                                          .map((e) => DataRow(
+                                                                cells: [
+                                                                  DataCell(
+                                                                    Row(
+                                                                      children: [
+                                                                        Image.asset(
+                                                                            smalLogo),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                10),
+                                                                        Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.start,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Text("Top Up"),
+                                                                            Text(e!.topupType!),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  DataCell(
+                                                                    Text(e
+                                                                        .topupStatus!),
+                                                                  ),
+                                                                  DataCell(
+                                                                    Text(e
+                                                                        .topupAmount!),
+                                                                  ),
+                                                                ],
+                                                              ))
+                                                          .toList()),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xff121519),
+                                ),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: profileData
+                                      .response!.orderTransactions!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final pdata = profileData
+                                        .response!.orderTransactions![index];
+                                    return ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.blue,
+                                        // radius: 20,
+                                        minRadius: 30,
+                                        maxRadius: 30,
+                                        child: Text(""),
+                                      ),
+                                      title: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        child: Text(
+                                          pdata!.topupType!,
+                                          style: GoogleFonts.roboto(),
+                                        ),
+                                      ),
+                                      subtitle: Container(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "${pdata.transactionDatetime}",
+                                              style: GoogleFonts.roboto(
+                                                  fontSize: 12),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 0, right: 10, top: 8),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        "Status  :   ${pdata.topupStatus}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 12),
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      Image.asset(
+                                                        Hnadcoin,
+                                                        width: 12,
+                                                        height: 11,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        "Top Up    :   ${pdata.topupAmount}",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                fontSize: 12),
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      Image.asset(
+                                                        Hnadcoin,
+                                                        width: 12,
+                                                        height: 11,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 18.0,
-                        right: 18.0,
-                      ),
-                      child: Container(
-                        width: double.infinity,
-                        height: 500,
-                        decoration: BoxDecoration(
-                            color: Color(0xff252A2D),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RowData(),
-                            RowData(),
-                            RowData(),
-                            RowData(),
-                            RowData(),
-                            RowData(),
-                            RowData(),
-                          ],
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ));
