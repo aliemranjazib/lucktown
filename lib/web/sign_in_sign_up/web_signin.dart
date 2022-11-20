@@ -93,7 +93,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
   @override
   void initState() {
     super.initState();
-    // getDeviceId().then((value) => print("www ${value.deviceName}"));
+    getDeviceId().then((value) => print("www ${value.deviceName}"));
   }
 
   saveData() {
@@ -134,14 +134,21 @@ class _WebSignInPageState extends State<WebSignInPage> {
             isValidatingUserName = true;
           });
           Map<String, dynamic> data = json.decode(response1.body);
+          print("not ${data['msg']}");
           if (data['msg'] == 'Member Not Found!') {
             CustomToast.customToast(context, 'user does not exist');
           } else if (data['msg'] == 'Member exists!') {
             CustomToast.customToast(
-                context, 'user exist. choose any other name');
+                context, 'user exist. choose any other userId');
           }
           print(response1.statusCode);
 
+          setState(() {
+            isValidatingUserName = false;
+          });
+          break;
+        case 400:
+          CustomToast.customToast(context, 'userId available');
           setState(() {
             isValidatingUserName = false;
           });
@@ -245,10 +252,10 @@ class _WebSignInPageState extends State<WebSignInPage> {
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
-            "username": "techtest",
+            "username": userNameC.text,
             "push_noti_token":
                 "d8jZfHNsk0EKkxuFZEbVQO:APA91bHsQUQjMpLKadIdktX-y-0doGvJLskp4NgbAjcru4jWuAanZ4BcsjmwBlrEXcQC5Ltm8cLxqTv0U5R3zoftqjX8szjSyE3bhj6wUphhXpDVytKjMEpB5OgEB9lFj3laGxVV5_Tx",
-            "password": "1233211234567abc",
+            "password": userPasswordC.text,
             "language": "EN",
             "authSession": "",
             "deviceInfo": {
@@ -392,9 +399,11 @@ class _WebSignInPageState extends State<WebSignInPage> {
           // 2. return Success with the desired value
           print("successs");
           // print(Success());
-          print(data['response']['authToken']);
-          try {
+          print("aaauuttthh ${data['response']['authToken']}");
+          setState(() {
             tempAuthKey = data['response']['authToken'];
+          });
+          try {
             final response1 = await http.post(
               Uri.parse('${memberBaseUrl}user/sendRegisterOtp'),
               headers: <String, String>{
@@ -452,7 +461,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
   @override
   Widget build(BuildContext context) {
     s();
-    print("bbbb ${jsonDecode(LuckySharedPef.getAuthToken())['msg']}");
+    // print("bbbb ${jsonDecode(LuckySharedPef.getAuthToken())['msg']}");
     // Provider.of<SelectCountry>(context);
     return Scaffold(
       backgroundColor: Colors.black,

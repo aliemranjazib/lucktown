@@ -19,11 +19,11 @@ class WebScaffold extends StatefulWidget {
 class _WebScaffoldState extends State<WebScaffold> {
   @override
   Widget build(BuildContext context) {
-    print("mmm ${LuckySharedPef.getAuthToken()}");
+    // print("mmm ${LuckySharedPef.getAuthToken()}");
     return Scaffold(
         backgroundColor: Colors.black,
-        drawer: sideMenu(),
-        key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
+        // drawer: sideMenu(),
+        // key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
         body: SingleChildScrollView(
           child: Container(
             width: double.infinity,
@@ -45,7 +45,7 @@ class _WebScaffoldState extends State<WebScaffold> {
                 //   style: TextStyle(color: Colors.white),
                 // ),
                 // SizedBox(height: 70),
-                Header(),
+                // Header(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Image.asset(

@@ -7,6 +7,7 @@ import '../../models/select_country_model.dart';
 
 //////////////// ROUTES /////////////////////
 //web
+const String web_check_page = '/webcheckpage';
 const String web_auth_page = '/websauth';
 const String web_usd_topup = '/webusdtopup';
 const String web_login_otp_page = '/webloginotppage';

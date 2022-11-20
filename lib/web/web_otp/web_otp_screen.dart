@@ -8,9 +8,9 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../utils/components/custom_toast.dart';
-import '../utils/components/gradient_text.dart';
-import '../utils/constants/api_constants.dart';
+import '../../utils/components/custom_toast.dart';
+import '../../utils/components/gradient_text.dart';
+import '../../utils/constants/api_constants.dart';
 
 class OTPScreen extends StatefulWidget {
   // String? image;
@@ -75,10 +75,13 @@ class _OTPScreenState extends State<OTPScreen> {
           final data = json.decode(response1.body);
           print(data);
           CustomToast.customToast(context, data['msg']);
-          Navigator.pushNamed(context, web_set_new_pin_page);
-          setState(() {
-            tempAuthKey = data['response']['authToken'];
-          });
+          Navigator.pushNamed(
+            context,
+            web_set_new_pin_page,
+          );
+          // setState(() {
+          //   tempAuthKey = data['response']['authToken'];
+          // });
           // Navigator.pushNamed(context, web_otp_page, arguments: {
           //   "authkey": data['response']['authToken'],
           //   "usertoken": data['response']['userToken']
@@ -86,7 +89,8 @@ class _OTPScreenState extends State<OTPScreen> {
           break;
         default:
           final data = json.decode(response1.body);
-          print(data);
+          // print(data);
+          print(response1.statusCode);
           CustomToast.customToast(context, data['msg']);
           setState(() {
             // index = 0;

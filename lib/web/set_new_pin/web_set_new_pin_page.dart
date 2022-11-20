@@ -8,14 +8,16 @@ import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.da
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_framework/responsive_framework.dart';
-import '../utils/components/custom_toast.dart';
-import '../utils/components/gradient_text.dart';
-import '../utils/constants/api_constants.dart';
+import '../../utils/components/custom_toast.dart';
+import '../../utils/components/gradient_text.dart';
+import '../../utils/constants/api_constants.dart';
 
 class WebSetNewPinPage extends StatefulWidget {
   // String? image;
   // String? text;
   // String? data;
+  // WebSetNewPinPage({this.data});
+  // Map? data;
   // WebSetNewPinPage({this.data});
 
   @override
@@ -42,6 +44,7 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
 
   @override
   void initState() {
+    // print("authhhhhhhh ${widget.authToken}");
     super.initState();
     // print("ppp $tempAuthKey");
     // tokenKey = widget.data;
@@ -49,6 +52,8 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
   }
 
   setNewOtp() async {
+    // final args = ModalRoute.of(context)!.settings.arguments as Map;
+    print("need $tempAuthKey");
     setState(() {
       isLoading = true;
     });
@@ -79,36 +84,23 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
           });
           Map<String, dynamic> data = json.decode(response1.body);
           CustomToast.customToast(context, data['msg']);
-          UserSessionModel us = UserSessionModel.fromJson(data);
-          print(response1.statusCode);
-          LuckySharedPef.saveAuthToken(data['response']['authToken']);
-
-          // print("eeee $us");
-          // String currentSession = window.localStorage['authSession'] =
-          //     data['response']['authToken'];
-
-          // print("ooo ${dau.getAllUsers()}");
+          // UserSessionModel us = UserSessionModel.fromJson(data);
+          // print(response1.statusCode);
+          // LuckySharedPef.saveAuthToken(data['response']['authToken']);
           // Future.delayed(
           //     Duration(
           //       seconds: 1,
           //     ), () {
-          //   LuckySharedPef.saveAuthToken(data['response']['authToken']);
-          //   //print("ccc ${LuckySharedPef.getAuthToken()}");
+          //   String aa = LuckySharedPef.getAuthToken();
+          //   print("ccc $aa");
           //   // print()
           // });
-          Future.delayed(
-              Duration(
-                seconds: 1,
-              ), () {
-            String aa = LuckySharedPef.getAuthToken();
-            print("ccc $aa");
-            // print()
-          });
 
           Navigator.pushNamed(context, web_home_Page);
           setState(() {
             isLoading = false;
           });
+          print(response1.statusCode);
           break;
         default:
           final data = json.decode(response1.body);

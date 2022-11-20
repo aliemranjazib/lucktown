@@ -17,9 +17,9 @@ import 'package:flutter_application_lucky_town/web/select_country/viewModel/sele
 import 'package:flutter_application_lucky_town/web/topUpMethod/usd_topup_method.dart';
 import 'package:flutter_application_lucky_town/web/web_forget_page.dart';
 import 'package:flutter_application_lucky_town/web/home/web_home.dart';
-import 'package:flutter_application_lucky_town/web/web_otp_screen.dart';
+import 'package:flutter_application_lucky_town/web/web_otp/web_otp_screen.dart';
 import 'package:flutter_application_lucky_town/web/select_country/view/web_scaffold.dart';
-import 'package:flutter_application_lucky_town/web/web_set_new_pin_page.dart';
+import 'package:flutter_application_lucky_town/web/set_new_pin/web_set_new_pin_page.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -57,6 +57,8 @@ class MyApp extends StatelessWidget {
           switch (settings.name) {
             case web_home_Page:
               return WebHomePage();
+            case web_check_page:
+              return CheckPage();
             case web_auth_page:
               return CheckAuth();
             case web_login_otp_page:
@@ -72,12 +74,12 @@ class MyApp extends StatelessWidget {
             case web_forget_page:
               return WebForgetPage();
             case web_signin_page:
-              // var data = settings.arguments as Map;
               return WebSignInPage();
             case web_otp_page:
               String data = settings.arguments as String;
               return OTPScreen(data: data);
             case web_set_new_pin_page:
+              // Map data = settings.arguments as Map;
               return WebSetNewPinPage();
             case web_scaffold_page:
               return WebScaffold();
@@ -125,7 +127,8 @@ class MyApp extends StatelessWidget {
       //         : web_scaffold_page
       //     : web_scaffold_page,
       // initialRoute: ,
-      home: CheckPage(),
+      // home: CheckPage(),
+      initialRoute: web_check_page,
 
       // initialRoute: web_topup_usdt_page,
       // initialRoute: jsonDecode(LuckySharedPef.getAuthToken())['msg']
@@ -164,23 +167,30 @@ class _CheckPageState extends State<CheckPage> {
       isLoading = true;
     });
     String data = LuckySharedPef.getAuthToken();
-    Map<String, dynamic> info = jsonDecode(data);
-    if (info['msg'] == "User Login Success") {
-      setState(() {
-        um = UserSessionModel.fromJson(info);
-        Navigator.pushNamedAndRemoveUntil(
-            context, web_home_Page, (route) => false);
-        print(um!.msg);
-      });
-    } else {
+    if (data.isEmpty) {
       Navigator.pushNamed(
         context,
         web_scaffold_page,
       );
+    } else {
+      Map<String, dynamic> info = jsonDecode(data);
+      if (info['msg'] == "User Login Success") {
+        setState(() {
+          um = UserSessionModel.fromJson(info);
+          Navigator.pushNamedAndRemoveUntil(
+              context, web_home_Page, (route) => false);
+          print(um!.msg);
+        });
+      } else {
+        Navigator.pushNamed(
+          context,
+          web_scaffold_page,
+        );
+      }
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
