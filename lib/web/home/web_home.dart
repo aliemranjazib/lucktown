@@ -11,8 +11,10 @@ import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart
 import 'package:flutter_application_lucky_town/web/home/coin_chips.dart';
 import 'package:flutter_application_lucky_town/web/home/info.dart';
 import 'package:flutter_application_lucky_town/web/home/siderbar.dart';
+import 'package:flutter_application_lucky_town/web/home/web_country_switch.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
+import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
 import 'package:flutter_application_lucky_town/web_menue/header.dart';
 import 'package:flutter_application_lucky_town/widgets/banner.dart';
@@ -61,6 +63,66 @@ class _WebHomePageState extends State<WebHomePage> {
 
   num pageCount() {
     return gProducts!.response!.products!.length / productsPerPage;
+  }
+
+  showQRDialogue() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          actionsPadding: EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          // backgroundColor: Color.fromARGB(255, 46, 45, 45),
+          backgroundColor: kContainerBg,
+
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  logo,
+                  height: 100,
+                  width: 150,
+                ),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.close))
+              ],
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Image.network(
+                  um!.response!.user!.memberQrcodeUrl!,
+                  height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                      ? 450
+                      : 150,
+                  width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                      ? 450
+                      : 150,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  showCountrySwitchDialogue() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return CountrySwitch(
+          selectCountry: um!.response!.user!.countryName!,
+        );
+      },
+    );
   }
 
   List gifs = [];
@@ -296,10 +358,21 @@ class _WebHomePageState extends State<WebHomePage> {
                                       ),
                                       Row(
                                         children: [
-                                          Image.asset(qrIcon),
+                                          GestureDetector(
+                                              onTap: () {
+                                                showQRDialogue();
+                                              },
+                                              child: Image.asset(qrIcon)),
                                           SizedBox(width: 10),
-                                          Image.asset(malaysia,
-                                              height: 35, width: 35),
+                                          GestureDetector(
+                                            onTap: () {
+                                              showCountrySwitchDialogue();
+                                            },
+                                            child: Image.network(
+                                                um!.response!.user!.countryUrl!,
+                                                height: 35,
+                                                width: 35),
+                                          ),
                                         ],
                                       ),
                                     ],

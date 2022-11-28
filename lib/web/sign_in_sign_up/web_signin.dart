@@ -40,7 +40,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
   bool isLoading = false;
   bool isValidatingUserName = false;
   bool isBinding = false;
-
+  String text = "verify";
   bool isPasswordShown = false;
   String? isoCode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -151,7 +151,15 @@ class _WebSignInPageState extends State<WebSignInPage> {
           });
           break;
         case 400:
-          CustomToast.customToast(context, 'userId available');
+          Map<String, dynamic> data = json.decode(response1.body);
+          if (data['msg'] == '[username] is Empty') {
+            CustomToast.customToast(context, 'username is Empty');
+          } else if (data['msg'] == 'Member Not Found!') {
+            CustomToast.customToast(context, 'userId available');
+            setState(() {
+              text = "✓";
+            });
+          }
           setState(() {
             isValidatingUserName = false;
           });
@@ -368,7 +376,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
     setState(() {
       isLoading = true;
     });
-    final id = Provider.of<SelectCountry>(context).getSelection[''];
+    // final id = Provider.of<SelectCountry>(context).getSelection[''];
     try {
       final response = await http.post(
         Uri.parse('${memberBaseUrl}user/register'),
@@ -746,28 +754,28 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   signInUser();
                 }),
             SizedBox(height: 10),
-            Container(
-              // margin: const EdgeInsets.symmetric(horizontal: 70, vertical: 0),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Container(
-                    child: SocialButton(
-                        title: "Google", image: google, onPress: () {}),
-                  )),
-                  SizedBox(width: 10),
-                  Expanded(
-                      child: Container(
-                    child: SocialButton(
-                      title: "Facebook",
-                      image: facebook,
-                      onPress: () {},
-                      // color: Color(0x262261),
-                    ),
-                  )),
-                ],
-              ),
-            ),
+            // Container(
+            //   // margin: const EdgeInsets.symmetric(horizontal: 70, vertical: 0),
+            //   child: Row(
+            //     children: [
+            //       Expanded(
+            //           child: Container(
+            //         child: SocialButton(
+            //             title: "Google", image: google, onPress: () {}),
+            //       )),
+            //       SizedBox(width: 10),
+            //       Expanded(
+            //           child: Container(
+            //         child: SocialButton(
+            //           title: "Facebook",
+            //           image: facebook,
+            //           onPress: () {},
+            //           // color: Color(0x262261),
+            //         ),
+            //       )),
+            //     ],
+            //   ),
+            // ),
             SizedBox(height: 20),
           ],
         ),
@@ -793,7 +801,11 @@ class _WebSignInPageState extends State<WebSignInPage> {
                     upperText: "Your ID",
                     controller: yourIdController,
                     onChanged: (v) {
-                      print(yourIdController.text);
+                      if (yourIdController.text.isEmpty) {
+                        setState(() {
+                          text = "verify";
+                        });
+                      }
                     },
                     validate: (p) {
                       if (p!.isEmpty) {
@@ -808,7 +820,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   ),
                 ),
                 PrimaryButton(
-                  title: "verify",
+                  title: "$text",
                   loading: isValidatingUserName,
                   onPress: () {
                     validateUserName();

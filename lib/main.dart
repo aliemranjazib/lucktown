@@ -110,7 +110,7 @@ class MyApp extends StatelessWidget {
               return BankAcountsPage();
 
             default:
-              return const SizedBox.shrink();
+              return CircularProgressIndicator();
           }
         });
       },
@@ -146,6 +146,7 @@ class MyApp extends StatelessWidget {
       // initialRoute: ,
       // home: ContactsDetailPage(),
       initialRoute: web_check_page,
+      // home: MyWidget(),
 
       // initialRoute: web_topup_usdt_page,
       // initialRoute: jsonDecode(LuckySharedPef.getAuthToken())['msg']
@@ -159,6 +160,54 @@ class MyApp extends StatelessWidget {
       //     tabletScaffold: TabletScaffold(),
       //     webScaffold: WebScaffold()
       //     ),
+    );
+  }
+}
+
+class MyWidget extends StatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  List a = ["a", "b", "c"];
+  Color c = Colors.red;
+  int tindex = 0;
+  String b = "b";
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          ...List.generate(a.length, (index) {
+            if (b == a[index]) {
+              tindex = index;
+              print(a[index]);
+            }
+            return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    tindex = index;
+                    // if (a[index] == 0) c = Colors.amber;
+                  });
+                },
+                child: Container(
+                    width: double.infinity,
+                    child: Card(
+                        color: tindex == index ? Colors.amber : Colors.red,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                              selectedColor: c,
+                              title: Text(
+                                a[index],
+                              )),
+                        ))));
+          })
+        ],
+      ),
     );
   }
 }

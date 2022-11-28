@@ -35,7 +35,7 @@ class _CurrencyExchangePageState extends State<CurrencyExchangePage> {
         Uri.parse('${memberBaseUrl}currency/exchange'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await temp,
+          "Authorization": await um!.response!.authToken!,
 
           // 'Authorization':
         },
