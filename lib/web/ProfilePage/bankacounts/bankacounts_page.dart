@@ -18,7 +18,7 @@ class _BankAcountsPageState extends State<BankAcountsPage> {
   void initState() {
     final p = Provider.of<BankProvider>(context, listen: false);
     p.getBanks(context);
-    p.getExisitngBanks(context);
+    // p.getExisitngBanks(context);
     super.initState();
   }
 
@@ -35,12 +35,17 @@ class _BankAcountsPageState extends State<BankAcountsPage> {
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(color: kContainerBg),
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Text("+ Add Bank Account"),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, web_add_bank_acount_page);
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(color: kContainerBg),
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Text("+ Add Bank Account"),
+                      ),
                     ),
                   ),
                   SizedBox(height: 30),

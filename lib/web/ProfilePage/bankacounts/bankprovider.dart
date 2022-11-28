@@ -11,7 +11,6 @@ import 'package:http/http.dart' as http;
 class BankProvider extends ChangeNotifier {
   bool isloading = false;
   bool isloadingbank = false;
-
   BankModel bm = BankModel();
   ExistingBankModel ebm = ExistingBankModel();
 
@@ -24,8 +23,48 @@ class BankProvider extends ChangeNotifier {
 
   getExisitngBanks(context) async {
     isloadingbank = true;
-    ebm = await getExisitngBanks(context);
+    ebm = await existinggetBankList(context);
     isloadingbank = false;
+    notifyListeners();
+  }
+
+  Future addBank(
+      context, String bankId, String bankAccount, String accountName) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${memberBaseUrl}bank/createAccount'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await um!.response!.authToken!,
+
+          // 'Authorization':
+        },
+        body: jsonEncode(<String, dynamic>{
+          "data": {
+            "bankId": "$bankId",
+            "bankAccount": "$bankAccount",
+            "bankAccountName": "$accountName"
+          }
+        }),
+      );
+      switch (response.statusCode) {
+        case 200:
+          Map<String, dynamic> data = await json.decode(response.body);
+          CustomToast.customToast(context, data['msg']);
+
+          break;
+        case 400:
+          Map<String, dynamic> data = await json.decode(response.body);
+          CustomToast.customToast(context, data['msg']);
+          // sm = SelectCountryModel.fromJson(item);
+          break;
+        default:
+          Map<String, dynamic> data = await json.decode(response.body);
+          CustomToast.customToast(context, data['msg']);
+      }
+    } catch (e) {
+      print(e);
+    }
     notifyListeners();
   }
 }
@@ -66,25 +105,6 @@ Future<ExistingBankModel> existinggetBankList(context) async {
   return ebm!;
 }
 
-addBank() async {
-  try {
-    final response = await http.post(
-      Uri.parse('${memberBaseUrl}bank/createAccount'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "Authorization": await um!.response!.authToken!,
-
-        // 'Authorization':
-      },
-      body: jsonEncode(<String, dynamic>{
-        "data": {"targetUniqueKey": "", "amount": "10"}
-      }),
-    );
-  } catch (e) {
-    print(e);
-  }
-}
-
 Future<BankModel> getBankList(context) async {
   BankModel? bm;
   try {
@@ -119,3 +139,4 @@ Future<BankModel> getBankList(context) async {
   }
   return bm!;
 }
+// 

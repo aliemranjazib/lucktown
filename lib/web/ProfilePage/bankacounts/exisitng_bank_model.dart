@@ -4,41 +4,41 @@
 class ExistingBankModelResponseBankList {
 /*
 {
-  "bank_id": "29",
-  "bank_name": "Thai bank",
-  "bank_country": "2",
+  "bank_id": "1",
+  "bank_name": "Affin Bank",
+  "bank_country": "1",
   "bank_type": "cash",
-  "bank_icon_url": "https://xxyyzz112233.s3-ap-southeast-1.amazonaws.com/topupBank/1748802814.jpeg"
+  "bank_icon_url": "https://suncity.s3.ap-southeast-1.amazonaws.com/bank/affin.png"
 } 
 */
 
-  String? bankId;
-  String? bankName;
-  String? bankCountry;
-  String? bankType;
-  String? bankIconUrl;
+  String? bank_id;
+  String? bank_name;
+  String? bank_country;
+  String? bank_type;
+  String? bank_icon_url;
 
   ExistingBankModelResponseBankList({
-    this.bankId,
-    this.bankName,
-    this.bankCountry,
-    this.bankType,
-    this.bankIconUrl,
+    this.bank_id,
+    this.bank_name,
+    this.bank_country,
+    this.bank_type,
+    this.bank_icon_url,
   });
   ExistingBankModelResponseBankList.fromJson(Map<String, dynamic> json) {
-    bankId = json['bank_id']?.toString();
-    bankName = json['bank_name']?.toString();
-    bankCountry = json['bank_country']?.toString();
-    bankType = json['bank_type']?.toString();
-    bankIconUrl = json['bank_icon_url']?.toString();
+    bank_id = json['bank_id']?.toString();
+    bank_name = json['bank_name']?.toString();
+    bank_country = json['bank_country']?.toString();
+    bank_type = json['bank_type']?.toString();
+    bank_icon_url = json['bank_icon_url']?.toString();
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['bank_id'] = bankId;
-    data['bank_name'] = bankName;
-    data['bank_country'] = bankCountry;
-    data['bank_type'] = bankType;
-    data['bank_icon_url'] = bankIconUrl;
+    data['bank_id'] = bank_id;
+    data['bank_name'] = bank_name;
+    data['bank_country'] = bank_country;
+    data['bank_type'] = bank_type;
+    data['bank_icon_url'] = bank_icon_url;
     return data;
   }
 }
@@ -48,11 +48,11 @@ class ExistingBankModelResponse {
 {
   "bankList": [
     {
-      "bank_id": "29",
-      "bank_name": "Thai bank",
-      "bank_country": "2",
+      "bank_id": "1",
+      "bank_name": "Affin Bank",
+      "bank_country": "1",
       "bank_type": "cash",
-      "bank_icon_url": "https://xxyyzz112233.s3-ap-southeast-1.amazonaws.com/topupBank/1748802814.jpeg"
+      "bank_icon_url": "https://suncity.s3.ap-southeast-1.amazonaws.com/bank/affin.png"
     }
   ]
 } 
@@ -94,11 +94,11 @@ class ExistingBankModel {
   "response": {
     "bankList": [
       {
-        "bank_id": "29",
-        "bank_name": "Thai bank",
-        "bank_country": "2",
+        "bank_id": "1",
+        "bank_name": "Affin Bank",
+        "bank_country": "1",
         "bank_type": "cash",
-        "bank_icon_url": "https://xxyyzz112233.s3-ap-southeast-1.amazonaws.com/topupBank/1748802814.jpeg"
+        "bank_icon_url": "https://suncity.s3.ap-southeast-1.amazonaws.com/bank/affin.png"
       }
     ]
   }

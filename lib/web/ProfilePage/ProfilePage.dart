@@ -11,6 +11,7 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/BigBoxCo
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/CompleteTextBar.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HeaderComponet.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HomeScreenCatagory.dart';
+import 'package:flutter_application_lucky_town/web/home/coin_chips.dart';
 import 'package:flutter_application_lucky_town/web/home/web_home.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
@@ -228,29 +229,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               ? CompleteTextBar(
                                   chips: profileData.response!.coinBalance!,
                                   cash: profileData.response!.walletBalance!,
-                                  coin: Hnadcoin,
+                                  coin: profileData.response!.interestBalance!,
                                   stage: "stage",
                                 )
                               : CompleteTextBarMobileView(
                                   chips: profileData.response!.coinBalance!,
                                   cash: profileData.response!.walletBalance!,
-                                  coin: Hnadcoin,
+                                  coin: profileData.response!.interestBalance!,
                                   stage: "stage",
                                 ),
-                          // HomeScreenCatagory(),
-                          // if (ResponsiveWrapper.of(context)
-                          //         .isLargerThan('Tablet') ||
-                          //     ResponsiveWrapper.of(context).isTablet ||
-                          //     ResponsiveWrapper.of(context).isDesktop)
-                          // if (ResponsiveWrapper.of(context).isMobile)
-                          //   HomeScreenCatagoryMobileView(),
-                          // if (ResponsiveWrapper.of(context)
-                          //         .isLargerThan('Tablet') ||
-                          //     ResponsiveWrapper.of(context).isTablet ||
-                          //     ResponsiveWrapper.of(context).isDesktop)
-                          //   HomeScreenOptionsDesktopView(),
-                          // if (ResponsiveWrapper.of(context).isMobile)
-                          // HomeScreenOptionsMobileView(),
+
                           ResponsiveVisibility(
                             visible: false,
                             visibleWhen: [Condition.smallerThan(name: TABLET)],

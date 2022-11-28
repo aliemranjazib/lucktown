@@ -7,6 +7,7 @@ import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/utils/routes/lucky_routes.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/add_bank_page.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankacounts_page.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankprovider.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange.dart';
@@ -21,6 +22,7 @@ import 'package:flutter_application_lucky_town/web/product_detail_page/product_d
 import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
 import 'package:flutter_application_lucky_town/web/topUpMethod/usd_topup_method.dart';
 import 'package:flutter_application_lucky_town/web/transactions/transaction_mainpage.dart';
+import 'package:flutter_application_lucky_town/web/transactions/transaction_provider.dart';
 import 'package:flutter_application_lucky_town/web/web_forget_page.dart';
 import 'package:flutter_application_lucky_town/web/home/web_home.dart';
 import 'package:flutter_application_lucky_town/web/web_otp/web_otp_screen.dart';
@@ -48,6 +50,9 @@ void main() async {
       ),
       ChangeNotifierProvider<BankProvider>(
         create: (context) => BankProvider(),
+      ),
+      ChangeNotifierProvider<TransactionProvider>(
+        create: (context) => TransactionProvider(),
       )
     ],
     child: MyApp(),
@@ -108,6 +113,8 @@ class MyApp extends StatelessWidget {
               return SettingPage();
             case web_bank_acount_page:
               return BankAcountsPage();
+            case web_add_bank_acount_page:
+              return AddBankPage();
 
             default:
               return CircularProgressIndicator();

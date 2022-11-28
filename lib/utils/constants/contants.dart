@@ -26,6 +26,7 @@ const String web_transaction_page = '/web_transaction_page';
 const String web_currency_exchange_page = '/web_currency_exchange_page';
 const String web_setting_page = '/web_setting_page';
 const String web_bank_acount_page = '/web_bank_acount_page';
+const String web_add_bank_acount_page = '/web_add_bank_acount_page';
 
 //mobile
 // const String mobilehomePage = '/mobilehome';
