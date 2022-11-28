@@ -74,7 +74,7 @@ class _AllGameTransactionPageState extends State<AllGameTransactionPage> {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            topbackbutton(context),
+            topbackbutton(context, web_home_Page),
             Expanded(child: Center(child: Text("NO TRANSACTION")))
           ],
         ),
@@ -83,7 +83,7 @@ class _AllGameTransactionPageState extends State<AllGameTransactionPage> {
   }
 }
 
-Row topbackbutton(BuildContext context) {
+Row topbackbutton(BuildContext context, String path) {
   return Row(
     children: [
       Container(
@@ -91,11 +91,12 @@ Row topbackbutton(BuildContext context) {
         color: Colors.black,
         child: Row(
           children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.navigate_before)),
+            BackButton(
+              onPressed: () {
+                Navigator.pushNamed(context, path);
+                // Navigator.pop(context);
+              },
+            ),
             ResponsiveVisibility(
                 visible: true,
                 hiddenWhen: const [Condition.smallerThan(name: TABLET)],

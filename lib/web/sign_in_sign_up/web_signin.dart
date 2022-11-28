@@ -90,10 +90,13 @@ class _WebSignInPageState extends State<WebSignInPage> {
     return (await ClientInformation.fetch());
   }
 
+  ClientInformation cli = ClientInformation();
   @override
   void initState() {
     super.initState();
-    getDeviceId().then((value) => print("www ${value.deviceName}"));
+    getDeviceId().then((value) {
+      cli = value;
+    });
   }
 
   saveData() {
@@ -246,9 +249,6 @@ class _WebSignInPageState extends State<WebSignInPage> {
         Uri.parse('${memberBaseUrl}user/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          // "Authorization": LuckySharedPef.getAuthToken(),
-
-          // 'Authorization':
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
@@ -259,23 +259,22 @@ class _WebSignInPageState extends State<WebSignInPage> {
             "language": "EN",
             "authSession": "",
             "deviceInfo": {
-              "deviceId": "exynos990",
-              "userAgent":
-                  "Mozilla\/5.0 (Linux; Android 11; SM-G780F Build\/RP1A.200720.012; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/90.0.4430.210 Mobile Safari\/537.36",
-              "model": "SM-G780F",
-              "manufacturer": "samsung",
+              "deviceId": "${cli.deviceId}",
+              "userAgent": "${cli.applicationName}",
+              "model": "${cli.deviceId}",
+              "manufacturer": "${cli.softwareName}",
               "host": "21DJ6B24",
-              "hardware": "exynos990",
+              "hardware": "${cli.applicationBuildCode}",
               "firstTimeInstall": 1629221041434,
-              "deviceName": "benjamin's Galaxy S20 FE",
+              "deviceName": "${cli.deviceName}",
               "display": "RP1A.200720.012.G780FXXS3CUD7",
               "device": "r8s",
               "carrier": "MY ONEXOX",
-              "apiLevel": 30,
-              "version": "3.0.5",
+              "apiLevel": "${cli.osVersion}",
+              "version": "${cli.osVersion}",
               "uniqueId": "58c549bc790a5ed4",
               "id": "58c549bc790a5ed4",
-              "platform": "android"
+              "platform": "${cli.osName}",
             },
             "version": "4.0.1"
           }
@@ -369,6 +368,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
     setState(() {
       isLoading = true;
     });
+    final id = Provider.of<SelectCountry>(context).getSelection[''];
     try {
       final response = await http.post(
         Uri.parse('${memberBaseUrl}user/register'),
@@ -383,7 +383,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
             "password": passwordController.text,
             "confirmPassword": confirmPasswordController.text,
             "refUsername": refferalController.text,
-            "countryId": 1
+            "countryId":
+                Provider.of<SelectCountry>(context).getSelection['countrycode'],
           }
         }),
       );
@@ -461,6 +462,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
   @override
   Widget build(BuildContext context) {
     s();
+    // print(
+    //     "opop ${Provider.of<SelectCountry>(context).getSelection['countrycode']}");
     // print("bbbb ${jsonDecode(LuckySharedPef.getAuthToken())['msg']}");
     // Provider.of<SelectCountry>(context);
     return Scaffold(
@@ -508,20 +511,27 @@ class _WebSignInPageState extends State<WebSignInPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, web_scaffold_page);
-                              },
-                              child: Image.asset(
-                                arrow_left,
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.contain,
-                              )),
-                          SizedBox(width: 10),
+                          // InkWell(
+                          //     onTap: () {
+                          //       Navigator.pushNamed(context, web_scaffold_page);
+                          //     },
+                          //     child: Image.asset(
+                          //       arrow_left,
+                          //       width: 40,
+                          //       height: 40,
+                          //       fit: BoxFit.contain,
+                          //     )),
+                          BackButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, web_scaffold_page);
+                              // Navigator.pop(context);
+                            },
+                          ),
+                          // SizedBox(width: 10),
                           Expanded(
                             child: Center(
                               child: Image.asset(
@@ -539,15 +549,57 @@ class _WebSignInPageState extends State<WebSignInPage> {
                         builder: (context, value, child) {
                           return Column(
                             children: [
-                              value.getSelection['image'] == null
-                                  ? CircularProgressIndicator()
-                                  : Image.asset(value.getSelection['image']),
+                              value.getSelection['icon'] == null
+                                  ? CircularProgressIndicator(
+                                      backgroundColor: Color(0xffBD8E37),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xffFCD877)),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.bottomLeft,
+                                            end: Alignment.topRight,
+                                            colors: [
+                                              Color(0xffBD8E37).withOpacity(1),
+                                              Color(0xffFCD877).withOpacity(1),
+                                              Color(0xffFFFFD1).withOpacity(1),
+                                              // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+                                              Color(0xffC1995C).withOpacity(1),
+                                            ],
+                                          )),
+                                      child: CircleAvatar(
+                                        minRadius: 47,
+                                        maxRadius: 47,
+                                        backgroundColor: Colors.transparent,
+                                        child: Image.network(
+                                          value.getSelection['icon'],
+                                          width: ResponsiveWrapper.of(context)
+                                                  .isLargerThan(MOBILE)
+                                              ? 90
+                                              : 88,
+                                          height: ResponsiveWrapper.of(context)
+                                                  .isLargerThan(MOBILE)
+                                              ? 90
+                                              : 88,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
                               SizedBox(height: 10),
-                              value.getSelection['text'] == null
-                                  ? CircularProgressIndicator()
+                              value.getSelection['name'] == null
+                                  ? CircularProgressIndicator(
+                                      backgroundColor: Color(0xffBD8E37),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xffFCD877)),
+                                    )
                                   : silverGradientRobto(
-                                      value.getSelection['text'],
-                                      24,
+                                      value.getSelection['name'],
+                                      ResponsiveWrapper.of(context)
+                                              .isLargerThan(MOBILE)
+                                          ? 24
+                                          : 16,
                                       FontWeight.bold)
                             ],
                           );
@@ -689,6 +741,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
             PrimaryButton(
                 title: "Login",
                 width: double.infinity,
+                loading: isLoading,
                 onPress: () {
                   signInUser();
                 }),
@@ -866,7 +919,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
             SizedBox(height: 30),
             Row(
               children: [
-                Checkbox(value: true, onChanged: (v) {}),
+                Checkbox(
+                    activeColor: primaryColor, value: true, onChanged: (v) {}),
                 Expanded(
                   child: Container(
                       constraints: BoxConstraints(
@@ -886,7 +940,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                                 TextSpan(
                                     text: 'Term & Conditions',
                                     style: TextStyle(
-                                        color: Color(0xFFFCC201), fontSize: 16),
+                                        color: primaryColor, fontSize: 16),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         // navigate to desired screen

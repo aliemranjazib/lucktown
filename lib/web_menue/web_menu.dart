@@ -33,6 +33,8 @@ class _WebMenuState extends State<WebMenu> {
                     Navigator.pushNamed(context, web_profile_page);
                   } else if (value.menuItems[index] == "Contact") {
                     Navigator.pushNamed(context, web_contact_main_page);
+                  } else if (value.menuItems[index] == "Transactions") {
+                    Navigator.pushNamed(context, web_transaction_page);
                   }
                   value.saveIndex(index, () {
                     // print("qqq ${value.selectedIndex}");
@@ -103,7 +105,10 @@ class _WebMenuItemState extends State<WebMenuItem> {
           decoration: BoxDecoration(
               border:
                   Border(bottom: BorderSide(color: _borderColor(), width: 3))),
-          child: Text(widget.text)),
+          child: Text(
+            widget.text,
+            style: TextStyle(color: _TextColor()),
+          )),
     );
   }
 }

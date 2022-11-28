@@ -65,32 +65,68 @@ class _ProfilePageState extends State<ProfilePage> {
     return showDialog(
       context: context,
       builder: (context) {
-        return SimpleDialog(
-          // title: Text("data"),
-          title: Image.network(
-            logo,
-            width: 100,
-            height: 50,
-          ),
-          children: [
-            ...List.generate(
-                topupMethods.length,
-                (index) => Padding(
-                      padding: const EdgeInsets.all(14.0),
-                      child: SelectButton(
-                          title: topupMethods[index],
-                          onPress: () {
-                            print(topupMethods[index]);
-                            if (topupMethods[index] == "Top Up USDT") {
-                              // _launchInBrowser(url)
-                              _launchInBrowser(Uri.parse(
-                                  "lt888.live/Payment/cryptoPayment/${um!.response!.user!.memberUniqueKey}"));
+        return AlertDialog(
+          actionsPadding: EdgeInsets.symmetric(horizontal: 40),
+          // backgroundColor: Color.fromARGB(255, 46, 45, 45),
+          backgroundColor: kContainerBg,
 
-                              // Navigator.pushNamed(context, web_topup_usdt_page);
-                            }
-                          },
-                          width: double.infinity),
-                    ))
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.asset(
+                  logo,
+                  height: 100,
+                  width: 150,
+                ),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.close))
+              ],
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ...List.generate(
+                    topupMethods.length,
+                    (index) => Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: PrimaryButton(
+                              title: topupMethods[index],
+                              onPress: () {
+                                print(topupMethods[index]);
+                                if (topupMethods[index] == "Top Up USDT") {
+                                  // _launchInBrowser(url)
+                                  _launchInBrowser(Uri.parse(
+                                      "https://lt888.live/Payment/cryptoPayment/${um!.response!.user!.memberUniqueKey}"));
+
+                                  // Navigator.pushNamed(context, web_topup_usdt_page);
+                                }
+                              },
+                              width: double.infinity),
+                        )),
+                SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
           ],
         );
       },
@@ -148,7 +184,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    getProfileInfo();
+    Future.delayed(Duration(seconds: 0), () {
+      getProfileInfo();
+    });
     super.initState();
   }
 
@@ -174,6 +212,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ProfileHeader(
+                              imageUrl:
+                                  'https://cdn-icons-png.flaticon.com/512/188/188999.png?w=740&t=st=1669457916~exp=1669458516~hmac=b9dbb7e5bf4aa076c57728e986cf13802c63328a0148d7b3559d7af1898de5f3',
                               title:
                                   "${um!.response!.user!.memberUsername ?? " "}",
                               lid: "${um!.response!.user!.vipLevelId ?? " "}",
@@ -337,15 +377,35 @@ class _ProfilePageState extends State<ProfilePage> {
                                       // shrinkWrap: true,
                                       // crossAxisCount: 3,
                                       children: [
-                                        box(topUp, "Top up\nWithdraw"),
-                                        box(transfer, "Transfer"),
+                                        box(
+                                          topUp,
+                                          "Top up\nWithdraw",
+                                          () {
+                                            showBoxDialogue();
+                                          },
+                                        ),
+                                        box(
+                                          transfer,
+                                          "Transfer",
+                                          () {
+                                            Navigator.pushNamed(
+                                                context, web_contact_main_page);
+                                          },
+                                        ),
                                         ResponsiveVisibility(
                                             visible: true,
                                             hiddenWhen: [
                                               Condition.smallerThan(
                                                   name: TABLET)
                                             ],
-                                            child: box(bank, "Bank \nAccount")),
+                                            child: box(
+                                              bank,
+                                              "Bank \nAccount",
+                                              () {
+                                                Navigator.pushNamed(context,
+                                                    web_bank_acount_page);
+                                              },
+                                            )),
                                       ],
                                     ),
                                     ResponsiveVisibility(
@@ -357,16 +417,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                         // shrinkWrap: true,
                                         // crossAxisCount: 3,
                                         children: [
-                                          box(topUp, "Top up /Withdraw"),
-                                          box(transfer, "Transfer"),
+                                          box(topUp, "Top up /Withdraw", () {}),
+                                          box(
+                                            transfer,
+                                            "Transfer",
+                                            () {},
+                                          ),
                                           ResponsiveVisibility(
                                               visible: true,
                                               hiddenWhen: [
                                                 Condition.smallerThan(
                                                     name: TABLET)
                                               ],
-                                              child:
-                                                  box(bank, "Bank \nAccount")),
+                                              child: box(
+                                                bank,
+                                                "Bank \n Account",
+                                                () {},
+                                              )),
                                         ],
                                       ),
                                     ),
@@ -374,16 +441,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                       // shrinkWrap: true,
                                       // crossAxisCount: 3,
                                       children: [
-                                        box(CurrencyExchange,
-                                            "Currency\nExchange"),
-                                        box(helpDesk, "Help Desk"),
+                                        box(
+                                          CurrencyExchange,
+                                          "Currency\nExchange",
+                                          () {
+                                            Navigator.pushNamed(context,
+                                                web_currency_exchange_page);
+                                          },
+                                        ),
+                                        box(helpDesk, "Help Desk", () {
+                                          _launchInBrowser(Uri.parse(
+                                              "https://member.luckytown.online//Support/live/${um!.response!.user!.memberUsername}${um!.response!.user!.lastLoginIp}"));
+                                        }),
                                         ResponsiveVisibility(
                                             visible: true,
                                             hiddenWhen: [
                                               Condition.smallerThan(
                                                   name: TABLET)
                                             ],
-                                            child: box(promotion, "Promotion")),
+                                            child: box(
+                                              promotion,
+                                              "Promotion",
+                                              () {},
+                                            )),
                                         // box(promotion, "Promotion"),
                                       ],
                                     ),
@@ -391,8 +471,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                       // shrinkWrap: true,
                                       // crossAxisCount: 3,
                                       children: [
-                                        box(vip, "VIP"),
-                                        box(setting, "Setting"),
+                                        box(
+                                          vip,
+                                          "VIP",
+                                          () {},
+                                        ),
+                                        box(
+                                          setting,
+                                          "Setting",
+                                          () {
+                                            Navigator.pushNamed(
+                                                context, web_setting_page);
+                                          },
+                                        ),
                                         ResponsiveVisibility(
                                             visible: true,
                                             hiddenWhen: [
@@ -645,43 +736,47 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget box(
     String imagepath,
     String text,
+    GestureTapCallback onpress,
   ) {
     return Expanded(
       flex: 1,
       // fit: FlexFit.loose,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          // height: 10,
-          // width: 300,
+      child: GestureDetector(
+        onTap: onpress,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            // height: 10,
+            // width: 300,
 
-          height: 86,
-          // width: 200,
-          // constraints: BoxConstraints(
-          //     minHeight: 86, maxHeight: 86, maxWidth: 235, minWidth: 155),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: kContainerBg,
+            height: 86,
+            // width: 200,
+            // constraints: BoxConstraints(
+            //     minHeight: 86, maxHeight: 86, maxWidth: 235, minWidth: 155),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: kContainerBg,
+            ),
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      imagepath,
+                      width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 40
+                          : 20,
+                      height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 40
+                          : 19,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(width: 10),
+                    silverGradientRobto('$text', 18, FontWeight.normal),
+                  ],
+                )),
           ),
-          child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    imagepath,
-                    width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
-                        ? 40
-                        : 20,
-                    height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
-                        ? 40
-                        : 19,
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(width: 10),
-                  silverGradientRobto('$text', 18, FontWeight.normal),
-                ],
-              )),
         ),
       ),
     );
@@ -689,152 +784,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Home Screen Options Desktop View
 
-  Widget HomeScreenOptionsDesktopView() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        BigBOxComponetsDeskTopView(),
-        Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  onTap: () {
-                    showBoxDialogue();
-                  },
-                  child: smallcontainer(
-                    'Top up / WithDraw',
-                    topUp,
-                  ),
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                smallcontainer('Transfer', transfer),
-                SizedBox(
-                  width: 12,
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: smallcontainer(
-                    'Bank Account',
-                    bank,
-                  ),
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                smallcontainer(
-                  'Currency Exchange',
-                  CurrencyExchange,
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                smallcontainer('Help Desk', helpDesk),
-                SizedBox(
-                  width: 12,
-                ),
-                smallcontainer('Promotion', promotion),
-                SizedBox(
-                  width: 12,
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                smallcontainer('VIP', vip),
-                SizedBox(
-                  width: 12,
-                ),
-                smallcontainer('Setting', setting),
-                SizedBox(
-                  width: 12,
-                ),
-              ],
-            ),
-          ],
-        )
-      ],
-    );
-  }
-
 // Desk View Option
 
   // Home Screen Options MObile View
-
-  Widget HomeScreenOptionsMobileView() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        BigBOxComponets(),
-        Column(
-          children: [
-            HomeScreenCatagoryMobileView1(),
-            Row(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        showBoxDialogue();
-                      },
-                      child: smallcontainer(
-                        'Top up / WithDraw',
-                        topUp,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: smallcontainer('Bank Account', bank),
-                    ),
-                    smallcontainer('Help Desk', helpDesk),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    smallcontainer('VIP', vip),
-                    SizedBox(
-                      width: 12,
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    smallcontainer('Transfer', transfer),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    smallcontainer('Currency Exchange', CurrencyExchange),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    smallcontainer('Promotion', promotion),
-                    SizedBox(
-                      width: 12,
-                    ),
-                    smallcontainer('Setting', setting),
-                  ],
-                ),
-              ],
-            )
-          ],
-        )
-      ],
-    );
-  }
 
   Widget RowData() {
     return Row(
@@ -856,24 +808,28 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget smallcontainer(String title, String ImagePath) {
+  Widget smallcontainer(
+      String title, String ImagePath, GestureTapCallback press) {
     return Column(
       children: [
-        Container(
-          width: kMaxWidth / 5,
-          height: kDefaultPadding * 5,
-          decoration: BoxDecoration(
-              color: Color(0xff252A2D),
-              borderRadius: BorderRadius.circular(20)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Image.asset(
-                ImagePath,
-                scale: 1.4,
-              ),
-              silverGradientRobto(title, 20, FontWeight.normal),
-            ],
+        GestureDetector(
+          onTap: press,
+          child: Container(
+            width: kMaxWidth / 5,
+            height: kDefaultPadding * 5,
+            decoration: BoxDecoration(
+                color: Color(0xff252A2D),
+                borderRadius: BorderRadius.circular(20)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Image.asset(
+                  ImagePath,
+                  scale: 1.4,
+                ),
+                silverGradientRobto(title, 20, FontWeight.normal),
+              ],
+            ),
           ),
         ),
         SizedBox(

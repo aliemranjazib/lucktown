@@ -7,6 +7,7 @@ class ProfileHeader extends StatelessWidget {
   final String lid;
   final String nick;
   final String reffercal;
+  final String imageUrl;
 
   const ProfileHeader({
     Key? key,
@@ -14,6 +15,7 @@ class ProfileHeader extends StatelessWidget {
     required this.lid,
     required this.nick,
     required this.reffercal,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -28,8 +30,8 @@ class ProfileHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CircleAvatar(
-                child: Image.asset(
-                  'assets/images/avatar-01.png',
+                child: Image.network(
+                  imageUrl,
                   scale: 2,
                 ),
               ),

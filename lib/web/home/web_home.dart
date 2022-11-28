@@ -203,7 +203,7 @@ class _WebHomePageState extends State<WebHomePage> {
 
   bool isGettingToken = false;
   Future<UserSessionModel> getToken() async {
-    String aa = LuckySharedPef.getAuthToken();
+    String aa = await LuckySharedPef.getAuthToken();
     Map<String, dynamic> decodedata = jsonDecode(aa);
 
     setState(() {
@@ -247,7 +247,7 @@ class _WebHomePageState extends State<WebHomePage> {
     // print('iii ${LuckySharedPef.getAuthToken()}');
     // getAllData();
     // final sw = MediaQuery.of(context).size.width;
-    // print(um!.response!.authToken);
+    print("authtoken ${um!.response!.authToken}");
     return Scaffold(
       backgroundColor: Colors.black,
       drawer: sideMenu(),
@@ -344,57 +344,67 @@ class _WebHomePageState extends State<WebHomePage> {
                         child: Container(
                           child: Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    silverGradient(
-                                        "Popular Games ${currentPage + 1}", 32),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        InkWell(
-                                          onTap: (currentPage - 1) >= 0
-                                              ? previousPage
-                                              : null,
-                                          child: Container(
-                                            height: 55,
-                                            width: 55,
-                                            child: Center(
-                                                child: Icon(
-                                                    Icons.navigate_before)),
-                                            decoration: BoxDecoration(
-                                                color: Color(0xff252A2D),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
+                              ResponsiveVisibility(
+                                visible: false,
+                                visibleWhen: [
+                                  Condition.largerThan(name: MOBILE)
+                                ],
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 8, 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      silverGradient(
+                                          "Popular Games ${currentPage + 1}",
+                                          32),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          InkWell(
+                                            onTap: (currentPage - 1) >= 0
+                                                ? previousPage
+                                                : null,
+                                            child: Container(
+                                              height: 55,
+                                              width: 55,
+                                              child: Center(
+                                                  child: Icon(
+                                                      Icons.navigate_before)),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xff252A2D),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 5),
-                                        InkWell(
-                                          onTap: ((currentPage + 1) *
-                                                      productsPerPage) <
-                                                  gProducts!.response!.products!
-                                                      .length
-                                              ? nextPage
-                                              : null,
-                                          child: Container(
-                                            height: 55,
-                                            width: 55,
-                                            child: Center(
-                                                child:
-                                                    Icon(Icons.navigate_next)),
-                                            decoration: BoxDecoration(
-                                                color: Color(0xff252A2D),
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
+                                          SizedBox(width: 5),
+                                          InkWell(
+                                            onTap: ((currentPage + 1) *
+                                                        productsPerPage) <
+                                                    gProducts!.response!
+                                                        .products!.length
+                                                ? nextPage
+                                                : null,
+                                            child: Container(
+                                              height: 55,
+                                              width: 55,
+                                              child: Center(
+                                                  child: Icon(
+                                                      Icons.navigate_next)),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xff252A2D),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               ResponsiveVisibility(
@@ -565,7 +575,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                 ),
                               ),
                               ResponsiveVisibility(
-                                visible: true,
+                                visible: false,
                                 visibleWhen: [
                                   Condition.largerThan(name: MOBILE)
                                 ],

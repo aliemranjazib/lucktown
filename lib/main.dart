@@ -7,18 +7,24 @@ import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/utils/routes/lucky_routes.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankacounts_page.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankprovider.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/setting_page.dart';
 import 'package:flutter_application_lucky_town/web/check_auth.dart';
 import 'package:flutter_application_lucky_town/web/contact/contact_main.dart';
+import 'package:flutter_application_lucky_town/web/contact/contacts_detail.dart';
 import 'package:flutter_application_lucky_town/web/login_otp.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/product_detail_page.dart';
 import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
 import 'package:flutter_application_lucky_town/web/topUpMethod/usd_topup_method.dart';
+import 'package:flutter_application_lucky_town/web/transactions/transaction_mainpage.dart';
 import 'package:flutter_application_lucky_town/web/web_forget_page.dart';
 import 'package:flutter_application_lucky_town/web/home/web_home.dart';
 import 'package:flutter_application_lucky_town/web/web_otp/web_otp_screen.dart';
-import 'package:flutter_application_lucky_town/web/select_country/view/web_scaffold.dart';
+import 'package:flutter_application_lucky_town/web/select_country/web_main_page.dart';
 import 'package:flutter_application_lucky_town/web/set_new_pin/web_set_new_pin_page.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,6 +45,9 @@ void main() async {
       ),
       ChangeNotifierProvider<LuckySharedPef>(
         create: (context) => LuckySharedPef(),
+      ),
+      ChangeNotifierProvider<BankProvider>(
+        create: (context) => BankProvider(),
       )
     ],
     child: MyApp(),
@@ -91,6 +100,14 @@ class MyApp extends StatelessWidget {
               return ContactMainPage();
             case web_all_game_transaction_page:
               return AllGameTransactionPage();
+            case web_transaction_page:
+              return TransactionMainPage();
+            case web_currency_exchange_page:
+              return CurrencyExchangePage();
+            case web_setting_page:
+              return SettingPage();
+            case web_bank_acount_page:
+              return BankAcountsPage();
 
             default:
               return const SizedBox.shrink();
@@ -127,7 +144,7 @@ class MyApp extends StatelessWidget {
       //         : web_scaffold_page
       //     : web_scaffold_page,
       // initialRoute: ,
-      // home: CheckPage(),
+      // home: ContactsDetailPage(),
       initialRoute: web_check_page,
 
       // initialRoute: web_topup_usdt_page,
@@ -166,20 +183,20 @@ class _CheckPageState extends State<CheckPage> {
     setState(() {
       isLoading = true;
     });
-    String data = LuckySharedPef.getAuthToken();
+    String data = await LuckySharedPef.getAuthToken();
     if (data.isEmpty) {
       Navigator.pushNamed(
         context,
         web_scaffold_page,
       );
     } else {
-      Map<String, dynamic> info = jsonDecode(data);
+      Map<String, dynamic> info = await jsonDecode(data);
       if (info['msg'] == "User Login Success") {
         setState(() {
           um = UserSessionModel.fromJson(info);
           Navigator.pushNamedAndRemoveUntil(
               context, web_home_Page, (route) => false);
-          print(um!.msg);
+          print(um!.response!.authToken);
         });
       } else {
         Navigator.pushNamed(
@@ -214,29 +231,29 @@ class _CheckPageState extends State<CheckPage> {
   }
 }
 
-class ResponsiveLayout extends StatelessWidget {
-  final Widget mobileScaffold;
-  final Widget? tabletScaffold;
-  final Widget webScaffold;
-  ResponsiveLayout(
-      {required this.mobileScaffold,
-      this.tabletScaffold,
-      required this.webScaffold});
+// class ResponsiveLayout extends StatelessWidget {
+//   final Widget mobileScaffold;
+//   final Widget? tabletScaffold;
+//   final Widget webScaffold;
+//   ResponsiveLayout(
+//       {required this.mobileScaffold,
+//       this.tabletScaffold,
+//       required this.webScaffold});
 
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        if (constraints.maxWidth < 600) {
-          return mobileScaffold;
-          // } else if (constraints.maxWidth >= 500 &&
-          //     constraints.maxWidth <= 1100) {
-          //   return tabletScaffold;
-          // }
-        } else {
-          return webScaffold;
-        }
-      },
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return LayoutBuilder(
+//       builder: (BuildContext context, BoxConstraints constraints) {
+//         if (constraints.maxWidth < 600) {
+//           return mobileScaffold;
+//           // } else if (constraints.maxWidth >= 500 &&
+//           //     constraints.maxWidth <= 1100) {
+//           //   return tabletScaffold;
+//           // }
+//         } else {
+//           return webScaffold;
+//         }
+//       },
+//     );
+//   }
+// }

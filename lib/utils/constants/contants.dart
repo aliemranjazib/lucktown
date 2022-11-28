@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../models/select_country_model.dart';
+// import '../../models/select_country_model.dart';
 
 //////////////// ROUTES /////////////////////
 //web
@@ -22,6 +22,10 @@ const String web_profile_page = '/web_profile_page';
 const String web_topup_usdt_page = '/web_topup_usdt_page';
 const String web_contact_main_page = '/web_contact_main_page';
 const String web_all_game_transaction_page = '/web_all_game_transaction_page';
+const String web_transaction_page = '/web_transaction_page';
+const String web_currency_exchange_page = '/web_currency_exchange_page';
+const String web_setting_page = '/web_setting_page';
+const String web_bank_acount_page = '/web_bank_acount_page';
 
 //mobile
 // const String mobilehomePage = '/mobilehome';
@@ -126,11 +130,11 @@ const String promotion = 'assets/images/icon_promotion.png';
 const String vip = 'assets/images/icon_vip.png';
 const String setting = 'assets/images/setting.png';
 
-List<SelectCountryModel> select_country = [
-  SelectCountryModel(text: "Malaysia", image: malaysia),
-  SelectCountryModel(text: "Singapore", image: singapore),
-  SelectCountryModel(text: "Thailand", image: thailand),
-  SelectCountryModel(text: "Vietnam", image: vietnam),
-];
+// List<SelectCountryModel> select_country = [
+//   SelectCountryModel(text: "Malaysia", image: malaysia),
+//   SelectCountryModel(text: "Singapore", image: singapore),
+//   SelectCountryModel(text: "Thailand", image: thailand),
+//   SelectCountryModel(text: "Vietnam", image: vietnam),
+// ];
 
 List phoneCodes = ["+60", "+92", "+65", "+66", "+855"];
