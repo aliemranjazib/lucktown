@@ -64,7 +64,7 @@ const RESOURCES = {
 "assets/fonts/Gotham-Bold.otf": "92ab8603f1cd43d0de15482236890449",
 "assets/fonts/GothamLight.ttf": "8566e2336952927984495865df90963c",
 "assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
-"assets/NOTICES": "b61d089c8a7ab4d404271be0f95ab3a3",
+"assets/NOTICES": "8e542e67917ce5c389fb647d4da69055",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
 "assets/packages/fluttertoast/assets/toastify.css": "a85675050054f179444bc5ad70ffc635",
 "assets/packages/fluttertoast/assets/toastify.js": "e7006a0a033d834ef9414d48db3be6fc",
@@ -339,9 +339,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "8c1abf3c6c715ef8f784de84e0fbbe19",
-"/": "8c1abf3c6c715ef8f784de84e0fbbe19",
-"main.dart.js": "542209a470b17d96dd672b3c77bb5398",
+"index.html": "ae85ffb4ee32b5a3d2a066a6abb4629a",
+"/": "ae85ffb4ee32b5a3d2a066a6abb4629a",
+"main.dart.js": "aea615da473002f4da63934ce3f9bb40",
 "manifest.json": "43c2c4f002e72595606a862fcf94652b",
 "version.json": "029bbf2d2f2beed5e7e1421aa4587bcd"
 };
