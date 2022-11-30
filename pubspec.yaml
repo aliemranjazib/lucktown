@@ -46,6 +46,10 @@ dependencies:
   provider: ^6.0.4
   connectivity_plus: ^3.0.2
   connectivity_plus_web: ^1.2.5
+  darq: ^1.2.1
+  # file_picker: ^5.2.3
+  image_picker: ^0.8.4+10
+  file_picker: ^5.2.3
   
   # pager: ^0.0.5
 

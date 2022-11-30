@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/models/product_model.dart';
 import 'package:flutter_application_lucky_town/models/user_session_model.dart';
@@ -10,8 +10,11 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart'
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/add_bank_page.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankacounts_page.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankprovider.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/topup_bank_transfer/bantopup_main_page.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/checktopup/check_topup_provder.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/setting_page.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/withdraw/withdraw_page.dart';
 import 'package:flutter_application_lucky_town/web/check_auth.dart';
 import 'package:flutter_application_lucky_town/web/contact/contact_main.dart';
 import 'package:flutter_application_lucky_town/web/contact/contacts_detail.dart';
@@ -35,7 +38,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   //////////////
-  // setPathUrlStrategy();
+  usePathUrlStrategy();
   await LuckySharedPef.init();
   runApp(MultiProvider(
     providers: [
@@ -53,6 +56,9 @@ void main() async {
       ),
       ChangeNotifierProvider<TransactionProvider>(
         create: (context) => TransactionProvider(),
+      ),
+      ChangeNotifierProvider<CheckTopUpProvider>(
+        create: (context) => CheckTopUpProvider(),
       )
     ],
     child: MyApp(),
@@ -115,7 +121,10 @@ class MyApp extends StatelessWidget {
               return BankAcountsPage();
             case web_add_bank_acount_page:
               return AddBankPage();
-
+            case web_bank_topup_main_page:
+              return BankTopUpMainPage();
+            case web_withdraw_page:
+              return WithdrawPage();
             default:
               return CircularProgressIndicator();
           }
@@ -167,54 +176,6 @@ class MyApp extends StatelessWidget {
       //     tabletScaffold: TabletScaffold(),
       //     webScaffold: WebScaffold()
       //     ),
-    );
-  }
-}
-
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
-
-  @override
-  State<MyWidget> createState() => _MyWidgetState();
-}
-
-class _MyWidgetState extends State<MyWidget> {
-  List a = ["a", "b", "c"];
-  Color c = Colors.red;
-  int tindex = 0;
-  String b = "b";
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          ...List.generate(a.length, (index) {
-            if (b == a[index]) {
-              tindex = index;
-              print(a[index]);
-            }
-            return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    tindex = index;
-                    // if (a[index] == 0) c = Colors.amber;
-                  });
-                },
-                child: Container(
-                    width: double.infinity,
-                    child: Card(
-                        color: tindex == index ? Colors.amber : Colors.red,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                              selectedColor: c,
-                              title: Text(
-                                a[index],
-                              )),
-                        ))));
-          })
-        ],
-      ),
     );
   }
 }

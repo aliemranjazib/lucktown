@@ -93,20 +93,22 @@ class _WebSignInPageState extends State<WebSignInPage> {
   ClientInformation cli = ClientInformation();
   @override
   void initState() {
+    // final p = Provider.of<SelectCountry>(context, listen: false);
+    // p.getSelection['']
     super.initState();
     getDeviceId().then((value) {
       cli = value;
     });
   }
 
-  saveData() {
+  saveData(String countryId) async {
     if (_formKey.currentState!.validate()) {
       // print("OKKKKK");
       if (passwordController.text != confirmPasswordController.text) {
         CustomToast.customToast(
             context, "password and retype password is not matched");
       } else {
-        signupUser();
+        await signupUser(countryId);
       }
     }
   }
@@ -305,6 +307,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                 seconds: 1,
               ), () {
             LuckySharedPef.saveAuthToken(response1.body);
+            // LuckySharedPef.saveOnlyAuthToken(data['response']['authToken']);
           });
           // String? otp = data['response']['userToken'];
 
@@ -314,6 +317,9 @@ class _WebSignInPageState extends State<WebSignInPage> {
               ), () {
             String aa = LuckySharedPef.getAuthToken();
             print(aa);
+            // String bb = LuckySharedPef.getOnlyAuthToken();
+            // print("get only auth ${bb}");
+
             Map<String, dynamic> decodedata = jsonDecode(aa);
             setState(() {
               um = UserSessionModel.fromJson(decodedata);
@@ -372,7 +378,9 @@ class _WebSignInPageState extends State<WebSignInPage> {
     }
   }
 
-  Future<Result<Exception, UserModel>> signupUser() async {
+  Future<Result<Exception, UserModel>> signupUser(String countryId) async {
+    // final getCountries = await Provider.of<SelectCountry>(context);
+    // print("selection ${getCountries.getSelection['countrycode']}");
     setState(() {
       isLoading = true;
     });
@@ -391,8 +399,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
             "password": passwordController.text,
             "confirmPassword": confirmPasswordController.text,
             "refUsername": refferalController.text,
-            "countryId":
-                Provider.of<SelectCountry>(context).getSelection['countrycode'],
+            "countryId": "$countryId",
           }
         }),
       );
@@ -460,8 +467,10 @@ class _WebSignInPageState extends State<WebSignInPage> {
     } catch (e) {
       // catch all exceptions (not just SocketException)
       // 4. return Error here too
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("${Exception("SOMETHING WENT WRONG")}")));
+      CustomToast.customToast(context, e.toString());
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text("${Exception("SOMETHING WENT WRONG")}")));
       print(Error(Exception()));
       return Error(Exception("NOT OK"));
     }
@@ -470,6 +479,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
   @override
   Widget build(BuildContext context) {
     s();
+
     // print(
     //     "opop ${Provider.of<SelectCountry>(context).getSelection['countrycode']}");
     // print("bbbb ${jsonDecode(LuckySharedPef.getAuthToken())['msg']}");
@@ -682,7 +692,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
                         children: [
                           // silverGradient("Sign In", 24),
                           Visibility(visible: index == 0, child: signIn()),
-                          Visibility(visible: index == 1, child: signUp()),
+                          Visibility(
+                              visible: index == 1, child: signUp(context)),
                         ],
                       ),
                       // select_country.map((e) => Text(e.text)).toList(),
@@ -783,10 +794,12 @@ class _WebSignInPageState extends State<WebSignInPage> {
     );
   }
 
-  Widget signUp() {
+  Widget signUp(BuildContext context) {
+    final getCountries = Provider.of<SelectCountry>(context);
+
     RegExp regex =
         RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-    RegExp reguser = RegExp(r'^[a-zA-Z0-9]+$');
+    // RegExp reguser = RegExp(r'^[a-zA-Z0-9]+$');
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Form(
@@ -972,7 +985,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   // await saveUsers();
                   print(phoneController.text);
                   print(isoCode);
-                  saveData();
+                  saveData(getCountries.getSelection['countryId']);
                   // setState(() {
                   //   index = 0;
                   // });

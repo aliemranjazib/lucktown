@@ -349,7 +349,6 @@ class ProfileDataResponseWalletTransactionsJsonClickDetails {
     "Desc": "Member Deposit Failed credit to JDBFISHSystem Auto Refund",
     "Date/Time": "2022-11-20 15:44:10"
   },
-  "detailClick": "false",
   "detailJson": null
 } 
 */

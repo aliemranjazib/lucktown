@@ -44,7 +44,7 @@ class _CountrySwitchState extends State<CountrySwitch> {
   //     countries.add(Countries(name: element!.name, image: element.iconUrl));
   //   }
   // }
-  countrySwitchCall(String code) async {
+  Future countrySwitchCall(String code) async {
     setState(() {
       isLoading = true;
     });
@@ -152,7 +152,10 @@ class _CountrySwitchState extends State<CountrySwitch> {
                                 return InkWell(
                                   onTap: () {
                                     print(data.code);
-                                    countrySwitchCall(data.code!);
+                                    countrySwitchCall(data.code!).then(
+                                        (value) =>
+                                            Navigator.of(context).pop(true));
+
                                     // getCountries.saveSelection({
                                     //   "name": data.name,
                                     //   "icon": data.iconUrl,

@@ -10,6 +10,7 @@ import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/web/home/coin_chips.dart';
 import 'package:flutter_application_lucky_town/web/home/info.dart';
+import 'package:flutter_application_lucky_town/web/home/select.dart';
 import 'package:flutter_application_lucky_town/web/home/siderbar.dart';
 import 'package:flutter_application_lucky_town/web/home/web_country_switch.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
@@ -36,11 +37,12 @@ class _WebHomePageState extends State<WebHomePage> {
   bool isLoadingGif = false;
   bool isLoadingProducts = false;
   bool isLoadingProfile = false;
-  String sIndex = "popular";
+  String sIndex = "all";
   int totalProducts = 100;
   int productsPerPage = 8;
   int currentPage = 0;
   ProductsModel? gProducts;
+  ProductsModel? fProducts;
 
   // int pageCount = totalProducts ~/ productsPerPage;
 
@@ -57,12 +59,16 @@ class _WebHomePageState extends State<WebHomePage> {
     if ((currentPage + 1) < pageCount()) {
       setState(() {
         currentPage += 1;
+        // productsPerPage =
+        //     fProducts!.response!.products!.length % currentPage + 1 > 0
+        //         ? (fProducts!.response!.products!.length % currentPage + 1) - 1
+        //         : productsPerPage;
       });
     }
   }
 
   num pageCount() {
-    return gProducts!.response!.products!.length / productsPerPage;
+    return fProducts!.response!.products!.length / productsPerPage;
   }
 
   showQRDialogue() {
@@ -180,11 +186,10 @@ class _WebHomePageState extends State<WebHomePage> {
     return profileData;
   }
 
-  Future<ProductsModel> getAllProducts() async {
+  Future<ProductsModel> getAllProducts(String i) async {
     setState(() {
       isLoadingProducts = true;
     });
-
     try {
       final response = await http.post(
         Uri.parse('${memberBaseUrl}game/getProductList'),
@@ -201,11 +206,23 @@ class _WebHomePageState extends State<WebHomePage> {
           print(response.statusCode);
           final data = json.decode(response.body);
           gProducts = ProductsModel.fromJson(data);
-          print(
-              "first game status ${gProducts!.response!.products!.first!.productName}");
+          fProducts = gProducts;
           setState(() {
             isLoadingProducts = false;
           });
+
+          fProducts!.response!.products = i == "all"
+              ? gProducts!.response!.products!.toList()
+              : gProducts!.response!.products!
+                  .where((element) => element!.product_category == "$i")
+                  .toList();
+          currentPage = 0;
+          // for (var j in fProducts!.response!.products!) {
+          //   print(j!.product_name);
+          // }
+          // fProducts = gProducts;
+          // getAllProducts("ali")
+          // filterProduct("all");
           break;
         case 514:
           Navigator.pushNamed(context, web_scaffold_page);
@@ -270,6 +287,8 @@ class _WebHomePageState extends State<WebHomePage> {
 
     setState(() {
       um = UserSessionModel.fromJson(decodedata);
+      print("auth ${um!.response!.authToken}");
+
       print("tttt ${um!.response!.user!.memberUsername}");
     });
 
@@ -281,35 +300,43 @@ class _WebHomePageState extends State<WebHomePage> {
       isGettingToken = true;
     });
     await getToken();
-    print("www ${um!.response!.authToken!.length}");
     getSliderImages();
     getProfileInfo();
-    getAllProducts();
+    getAllProducts("all");
     setState(() {
       isGettingToken = false;
     });
     // getAllProducts();
   }
 
+  filterProduct(String i) {
+    // List fProducts = gProducts!.response!.products!;
+
+    // setState(() {
+    //   fProducts!.response!.products = fProducts!.response!.products!
+    //       .where((element) => element!.product_category == "$i")
+    //       .toList();
+    // });
+    getAllProducts(i);
+    // print(i);
+    // print("gproducts ${gProducts!.response!.products!.first!.product_name}");
+  }
+
   @override
   void initState() {
-    // Future.delayed(Duration(seconds: 0), () {
-    //   getSliderImages();
-    // });
-    // getAllProducts();
-    // getProfileInfo();
-    // print(um!.response!.authToken);
     getAllData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // print("home ${sIndex}");
+    // filterProduct();
     // getProducts();
     // print('iii ${LuckySharedPef.getAuthToken()}');
     // getAllData();
     // final sw = MediaQuery.of(context).size.width;
-    print("authtoken ${um!.response!.authToken}");
+    // print("authtoken ${um!.response!.authToken}");
     return Scaffold(
       backgroundColor: Colors.black,
       drawer: sideMenu(),
@@ -320,10 +347,22 @@ class _WebHomePageState extends State<WebHomePage> {
             // MenuBar(),
             Header(),
             // Text(profileData.response.)
-            isGettingToken ? Text("Aaaaaaaaaaaa") : BannerArea(gifs),
+            isGettingToken
+                ? Center(
+                    child: CircularProgressIndicator(
+                    backgroundColor: Color(0xffBD8E37),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+                  ))
+                : BannerArea(gifs),
             SizedBox(height: 12),
             isLoadingProfile
-                ? Text("loaaaa")
+                ? Center(
+                    child: CircularProgressIndicator(
+                    backgroundColor: Color(0xffBD8E37),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+                  ))
                 : Row(
                     children: [
                       ResponsiveVisibility(
@@ -403,7 +442,80 @@ class _WebHomePageState extends State<WebHomePage> {
                                   SizedBox(height: 30),
                                   join_nowButton(() {}),
                                   SizedBox(height: 50),
-                                  // sidebar(context, sIndex)
+                                  // Container(
+                                  //   child: GridView(
+                                  //     gridDelegate:
+                                  //         SliverGridDelegateWithFixedCrossAxisCount(
+                                  //       crossAxisCount: 3,
+                                  //     ),
+                                  //     children: [
+                                  //       Image.asset(LiveCasino),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  Container(
+                                    height: 400,
+                                    child: GridView(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount:
+                                            ResponsiveWrapper.of(context)
+                                                    .isLargerThan(MOBILE)
+                                                ? 2
+                                                : 1,
+                                      ),
+                                      children: [
+                                        // selection(popular, 'popular', () {
+                                        //   sIndex = 'popular';
+                                        //   print(sIndex);
+                                        // }),
+                                        selection(favourite, 'All Games', () {
+                                          // gProducts!.response!.products =
+                                          //     gProducts!.response!.products;
+                                          setState(() {
+                                            sIndex = 'all';
+                                          });
+                                          print(sIndex);
+                                          // filterProduct("all");
+                                          getAllProducts("all");
+                                          // fProducts!.response!.products =
+                                          //     gProducts!.response!.products;
+                                          // gProducts = gProducts;
+                                        }),
+
+                                        selection(egame, 'Egame', () {
+                                          setState(() {
+                                            sIndex = 'EGAMES';
+                                          });
+                                          filterProduct("EGAMES");
+                                        }),
+                                        selection(sport, 'Sport', () {
+                                          setState(() {
+                                            sIndex = 'SPORT';
+                                          });
+                                          filterProduct("SPORT");
+                                        }),
+                                        selection(LiveCasino, 'Live Casino',
+                                            () {
+                                          // getAllProducts();
+
+                                          setState(() {
+                                            sIndex = 'LIVECASINO';
+                                          });
+                                          filterProduct("LIVECASINO");
+                                          print(sIndex);
+                                        }),
+                                        selection(lottery, 'Lottery', () {
+                                          setState(() {
+                                            sIndex = 'LOTTERY';
+                                          });
+                                          filterProduct("LOTTERY");
+                                        }),
+                                      ],
+                                    ),
+                                  ),
+
+                                  Text(sIndex),
                                 ],
                               ),
                             ),
@@ -457,7 +569,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                           InkWell(
                                             onTap: ((currentPage + 1) *
                                                         productsPerPage) <
-                                                    gProducts!.response!
+                                                    fProducts!.response!
                                                         .products!.length
                                                 ? nextPage
                                                 : null,
@@ -498,7 +610,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                             0.07,
                                   ),
                                   itemCount:
-                                      gProducts!.response!.products!.length,
+                                      fProducts!.response!.products!.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return Container(
@@ -516,10 +628,10 @@ class _WebHomePageState extends State<WebHomePage> {
                                               size: Size.square(
                                                   200), // Image radius
                                               child: Image.network(
-                                                gProducts!
+                                                fProducts!
                                                         .response!
                                                         .products![index]!
-                                                        .productImageUrl ??
+                                                        .product_image_url ??
                                                     "https://scontent.flhe11-1.fna.fbcdn.net/v/t39.30808-1/291321322_378298201059895_267225053697338827_n.png?stp=dst-png_p120x120&_nc_cat=106&ccb=1-7&_nc_sid=dbb9e7&_nc_ohc=K04AqBLJi9oAX9_zEh4&_nc_ht=scontent.flhe11-1.fna&oh=00_AfAerzR76y4VCuovsw2gGXiskoTUMvRSL57Awb720voYcw&oe=6378128B",
                                                 height: 200,
                                                 width: 200,
@@ -534,13 +646,13 @@ class _WebHomePageState extends State<WebHomePage> {
                                               gProducts!
                                                       .response!
                                                       .products![index]!
-                                                      .productName!
+                                                      .product_name!
                                                       .isEmpty
                                                   ? "no name"
                                                   : gProducts!
                                                       .response!
                                                       .products![index]!
-                                                      .productName!,
+                                                      .product_name!,
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 16,
@@ -553,13 +665,13 @@ class _WebHomePageState extends State<WebHomePage> {
                                               gProducts!
                                                       .response!
                                                       .products![index]!
-                                                      .productCategory!
+                                                      .product_category!
                                                       .isNotEmpty
                                                   ? "no category"
                                                   : gProducts!
                                                       .response!
                                                       .products![index]!
-                                                      .productCategory!,
+                                                      .product_category!,
                                               style: TextStyle(
                                                   color: Colors.white
                                                       .withOpacity(0.5),
@@ -671,11 +783,57 @@ class _WebHomePageState extends State<WebHomePage> {
                                               0.07,
                                       // mainAxisSpacing: 160,
                                     ),
-                                    itemCount: productsPerPage,
+                                    itemCount:
+                                        // fProducts!.response!.products!.length %
+                                        //             productsPerPage >
+                                        //         7
+                                        //     ? productsPerPage
+                                        //     : fProducts!.response!.products!
+                                        //             .length %
+                                        //         productsPerPage,
+                                        (fProducts!.response!.products!.length >
+                                                0
+                                            ? fProducts!.response!.products!
+                                                        .length <
+                                                    productsPerPage
+                                                ? fProducts!
+                                                    .response!.products!.length
+                                                : (fProducts!
+                                                                    .response!
+                                                                    .products!
+                                                                    .length /
+                                                                productsPerPage ==
+                                                            currentPage + 1 &&
+                                                        fProducts!
+                                                                    .response!
+                                                                    .products!
+                                                                    .length %
+                                                                (currentPage +
+                                                                    1) >
+                                                            0 &&
+                                                        fProducts!
+                                                                    .response!
+                                                                    .products!
+                                                                    .length %
+                                                                (currentPage +
+                                                                    1) <
+                                                            productsPerPage)
+                                                    ? (fProducts!
+                                                                .response!
+                                                                .products!
+                                                                .length %
+                                                            (currentPage + 1)) -
+                                                        1
+                                                    : productsPerPage
+                                            : 0),
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       // print(gProducts[index].productImageUrl!);
-                                      return Container(
+                                      return
+                                          // !fProducts!.response!.products![index]!.product_category!.contains(sIndex)?
+                                          // Text("aaaaaa"):
+
+                                          Container(
                                         // height: 134,
                                         // width: 200,
                                         constraints:
@@ -691,20 +849,20 @@ class _WebHomePageState extends State<WebHomePage> {
                                                 size: Size.square(
                                                     200), // Image radius
                                                 child: Image.network(
-                                                  gProducts!
+                                                  fProducts!
                                                           .response!
                                                           .products![index +
                                                               (currentPage *
                                                                   productsPerPage)]!
-                                                          .productImageUrl!
+                                                          .product_image_url!
                                                           .isEmpty
                                                       ? "https://scontent.flhe11-1.fna.fbcdn.net/v/t39.30808-1/291321322_378298201059895_267225053697338827_n.png?stp=dst-png_p120x120&_nc_cat=106&ccb=1-7&_nc_sid=dbb9e7&_nc_ohc=K04AqBLJi9oAX9_zEh4&_nc_ht=scontent.flhe11-1.fna&oh=00_AfAerzR76y4VCuovsw2gGXiskoTUMvRSL57Awb720voYcw&oe=6378128B"
-                                                      : gProducts!
+                                                      : fProducts!
                                                           .response!
                                                           .products![index +
                                                               (currentPage *
                                                                   productsPerPage)]!
-                                                          .productImageUrl!,
+                                                          .product_image_url!,
                                                   height: 200,
                                                   width: 200,
                                                   fit: BoxFit.contain,
@@ -716,12 +874,12 @@ class _WebHomePageState extends State<WebHomePage> {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Text(
-                                                gProducts!
+                                                fProducts!
                                                         .response!
                                                         .products![index +
                                                             (currentPage *
                                                                 productsPerPage)]!
-                                                        .productName ??
+                                                        .product_name ??
                                                     "no name",
                                                 style: TextStyle(
                                                     color: Colors.white,
@@ -732,12 +890,12 @@ class _WebHomePageState extends State<WebHomePage> {
                                             Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                gProducts!
+                                                fProducts!
                                                         .response!
                                                         .products![index +
                                                             (currentPage *
                                                                 productsPerPage)]!
-                                                        .productCategory ??
+                                                        .product_category ??
                                                     "no category",
                                                 style: TextStyle(
                                                     color: Colors.white

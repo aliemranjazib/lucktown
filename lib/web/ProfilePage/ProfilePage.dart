@@ -6,20 +6,17 @@ import 'package:flutter_application_lucky_town/models/profile_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
-import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
-import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/BigBoxComponet.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/CompleteTextBar.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HeaderComponet.dart';
-import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HomeScreenCatagory.dart';
-import 'package:flutter_application_lucky_town/web/home/coin_chips.dart';
-import 'package:flutter_application_lucky_town/web/home/web_home.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/checktopup/checktopupmodel.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../utils/constants/api_constants.dart';
 import '../../utils/constants/contants.dart';
 import '../../web_menue/header.dart';
@@ -60,6 +57,51 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Could not launch $url');
       throw 'Could not launch $url';
     }
+  }
+
+  Future<CheckTopUpModel> checkTopUp(context) async {
+    CheckTopUpModel? bm;
+    try {
+      final response = await http.post(
+        Uri.parse('${memberBaseUrl}user/checkTopup'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await um!.response!.authToken!,
+
+          // 'Authorization':
+        },
+        body: jsonEncode(<String, dynamic>{"data": {}}),
+      );
+      switch (response.statusCode) {
+        case 200:
+          Map<String, dynamic> data = await json.decode(response.body);
+          bm = CheckTopUpModel.fromJson(data);
+          print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+          showBoxDialogue();
+          break;
+        case 201:
+          Map<String, dynamic> data = await json.decode(response.body);
+          bm = CheckTopUpModel.fromJson(data);
+          CustomToast.customToast(context, data['msg']);
+
+          print("201");
+          break;
+        case 400:
+          Map<String, dynamic> data = await json.decode(response.body);
+          CustomToast.customToast(context, data['msg']);
+          print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+          // sm = SelectCountryModel.fromJson(item);
+          break;
+        default:
+          Map<String, dynamic> data = await json.decode(response.body);
+          CustomToast.customToast(context, data['msg']);
+      }
+    } catch (e) {
+      print(e);
+
+      CustomToast.customToast(context, e.toString());
+    }
+    return bm!;
   }
 
   showBoxDialogue() {
@@ -114,11 +156,29 @@ class _ProfilePageState extends State<ProfilePage> {
                               onPress: () {
                                 print(topupMethods[index]);
                                 if (topupMethods[index] == "Top Up USDT") {
-                                  // _launchInBrowser(url)
+                                  Navigator.pop(context);
                                   _launchInBrowser(Uri.parse(
                                       "https://lt888.live/Payment/cryptoPayment/${um!.response!.user!.memberUniqueKey}"));
+                                } else if (topupMethods[index] ==
+                                    "Top Up Bank Transfer") {
+                                  Navigator.pushNamed(
+                                      context, web_bank_topup_main_page);
+                                } else if (topupMethods[index] == "Withdraw") {
+                                  Navigator.pushNamed(
+                                      context, web_withdraw_page);
+                                } else if (topupMethods[index] ==
+                                    "Instant Top Up") {
+                                  Navigator.pop(context);
 
-                                  // Navigator.pushNamed(context, web_topup_usdt_page);
+                                  if (um!.response!.user!.countryCode ==
+                                      "THB") {
+                                    _launchInBrowser(Uri.parse(
+                                        "https://member.luckytown.online//Payment/topupTHB/${um!.response!.user!.memberUniqueKey}"));
+                                  } else if (um!.response!.user!.countryCode ==
+                                      "MYR") {
+                                    _launchInBrowser(Uri.parse(
+                                        "https://member.luckytown.online//Payment/directPayment/${um!.response!.user!.memberUniqueKey}"));
+                                  }
                                 }
                               },
                               width: double.infinity),
@@ -155,7 +215,8 @@ class _ProfilePageState extends State<ProfilePage> {
           setState(() {
             profileData = ProfileData.fromJson(data);
           });
-          print("coin ${profileData.response!.accounts!.first!.accountName}");
+          print(
+              "coin ${profileData.response!.accounts!.first!.accountName ?? "null"}");
 
           setState(() {
             isLoadingGif = false;
@@ -203,6 +264,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   children: [
                     Header(),
+                    ElevatedButton(
+                        onPressed: () {
+                          checkTopUp(context);
+                        },
+                        child: Text("aaaaaaa")),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -227,15 +293,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
                           ResponsiveWrapper.of(context).isLargerThan(MOBILE)
                               ? CompleteTextBar(
-                                  chips: profileData.response!.coinBalance!,
-                                  cash: profileData.response!.walletBalance!,
-                                  coin: profileData.response!.interestBalance!,
+                                  chips: profileData.response!.coinBalance ??
+                                      "null",
+                                  cash: profileData.response!.walletBalance ??
+                                      "null",
+                                  coin: profileData.response!.interestBalance ??
+                                      "null",
                                   stage: "stage",
                                 )
                               : CompleteTextBarMobileView(
-                                  chips: profileData.response!.coinBalance!,
-                                  cash: profileData.response!.walletBalance!,
-                                  coin: profileData.response!.interestBalance!,
+                                  chips: profileData.response!.coinBalance ??
+                                      "null",
+                                  cash: profileData.response!.walletBalance ??
+                                      "null",
+                                  coin: profileData.response!.interestBalance ??
+                                      "null",
                                   stage: "stage",
                                 ),
 
@@ -550,41 +622,36 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child:
-                                          profileData.response!
-                                                  .walletTransactions!.isEmpty
-                                              ? Center(child: Text("no data"))
-                                              : isLoadingGif
-                                                  ? Container()
-                                                  : DataTable(
-                                                      border: TableBorder(
-                                                          bottom:
-                                                              BorderSide.none),
-                                                      onSelectAll: (b) {},
-                                                      sortColumnIndex: 0,
-                                                      // columnSpacing: 180,
-                                                      sortAscending: true,
-                                                      columns: <DataColumn>[
-                                                        DataColumn(
-                                                          label: Expanded(
-                                                              child: Text(
-                                                                  "Record",
-                                                                  style:
-                                                                      headfontSize)),
-                                                        ),
-                                                        DataColumn(
-                                                          label: Text("Status",
+                                      child: profileData.response!
+                                              .walletTransactions!.isEmpty
+                                          ? Center(child: Text("no data"))
+                                          : isLoadingGif
+                                              ? Container()
+                                              : DataTable(
+                                                  border: TableBorder(
+                                                      bottom: BorderSide.none),
+                                                  onSelectAll: (b) {},
+                                                  sortColumnIndex: 0,
+                                                  // columnSpacing: 180,
+                                                  sortAscending: true,
+                                                  columns: <DataColumn>[
+                                                    DataColumn(
+                                                      label: Expanded(
+                                                          child: Text("Record",
                                                               style:
-                                                                  headfontSize),
-                                                        ),
-                                                        DataColumn(
-                                                          label: Text("Top Up",
-                                                              style:
-                                                                  headfontSize),
-                                                        ),
-                                                      ],
-                                                      rows: profileData
-                                                          .response!
+                                                                  headfontSize)),
+                                                    ),
+                                                    DataColumn(
+                                                      label: Text("Status",
+                                                          style: headfontSize),
+                                                    ),
+                                                    DataColumn(
+                                                      label: Text("Top Up",
+                                                          style: headfontSize),
+                                                    ),
+                                                  ],
+                                                  rows:
+                                                      profileData.response!
                                                           .orderTransactions!
                                                           .map((e) => DataRow(
                                                                 cells: [
@@ -603,19 +670,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                               CrossAxisAlignment.start,
                                                                           children: [
                                                                             Text("Top Up"),
-                                                                            Text(e!.topupType!),
+                                                                            Text(e!.topupType ??
+                                                                                "null"),
                                                                           ],
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ),
                                                                   DataCell(
-                                                                    Text(e
-                                                                        .topupStatus!),
+                                                                    Text(e.topupStatus ??
+                                                                        "null"),
                                                                   ),
                                                                   DataCell(
-                                                                    Text(e
-                                                                        .topupAmount!),
+                                                                    Text(e.topupAmount ??
+                                                                        "null"),
                                                                   ),
                                                                 ],
                                                               ))
@@ -648,7 +716,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 8),
                                         child: Text(
-                                          pdata!.topupType!,
+                                          pdata!.topupType ?? "null",
                                           style: GoogleFonts.roboto(),
                                         ),
                                       ),
@@ -660,7 +728,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "${pdata.transactionDatetime}",
+                                              "${pdata.transactionDatetime ?? "null"}",
                                               style: GoogleFonts.roboto(
                                                   fontSize: 12),
                                             ),
@@ -675,7 +743,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        "Status  :   ${pdata.topupStatus}",
+                                                        "Status  :   ${pdata.topupStatus ?? "null"}",
                                                         style:
                                                             GoogleFonts.roboto(
                                                                 fontSize: 12),
@@ -692,7 +760,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        "Top Up    :   ${pdata.topupAmount}",
+                                                        "Top Up    :   ${pdata.topupAmount ?? "null"}",
                                                         style:
                                                             GoogleFonts.roboto(
                                                                 fontSize: 12),

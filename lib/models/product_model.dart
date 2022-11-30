@@ -4,10 +4,10 @@
 class ProductsModelResponseProducts {
 /*
 {
-  "product_id": "124",
+  "product_id": "113",
   "product_name": "OBET",
   "product_status": "active",
-  "product_category_group": "Sport",
+  "product_category_group": "体育",
   "product_category": "SPORT",
   "product_desc": "OBET",
   "product_grouping": null,
@@ -26,7 +26,7 @@ class ProductsModelResponseProducts {
   "product_created_datetime": "2022-07-28 14:05:49",
   "product_currency": null,
   "product_reward_entitled": "false",
-  "product_country": "2",
+  "product_country": "1",
   "product_type": "seamless",
   "product_down_time": null,
   "product_down_timed_at": null,
@@ -39,124 +39,124 @@ class ProductsModelResponseProducts {
   "product_maintenance_scheduled_to": "01/01 07:30",
   "inGameStatus": "",
   "termStatus": true,
-  "termText": "Any irregular betting cancelled by the game company,our platform represent a third party payment will be no explanation given."
+  "termText": "任何被游戏公司取消的不正规单据，平台属于第三方支付，无需给予任何解释"
 } 
 */
 
-  String? productId;
-  String? productName;
-  String? productStatus;
-  String? productCategoryGroup;
-  String? productCategory;
-  String? productDesc;
-  String? productGrouping;
-  String? productImageUrl;
-  String? productCoinEntitled;
-  String? productProvider;
-  String? productPercentage;
-  String? productImageUrlGrey;
-  String? productAvengerDirect;
-  String? productMainCommissionPercentage;
-  String? productUplineCommissionPercentage;
-  String? productSelfCommissionPercentage;
-  String? productTest;
-  String? productSequence;
-  String? pingWithCron;
-  String? productCreatedDatetime;
-  String? productCurrency;
-  String? productRewardEntitled;
-  String? productCountry;
-  String? productType;
-  String? productDownTime;
-  String? productDownTimedAt;
-  String? productUpTime;
-  String? productUpTimedAt;
-  String? productDownBy;
-  String? productUpBy;
-  String? productMaintenanceScheduled;
-  String? productMaintenanceScheduledFrom;
-  String? productMaintenanceScheduledTo;
+  String? product_id;
+  String? product_name;
+  String? product_status;
+  String? product_category_group;
+  String? product_category;
+  String? product_desc;
+  String? product_grouping;
+  String? product_image_url;
+  String? product_coin_entitled;
+  String? product_provider;
+  String? product_percentage;
+  String? product_image_url_grey;
+  String? product_avenger_direct;
+  String? product_main_commission_percentage;
+  String? product_upline_commission_percentage;
+  String? product_self_commission_percentage;
+  String? product_test;
+  String? product_sequence;
+  String? ping_with_cron;
+  String? product_created_datetime;
+  String? product_currency;
+  String? product_reward_entitled;
+  String? product_country;
+  String? product_type;
+  String? product_down_time;
+  String? product_down_timed_at;
+  String? product_up_time;
+  String? product_up_timed_at;
+  String? product_down_by;
+  String? product_up_by;
+  String? product_maintenance_scheduled;
+  String? product_maintenance_scheduled_from;
+  String? product_maintenance_scheduled_to;
   String? inGameStatus;
   bool? termStatus;
   String? termText;
 
   ProductsModelResponseProducts({
-    this.productId,
-    this.productName,
-    this.productStatus,
-    this.productCategoryGroup,
-    this.productCategory,
-    this.productDesc,
-    this.productGrouping,
-    this.productImageUrl,
-    this.productCoinEntitled,
-    this.productProvider,
-    this.productPercentage,
-    this.productImageUrlGrey,
-    this.productAvengerDirect,
-    this.productMainCommissionPercentage,
-    this.productUplineCommissionPercentage,
-    this.productSelfCommissionPercentage,
-    this.productTest,
-    this.productSequence,
-    this.pingWithCron,
-    this.productCreatedDatetime,
-    this.productCurrency,
-    this.productRewardEntitled,
-    this.productCountry,
-    this.productType,
-    this.productDownTime,
-    this.productDownTimedAt,
-    this.productUpTime,
-    this.productUpTimedAt,
-    this.productDownBy,
-    this.productUpBy,
-    this.productMaintenanceScheduled,
-    this.productMaintenanceScheduledFrom,
-    this.productMaintenanceScheduledTo,
+    this.product_id,
+    this.product_name,
+    this.product_status,
+    this.product_category_group,
+    this.product_category,
+    this.product_desc,
+    this.product_grouping,
+    this.product_image_url,
+    this.product_coin_entitled,
+    this.product_provider,
+    this.product_percentage,
+    this.product_image_url_grey,
+    this.product_avenger_direct,
+    this.product_main_commission_percentage,
+    this.product_upline_commission_percentage,
+    this.product_self_commission_percentage,
+    this.product_test,
+    this.product_sequence,
+    this.ping_with_cron,
+    this.product_created_datetime,
+    this.product_currency,
+    this.product_reward_entitled,
+    this.product_country,
+    this.product_type,
+    this.product_down_time,
+    this.product_down_timed_at,
+    this.product_up_time,
+    this.product_up_timed_at,
+    this.product_down_by,
+    this.product_up_by,
+    this.product_maintenance_scheduled,
+    this.product_maintenance_scheduled_from,
+    this.product_maintenance_scheduled_to,
     this.inGameStatus,
     this.termStatus,
     this.termText,
   });
   ProductsModelResponseProducts.fromJson(Map<String, dynamic> json) {
-    productId = json['product_id']?.toString();
-    productName = json['product_name']?.toString();
-    productStatus = json['product_status']?.toString();
-    productCategoryGroup = json['product_category_group']?.toString();
-    productCategory = json['product_category']?.toString();
-    productDesc = json['product_desc']?.toString();
-    productGrouping = json['product_grouping']?.toString();
-    productImageUrl = json['product_image_url']?.toString();
-    productCoinEntitled = json['product_coin_entitled']?.toString();
-    productProvider = json['product_provider']?.toString();
-    productPercentage = json['product_percentage']?.toString();
-    productImageUrlGrey = json['product_image_url_grey']?.toString();
-    productAvengerDirect = json['product_avenger_direct']?.toString();
-    productMainCommissionPercentage =
+    product_id = json['product_id']?.toString();
+    product_name = json['product_name']?.toString();
+    product_status = json['product_status']?.toString();
+    product_category_group = json['product_category_group']?.toString();
+    product_category = json['product_category']?.toString();
+    product_desc = json['product_desc']?.toString();
+    product_grouping = json['product_grouping']?.toString();
+    product_image_url = json['product_image_url']?.toString();
+    product_coin_entitled = json['product_coin_entitled']?.toString();
+    product_provider = json['product_provider']?.toString();
+    product_percentage = json['product_percentage']?.toString();
+    product_image_url_grey = json['product_image_url_grey']?.toString();
+    product_avenger_direct = json['product_avenger_direct']?.toString();
+    product_main_commission_percentage =
         json['product_main_commission_percentage']?.toString();
-    productUplineCommissionPercentage =
+    product_upline_commission_percentage =
         json['product_upline_commission_percentage']?.toString();
-    productSelfCommissionPercentage =
+    product_self_commission_percentage =
         json['product_self_commission_percentage']?.toString();
-    productTest = json['product_test']?.toString();
-    productSequence = json['product_sequence']?.toString();
-    pingWithCron = json['ping_with_cron']?.toString();
-    productCreatedDatetime = json['product_created_datetime']?.toString();
-    productCurrency = json['product_currency']?.toString();
-    productRewardEntitled = json['product_reward_entitled']?.toString();
-    productCountry = json['product_country']?.toString();
-    productType = json['product_type']?.toString();
-    productDownTime = json['product_down_time']?.toString();
-    productDownTimedAt = json['product_down_timed_at']?.toString();
-    productUpTime = json['product_up_time']?.toString();
-    productUpTimedAt = json['product_up_timed_at']?.toString();
-    productDownBy = json['product_down_by']?.toString();
-    productUpBy = json['product_up_by']?.toString();
-    productMaintenanceScheduled =
+    product_test = json['product_test']?.toString();
+    product_sequence = json['product_sequence']?.toString();
+    ping_with_cron = json['ping_with_cron']?.toString();
+    product_created_datetime = json['product_created_datetime']?.toString();
+    product_currency = json['product_currency']?.toString();
+    product_reward_entitled = json['product_reward_entitled']?.toString();
+    product_country = json['product_country']?.toString();
+    product_type = json['product_type']?.toString();
+    product_down_time = json['product_down_time']?.toString();
+    product_down_timed_at = json['product_down_timed_at']?.toString();
+    product_up_time = json['product_up_time']?.toString();
+    product_up_timed_at = json['product_up_timed_at']?.toString();
+    product_down_by = json['product_down_by']?.toString();
+    product_up_by = json['product_up_by']?.toString();
+    product_maintenance_scheduled =
         json['product_maintenance_scheduled']?.toString();
-    productMaintenanceScheduledFrom =
+    product_maintenance_scheduled_from =
         json['product_maintenance_scheduled_from']?.toString();
-    productMaintenanceScheduledTo =
+    product_maintenance_scheduled_to =
         json['product_maintenance_scheduled_to']?.toString();
     inGameStatus = json['inGameStatus']?.toString();
     termStatus = json['termStatus'];
@@ -164,43 +164,43 @@ class ProductsModelResponseProducts {
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['product_id'] = productId;
-    data['product_name'] = productName;
-    data['product_status'] = productStatus;
-    data['product_category_group'] = productCategoryGroup;
-    data['product_category'] = productCategory;
-    data['product_desc'] = productDesc;
-    data['product_grouping'] = productGrouping;
-    data['product_image_url'] = productImageUrl;
-    data['product_coin_entitled'] = productCoinEntitled;
-    data['product_provider'] = productProvider;
-    data['product_percentage'] = productPercentage;
-    data['product_image_url_grey'] = productImageUrlGrey;
-    data['product_avenger_direct'] = productAvengerDirect;
+    data['product_id'] = product_id;
+    data['product_name'] = product_name;
+    data['product_status'] = product_status;
+    data['product_category_group'] = product_category_group;
+    data['product_category'] = product_category;
+    data['product_desc'] = product_desc;
+    data['product_grouping'] = product_grouping;
+    data['product_image_url'] = product_image_url;
+    data['product_coin_entitled'] = product_coin_entitled;
+    data['product_provider'] = product_provider;
+    data['product_percentage'] = product_percentage;
+    data['product_image_url_grey'] = product_image_url_grey;
+    data['product_avenger_direct'] = product_avenger_direct;
     data['product_main_commission_percentage'] =
-        productMainCommissionPercentage;
+        product_main_commission_percentage;
     data['product_upline_commission_percentage'] =
-        productUplineCommissionPercentage;
+        product_upline_commission_percentage;
     data['product_self_commission_percentage'] =
-        productSelfCommissionPercentage;
-    data['product_test'] = productTest;
-    data['product_sequence'] = productSequence;
-    data['ping_with_cron'] = pingWithCron;
-    data['product_created_datetime'] = productCreatedDatetime;
-    data['product_currency'] = productCurrency;
-    data['product_reward_entitled'] = productRewardEntitled;
-    data['product_country'] = productCountry;
-    data['product_type'] = productType;
-    data['product_down_time'] = productDownTime;
-    data['product_down_timed_at'] = productDownTimedAt;
-    data['product_up_time'] = productUpTime;
-    data['product_up_timed_at'] = productUpTimedAt;
-    data['product_down_by'] = productDownBy;
-    data['product_up_by'] = productUpBy;
-    data['product_maintenance_scheduled'] = productMaintenanceScheduled;
+        product_self_commission_percentage;
+    data['product_test'] = product_test;
+    data['product_sequence'] = product_sequence;
+    data['ping_with_cron'] = ping_with_cron;
+    data['product_created_datetime'] = product_created_datetime;
+    data['product_currency'] = product_currency;
+    data['product_reward_entitled'] = product_reward_entitled;
+    data['product_country'] = product_country;
+    data['product_type'] = product_type;
+    data['product_down_time'] = product_down_time;
+    data['product_down_timed_at'] = product_down_timed_at;
+    data['product_up_time'] = product_up_time;
+    data['product_up_timed_at'] = product_up_timed_at;
+    data['product_down_by'] = product_down_by;
+    data['product_up_by'] = product_up_by;
+    data['product_maintenance_scheduled'] = product_maintenance_scheduled;
     data['product_maintenance_scheduled_from'] =
-        productMaintenanceScheduledFrom;
-    data['product_maintenance_scheduled_to'] = productMaintenanceScheduledTo;
+        product_maintenance_scheduled_from;
+    data['product_maintenance_scheduled_to'] = product_maintenance_scheduled_to;
     data['inGameStatus'] = inGameStatus;
     data['termStatus'] = termStatus;
     data['termText'] = termText;
@@ -213,10 +213,10 @@ class ProductsModelResponse {
 {
   "products": [
     {
-      "product_id": "124",
+      "product_id": "113",
       "product_name": "OBET",
       "product_status": "active",
-      "product_category_group": "Sport",
+      "product_category_group": "体育",
       "product_category": "SPORT",
       "product_desc": "OBET",
       "product_grouping": null,
@@ -235,7 +235,7 @@ class ProductsModelResponse {
       "product_created_datetime": "2022-07-28 14:05:49",
       "product_currency": null,
       "product_reward_entitled": "false",
-      "product_country": "2",
+      "product_country": "1",
       "product_type": "seamless",
       "product_down_time": null,
       "product_down_timed_at": null,
@@ -248,11 +248,11 @@ class ProductsModelResponse {
       "product_maintenance_scheduled_to": "01/01 07:30",
       "inGameStatus": "",
       "termStatus": true,
-      "termText": "Any irregular betting cancelled by the game company,our platform represent a third party payment will be no explanation given."
+      "termText": "任何被游戏公司取消的不正规单据，平台属于第三方支付，无需给予任何解释"
     }
   ],
-  "walletBalance": "0.00",
-  "coinBalance": "24.00",
+  "walletBalance": "5009.13",
+  "coinBalance": "5.50",
   "interestBalance": "0.00"
 } 
 */
@@ -301,14 +301,14 @@ class ProductsModelResponse {
 class ProductsModel {
 /*
 {
-  "msg": "Get Product List Success",
+  "msg": "成功获取产品列表",
   "response": {
     "products": [
       {
-        "product_id": "124",
+        "product_id": "113",
         "product_name": "OBET",
         "product_status": "active",
-        "product_category_group": "Sport",
+        "product_category_group": "体育",
         "product_category": "SPORT",
         "product_desc": "OBET",
         "product_grouping": null,
@@ -327,7 +327,7 @@ class ProductsModel {
         "product_created_datetime": "2022-07-28 14:05:49",
         "product_currency": null,
         "product_reward_entitled": "false",
-        "product_country": "2",
+        "product_country": "1",
         "product_type": "seamless",
         "product_down_time": null,
         "product_down_timed_at": null,
@@ -340,11 +340,11 @@ class ProductsModel {
         "product_maintenance_scheduled_to": "01/01 07:30",
         "inGameStatus": "",
         "termStatus": true,
-        "termText": "Any irregular betting cancelled by the game company,our platform represent a third party payment will be no explanation given."
+        "termText": "任何被游戏公司取消的不正规单据，平台属于第三方支付，无需给予任何解释"
       }
     ],
-    "walletBalance": "0.00",
-    "coinBalance": "24.00",
+    "walletBalance": "5009.13",
+    "coinBalance": "5.50",
     "interestBalance": "0.00"
   }
 } 

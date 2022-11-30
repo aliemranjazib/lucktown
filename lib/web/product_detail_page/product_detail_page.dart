@@ -112,7 +112,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           // 'Authorization':
         },
         body: jsonEncode(<String, dynamic>{
-          "data": {"productId": widget.product!.productId, "pullCredit": "true"}
+          "data": {
+            "productId": widget.product!.product_id,
+            "pullCredit": "true"
+          }
         }),
       );
       switch (response1.statusCode) {
@@ -311,7 +314,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   playGame() async {
-    print("pid1 ${widget.product!.productId}");
+    print("pid1 ${widget.product!.product_id}");
     setState(() {
       isLoading = true;
     });
@@ -324,7 +327,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
-            "productId": "${widget.product!.productId}",
+            "productId": "${widget.product!.product_id}",
             "amountTransfer": "0",
             "viewType": "mobile"
           }
@@ -392,7 +395,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
-            "productId": widget.product!.productId,
+            "productId": widget.product!.product_id,
           }
         }),
       );
@@ -448,7 +451,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     // print("my id ${widget.product!.productImageUrl}");
-    print(um!.response!.authToken);
+    // print(um!.response!.authToken);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
@@ -460,7 +463,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   children: [
                     topbackbutton(context, web_home_Page),
                     Image.network(
-                      widget.product!.productImageUrl ??
+                      widget.product!.product_image_url ??
                           "https://cdn.sanity.io/images/0vv8moc6/dermatologytimes/d198c3b708a35d9adcfa0435ee12fe454db49662-640x400.png",
                       width: double.infinity,
                       height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
@@ -479,7 +482,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             children: [
                               Align(
                                   alignment: Alignment.centerLeft,
-                                  child: Text("${widget.product!.productName!}",
+                                  child: Text(
+                                      "${widget.product!.product_name!}",
                                       style: GoogleFonts.roboto(
                                           fontSize:
                                               ResponsiveWrapper.of(context)
@@ -506,7 +510,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               availableTransfer(
                                                   title: "Total",
                                                   value:
-                                                      "${_availablecredit.response!.productDetail!.memberProductTotalBalance}"),
+                                                      "${_availablecredit.response!.productDetail!.member_product_total_balance}"),
                                               availableTransfer(
                                                   title: "Available Transfer",
                                                   value:
@@ -612,7 +616,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: Text(
-                                                        "Amount (THB)    ${_availablecredit.response!.productDetail!.memberProductTotalBalance}",
+                                                        "Amount (THB)    ${_availablecredit.response!.productDetail!.member_product_total_balance}",
                                                         style:
                                                             GoogleFonts.roboto(
                                                                 fontSize: 16,
@@ -699,7 +703,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               availableTransfer(
                                                   title: "Total",
                                                   value:
-                                                      "${_availablecredit.response!.productDetail!.memberProductTotalBalance}"),
+                                                      "${_availablecredit.response!.productDetail!.member_product_total_balance}"),
                                               availableTransfer(
                                                   title: "Available Transfer",
                                                   value:
@@ -814,7 +818,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                         const EdgeInsets.all(
                                                             8.0),
                                                     child: Text(
-                                                        "Amount (THB)    ${_availablecredit.response!.productDetail!.memberProductTotalBalance}",
+                                                        "Amount (THB)    ${_availablecredit.response!.productDetail!.member_product_total_balance}",
                                                         style:
                                                             GoogleFonts.roboto(
                                                                 fontSize: 16,

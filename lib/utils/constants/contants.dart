@@ -27,6 +27,8 @@ const String web_currency_exchange_page = '/web_currency_exchange_page';
 const String web_setting_page = '/web_setting_page';
 const String web_bank_acount_page = '/web_bank_acount_page';
 const String web_add_bank_acount_page = '/web_add_bank_acount_page';
+const String web_bank_topup_main_page = '/web_bank_topup_main_page';
+const String web_withdraw_page = '/web_withdraw_page';
 
 //mobile
 // const String mobilehomePage = '/mobilehome';
@@ -114,6 +116,9 @@ const String gift = "assets/images/gift_n.png";
 ////////////// COLORS //////////////////////////
 const bgColor = Color(0xF5F5F5);
 const primaryColor = Color(0xffFCD877);
+const progressbgColor = Color(0xffBD8E37);
+const progresssecondcolor = AlwaysStoppedAnimation<Color>(Color(0xffFCD877));
+
 ////////////////////// FONTS  //////////////
 
 const String gotham_light = "gotham-light";

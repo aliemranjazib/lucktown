@@ -184,6 +184,7 @@ class CurrencyTextField extends StatelessWidget {
             child: silverGradientRobto("$title", 16, FontWeight.normal)),
         SizedBox(height: 10),
         TextFormField(
+          validator: validate,
           controller: controller,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           keyboardType: TextInputType.number,
