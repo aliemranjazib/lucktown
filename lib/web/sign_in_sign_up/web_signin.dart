@@ -25,7 +25,9 @@ import '../../utils/components/gradient_text.dart';
 import '../../utils/constants/api_constants.dart';
 import 'package:client_information/client_information.dart';
 
-String? tempAuthKey;
+// String? tempAuthKey;
+String? temAuth;
+String? tokenKey;
 
 class WebSignInPage extends StatefulWidget {
   @override
@@ -325,21 +327,11 @@ class _WebSignInPageState extends State<WebSignInPage> {
               um = UserSessionModel.fromJson(decodedata);
               print("tttt ${um!.response!.user!.memberUsername}");
             });
-            // print(decodedata['user']);
-            // UserSessionModel t = UserSessionModel.fromJson(decodedata);
-            // UserModel.fromJson();
-            // Response um = Response.fromJson(decodedata['response']);
-            // print(um);
-            // print("ccc ${um.response!.user!.memberUsername}");
 
             // Navigator.pushNamed(context, web_home_Page);
             Navigator.pushNamed(context, web_home_Page);
             // print()
           });
-          // await IsFirstRun.isFirstRun()
-          //     ? Navigator.pushNamed(context, web_login_otp_page,
-          //         arguments: data['response']['userToken'])
-          //     : Navigator.pushNamed(context, web_home_Page);
 
           setState(() {
             isLoading = false;
@@ -347,18 +339,13 @@ class _WebSignInPageState extends State<WebSignInPage> {
           break;
         case 303:
           CustomToast.customToast(context, "Please bind your account first");
-          // Map<String, dynamic> data = json.decode(response1.body);
-          // String userToken = data['response']['authToken'];
+          Map<String, dynamic> data = json.decode(response1.body);
+          setState(() {
+            temAuth = data['response']['authToken'];
+            tokenKey = data['response']['userToken'];
+          });
 
-          // setState(() {
-          //   Provider.of<SignInProvider>(context, listen: false)
-          //       .saveTokenAndPhone({
-          //     "userToken": data['response']['userToken'],
-          //     "authToken": data['response']['authToken']
-          //   });
-          // });
-
-          Navigator.pushNamed(context, web_login_otp_page);
+          Navigator.pushNamed(context, web_otp_page);
           break;
         default:
           final data = json.decode(response1.body);
@@ -417,7 +404,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
           // print(Success());
           print("aaauuttthh ${data['response']['authToken']}");
           setState(() {
-            tempAuthKey = data['response']['authToken'];
+            temAuth = data['response']['authToken'];
           });
           try {
             final response1 = await http.post(

@@ -327,8 +327,8 @@ class _ContactMainPageState extends State<ContactMainPage> {
       length: 3,
       child: Scaffold(
         backgroundColor: Colors.black,
-        drawer: sideMenu(),
-        key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
+        // drawer: sideMenu(),
+        // key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
         body: SingleChildScrollView(
           child: Column(
             children: [

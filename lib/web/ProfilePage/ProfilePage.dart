@@ -3,14 +3,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/models/profile_model.dart';
+import 'package:flutter_application_lucky_town/models/user_session_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
+import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/CompleteTextBar.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/HeaderComponet.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/checktopup/checktopupmodel.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
+import 'package:flutter_application_lucky_town/web_menue/web_menu.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -66,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Uri.parse('${memberBaseUrl}user/checkTopup'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await um!.response!.authToken!,
+          "Authorization": await userM!.response!.authToken!,
 
           // 'Authorization':
         },
@@ -158,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 if (topupMethods[index] == "Top Up USDT") {
                                   Navigator.pop(context);
                                   _launchInBrowser(Uri.parse(
-                                      "https://lt888.live/Payment/cryptoPayment/${um!.response!.user!.memberUniqueKey}"));
+                                      "https://lt888.live/Payment/cryptoPayment/${userM!.response!.user!.memberUniqueKey}"));
                                 } else if (topupMethods[index] ==
                                     "Top Up Bank Transfer") {
                                   Navigator.pushNamed(
@@ -170,14 +173,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                     "Instant Top Up") {
                                   Navigator.pop(context);
 
-                                  if (um!.response!.user!.countryCode ==
+                                  if (userM!.response!.user!.countryCode ==
                                       "THB") {
                                     _launchInBrowser(Uri.parse(
-                                        "https://member.luckytown.online//Payment/topupTHB/${um!.response!.user!.memberUniqueKey}"));
-                                  } else if (um!.response!.user!.countryCode ==
+                                        "https://member.luckytown.online//Payment/topupTHB/${userM!.response!.user!.memberUniqueKey}"));
+                                  } else if (userM!
+                                          .response!.user!.countryCode ==
                                       "MYR") {
                                     _launchInBrowser(Uri.parse(
-                                        "https://member.luckytown.online//Payment/directPayment/${um!.response!.user!.memberUniqueKey}"));
+                                        "https://member.luckytown.online//Payment/directPayment/${userM!.response!.user!.memberUniqueKey}"));
                                   }
                                 }
                               },
@@ -203,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Uri.parse('${memberBaseUrl}user/getProfileData'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await um!.response!.authToken!,
+          "Authorization": await userM!.response!.authToken!,
 
           // 'Authorization':
         },
@@ -244,11 +248,43 @@ class _ProfilePageState extends State<ProfilePage> {
     return profileData;
   }
 
+  bool isGettingToken = false;
+  UserSessionModel? userM;
+
+  Future<UserSessionModel> getToken() async {
+    String aa = await LuckySharedPef.getAuthToken();
+    Map<String, dynamic> decodedata = jsonDecode(aa);
+
+    setState(() {
+      userM = UserSessionModel.fromJson(decodedata);
+      print("auth ${userM!.response!.authToken}");
+
+      print("tttt ${userM!.response!.user!.memberUsername}");
+    });
+
+    return await userM!;
+  }
+
+  getAllData() async {
+    setState(() {
+      isGettingToken = true;
+    });
+    await getToken();
+
+    await getProfileInfo();
+
+    setState(() {
+      isGettingToken = false;
+    });
+    // getAllProducts();
+  }
+
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 0), () {
-      getProfileInfo();
-    });
+    getAllData();
+    // Future.delayed(Duration(seconds: 0), () {
+    //   getProfileInfo();
+    // });
     super.initState();
   }
 
@@ -256,19 +292,14 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        drawer: sideMenu(),
-        key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
-        body: isLoadingGif == true
+        // drawer: sideMenu(),
+        // key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
+        body: isGettingToken == true
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 child: Column(
                   children: [
                     Header(),
-                    ElevatedButton(
-                        onPressed: () {
-                          checkTopUp(context);
-                        },
-                        child: Text("aaaaaaa")),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -282,12 +313,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               imageUrl:
                                   'https://cdn-icons-png.flaticon.com/512/188/188999.png?w=740&t=st=1669457916~exp=1669458516~hmac=b9dbb7e5bf4aa076c57728e986cf13802c63328a0148d7b3559d7af1898de5f3',
                               title:
-                                  "${um!.response!.user!.memberUsername ?? " "}",
-                              lid: "${um!.response!.user!.vipLevelId ?? " "}",
+                                  "${userM!.response!.user!.memberUsername ?? " "}",
+                              lid:
+                                  "${userM!.response!.user!.vipLevelId ?? " "}",
                               nick:
-                                  "${um!.response!.user!.memberNickname ?? " "}",
+                                  "${userM!.response!.user!.memberNickname ?? " "}",
                               reffercal:
-                                  "${um!.response!.user!.refMemberName ?? " "}",
+                                  "${userM!.response!.user!.refMemberName ?? " "}",
                             ),
                           ),
 
@@ -511,7 +543,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                         box(helpDesk, "Help Desk", () {
                                           _launchInBrowser(Uri.parse(
-                                              "https://member.luckytown.online//Support/live/${um!.response!.user!.memberUsername}${um!.response!.user!.lastLoginIp}"));
+                                              "https://member.luckytown.online//Support/live/${userM!.response!.user!.memberUsername}${userM!.response!.user!.lastLoginIp}"));
                                         }),
                                         ResponsiveVisibility(
                                             visible: true,

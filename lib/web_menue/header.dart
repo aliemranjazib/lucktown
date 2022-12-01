@@ -30,18 +30,19 @@ class _HeaderState extends State<Header> {
               constraints: BoxConstraints(maxWidth: kMaxWidth),
               child: Row(
                 children: [
-                  // if (!Responsive.isDesktop(context))
-                  ResponsiveWrapper.of(context).isLargerThan(MOBILE)
-                      ? WebMenu()
-                      : IconButton(
-                          onPressed: () {
-                            Provider.of<MenuProvider>(context, listen: false)
-                                .openOrCloseDraw();
-                          },
-                          icon: Icon(
-                            Icons.menu,
-                            color: Colors.white,
-                          )),
+                  WebMenu(),
+                  // // if (!Responsive.isDesktop(context))
+                  // ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                  //     ? WebMenu()
+                  //     : IconButton(
+                  //         onPressed: () {
+                  //           Provider.of<MenuProvider>(context, listen: false)
+                  //               .openOrCloseDraw();
+                  //         },
+                  //         icon: Icon(
+                  //           Icons.menu,
+                  //           color: Colors.white,
+                  //         )),
                   Spacer(),
 
                   // Spacer(),

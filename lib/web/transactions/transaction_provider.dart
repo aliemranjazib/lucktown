@@ -11,20 +11,20 @@ class TransactionProvider extends ChangeNotifier {
   AllGameTransactionModel agt = AllGameTransactionModel();
   AllWalletTransactionModel agwt = AllWalletTransactionModel();
 
-  bool isLoading = false;
-  bool isLoadingWallet = false;
+  bool isLoadinggt = false;
+  bool isLoadingwt = false;
 
   getAllTransaction(context) async {
-    isLoadingWallet = true;
+    isLoadingwt = true;
     agwt = await apicallforWallet(context);
-    isLoadingWallet = false;
+    isLoadingwt = false;
     notifyListeners();
   }
 
   getAllWalletTransaction(context) async {
-    isLoading = true;
+    isLoadinggt = true;
     agt = await apicallforTransaction(context);
-    isLoading = false;
+    isLoadinggt = false;
     notifyListeners();
   }
 }

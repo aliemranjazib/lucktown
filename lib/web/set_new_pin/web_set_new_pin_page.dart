@@ -53,7 +53,7 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
 
   setNewOtp() async {
     // final args = ModalRoute.of(context)!.settings.arguments as Map;
-    print("need $tempAuthKey");
+    // print("need $te");
     setState(() {
       isLoading = true;
     });
@@ -62,7 +62,7 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
         Uri.parse('${memberBaseUrl}user/setNewPin'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": tempAuthKey!,
+          "Authorization": temAuth!,
 
           // 'Authorization':
         },

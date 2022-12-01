@@ -38,7 +38,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   //////////////
-  usePathUrlStrategy();
+//  usePathUrlStrategy();
   await LuckySharedPef.init();
   runApp(MultiProvider(
     providers: [
@@ -96,8 +96,8 @@ class MyApp extends StatelessWidget {
             case web_signin_page:
               return WebSignInPage();
             case web_otp_page:
-              String data = settings.arguments as String;
-              return OTPScreen(data: data);
+              // String data = settings.arguments as String;
+              return OTPScreen();
             case web_set_new_pin_page:
               // Map data = settings.arguments as Map;
               return WebSetNewPinPage();

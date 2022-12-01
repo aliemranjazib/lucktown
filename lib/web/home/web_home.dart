@@ -14,10 +14,12 @@ import 'package:flutter_application_lucky_town/web/home/select.dart';
 import 'package:flutter_application_lucky_town/web/home/siderbar.dart';
 import 'package:flutter_application_lucky_town/web/home/web_country_switch.dart';
 import 'package:flutter_application_lucky_town/web/menue_folder/menueProvider.dart';
+import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
 import 'package:flutter_application_lucky_town/web_menue/header.dart';
+import 'package:flutter_application_lucky_town/web_menue/web_menu.dart';
 import 'package:flutter_application_lucky_town/widgets/banner.dart';
 import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
@@ -37,6 +39,7 @@ class _WebHomePageState extends State<WebHomePage> {
   bool isLoadingGif = false;
   bool isLoadingProducts = false;
   bool isLoadingProfile = false;
+  bool isLoading = false;
   String sIndex = "all";
   int totalProducts = 100;
   int productsPerPage = 8;
@@ -69,6 +72,67 @@ class _WebHomePageState extends State<WebHomePage> {
 
   num pageCount() {
     return fProducts!.response!.products!.length / productsPerPage;
+  }
+
+  Future countrySwitchCall(String code) async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}country/switch'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await um!.response!.authToken!
+        },
+        body: jsonEncode(<String, dynamic>{
+          "data": {"countryCode": "$code"}
+        }),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          Map<String, dynamic> data = json.decode(response1.body);
+          CustomToast.customToast(context, data['msg']);
+          profileData = await getProfileInfo();
+          setState(() {
+            isLoading = false;
+          });
+          break;
+        case 400:
+          Map<String, dynamic> data = json.decode(response1.body);
+          CustomToast.customToast(context, data['msg']);
+          setState(() {
+            isLoading = false;
+          });
+          break;
+        case 514:
+          Map<String, dynamic> data = json.decode(response1.body);
+          CustomToast.customToast(context, data['msg']);
+          setState(() {
+            isLoading = false;
+          });
+          break;
+        case 500:
+          Map<String, dynamic> data = json.decode(response1.body);
+          CustomToast.customToast(context, data['msg']);
+          setState(() {
+            isLoading = false;
+          });
+          break;
+        default:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          CustomToast.customToast(context, data['msg']);
+          setState(() {
+            isLoading = false;
+          });
+      }
+    } catch (e) {
+      CustomToast.customToast(context, e.toString());
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   showQRDialogue() {
@@ -121,12 +185,113 @@ class _WebHomePageState extends State<WebHomePage> {
   }
 
   showCountrySwitchDialogue() {
+    var select = Provider.of<SelectCountry>(context, listen: false);
+    select.getCountry(context);
     return showDialog(
       context: context,
       builder: (context) {
-        return CountrySwitch(
-            // selectCountry: um!.response!.user!.countryName!,
-            );
+        return ChangeNotifierProvider<SelectCountry>.value(
+            value: select,
+            child: AlertDialog(
+              actionsPadding: EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              // backgroundColor: Color.fromARGB(255, 46, 45, 45),
+              backgroundColor: kContainerBg,
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      logo,
+                      height: 100,
+                      width: 100,
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(Icons.close))
+                  ],
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Container(
+                      height: 200,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ...List.generate(select.sm.response!.list!.length,
+                              (index) {
+                            final data = select.sm.response!.list![index]!;
+
+                            return InkWell(
+                              onTap: () {
+                                print(data.code);
+                                countrySwitchCall(data.code!).then(
+                                    (value) => Navigator.of(context).pop(true));
+
+                                // getCountries.saveSelection({
+                                //   "name": data.name,
+                                //   "icon": data.iconUrl,
+                                //   "countrycode": data.code,
+                                // });
+                                // Navigator.pushReplacementNamed(
+                                //     context, web_signin_page);
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    // decoration: BoxDecoration(
+                                    //     shape: BoxShape.circle,
+                                    //     gradient: LinearGradient(
+                                    //       begin: Alignment.bottomLeft,
+                                    //       end: Alignment.topRight,
+                                    //       colors: [
+                                    //         Color(0xffBD8E37).withOpacity(1),
+                                    //         Color(0xffFCD877).withOpacity(1),
+                                    //         Color(0xffFFFFD1).withOpacity(1),
+                                    //         // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+                                    //         Color(0xffC1995C).withOpacity(1),
+                                    //       ],
+                                    //     )),
+                                    child: CircleAvatar(
+                                      // radius: 47,
+                                      minRadius: 47,
+                                      maxRadius: 47,
+                                      backgroundColor: Colors.transparent,
+                                      child: Image.network(
+                                        data.iconUrl!,
+                                        width: ResponsiveWrapper.of(context)
+                                                .isLargerThan(MOBILE)
+                                            ? 50
+                                            : 40,
+                                        height: ResponsiveWrapper.of(context)
+                                                .isLargerThan(MOBILE)
+                                            ? 50
+                                            : 40,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  silverGradientRobto(
+                                      data.name!,
+                                      ResponsiveWrapper.of(context)
+                                              .isLargerThan(MOBILE)
+                                          ? 18
+                                          : 14,
+                                      FontWeight.bold),
+                                ],
+                              ),
+                            );
+                          })
+                        ],
+                      ),
+                    )),
+              ],
+            ));
       },
     );
   }
@@ -296,6 +461,8 @@ class _WebHomePageState extends State<WebHomePage> {
   }
 
   getAllData() async {
+    final p = Provider.of<SelectCountry>(context, listen: false);
+    p.getCountry(context);
     setState(() {
       isGettingToken = true;
     });
@@ -310,16 +477,7 @@ class _WebHomePageState extends State<WebHomePage> {
   }
 
   filterProduct(String i) {
-    // List fProducts = gProducts!.response!.products!;
-
-    // setState(() {
-    //   fProducts!.response!.products = fProducts!.response!.products!
-    //       .where((element) => element!.product_category == "$i")
-    //       .toList();
-    // });
     getAllProducts(i);
-    // print(i);
-    // print("gproducts ${gProducts!.response!.products!.first!.product_name}");
   }
 
   @override
@@ -330,6 +488,8 @@ class _WebHomePageState extends State<WebHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final getCountries = Provider.of<SelectCountry>(context);
+
     // print("home ${sIndex}");
     // filterProduct();
     // getProducts();
@@ -339,12 +499,13 @@ class _WebHomePageState extends State<WebHomePage> {
     // print("authtoken ${um!.response!.authToken}");
     return Scaffold(
       backgroundColor: Colors.black,
-      drawer: sideMenu(),
-      key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
+      // drawer: sideMenu(),
+      // key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
       body: SingleChildScrollView(
         child: Column(
           children: [
             // MenuBar(),
+            // Header(),
             Header(),
             // Text(profileData.response.)
             isGettingToken
@@ -405,7 +566,120 @@ class _WebHomePageState extends State<WebHomePage> {
                                           SizedBox(width: 10),
                                           GestureDetector(
                                             onTap: () {
-                                              showCountrySwitchDialogue();
+                                              // showCountrySwitchDialogue();
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      actionsPadding:
+                                                          EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                      ),
+                                                      // backgroundColor: Color.fromARGB(255, 46, 45, 45),
+                                                      backgroundColor:
+                                                          kContainerBg,
+                                                      actions: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Image.asset(
+                                                              logo,
+                                                              height: 100,
+                                                              width: 100,
+                                                            ),
+                                                            IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                icon: Icon(Icons
+                                                                    .close))
+                                                          ],
+                                                        ),
+                                                        Center(
+                                                          child: getCountries
+                                                                  .isLoading
+                                                              ? Center(
+                                                                  child:
+                                                                      CircularProgressIndicator())
+                                                              : Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          18.0),
+                                                                  child: isLoading
+                                                                      ? Center(child: CircularProgressIndicator())
+                                                                      : Container(
+                                                                          height:
+                                                                              200,
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.spaceEvenly,
+                                                                            children: [
+                                                                              ...List.generate(getCountries.sm.response!.list!.length, (index) {
+                                                                                final data = getCountries.sm.response!.list![index]!;
+
+                                                                                return InkWell(
+                                                                                  onTap: () {
+                                                                                    print(data.code);
+                                                                                    countrySwitchCall(data.code!).then((value) => Navigator.of(context).pop(true));
+
+                                                                                    // getCountries.saveSelection({
+                                                                                    //   "name": data.name,
+                                                                                    //   "icon": data.iconUrl,
+                                                                                    //   "countrycode": data.code,
+                                                                                    // });
+                                                                                    // Navigator.pushReplacementNamed(
+                                                                                    //     context, web_signin_page);
+                                                                                  },
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      Container(
+                                                                                        // decoration: BoxDecoration(
+                                                                                        //     shape: BoxShape.circle,
+                                                                                        //     gradient: LinearGradient(
+                                                                                        //       begin: Alignment.bottomLeft,
+                                                                                        //       end: Alignment.topRight,
+                                                                                        //       colors: [
+                                                                                        //         Color(0xffBD8E37).withOpacity(1),
+                                                                                        //         Color(0xffFCD877).withOpacity(1),
+                                                                                        //         Color(0xffFFFFD1).withOpacity(1),
+                                                                                        //         // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+                                                                                        //         Color(0xffC1995C).withOpacity(1),
+                                                                                        //       ],
+                                                                                        //     )),
+                                                                                        child: CircleAvatar(
+                                                                                          // radius: 47,
+                                                                                          minRadius: 47,
+                                                                                          maxRadius: 47,
+                                                                                          backgroundColor: Colors.transparent,
+                                                                                          child: Image.network(
+                                                                                            data.iconUrl!,
+                                                                                            width: ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 50 : 40,
+                                                                                            height: ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 50 : 40,
+                                                                                            fit: BoxFit.cover,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      SizedBox(height: 10),
+                                                                                      silverGradientRobto(data.name!, ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 18 : 14, FontWeight.bold),
+                                                                                    ],
+                                                                                  ),
+                                                                                );
+                                                                              })
+                                                                            ],
+                                                                          ),
+                                                                        )),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
                                             },
                                             child: Image.network(
                                                 um!.response!.user!.countryUrl!,

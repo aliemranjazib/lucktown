@@ -47,8 +47,8 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
   void initState() {
     super.initState();
     // tokenKey = widget.data;
-    bindInfo =
-        Provider.of<SignInProvider>(context, listen: false).getTokenAndPhone;
+    // bindInfo =
+    //     Provider.of<SignInProvider>(context, listen: false).getTokenAndPhone;
     // print("my token key ${widget.data}");
   }
 
@@ -82,7 +82,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
           CustomToast.customToast(context, data['msg']);
           Navigator.pushNamed(context, web_set_new_pin_page);
           setState(() {
-            tempAuthKey = data['response']['authToken'];
+            temAuth = data['response']['authToken'];
           });
           // Navigator.pushNamed(context, web_otp_page, arguments: {
           //   "authkey": data['response']['authToken'],

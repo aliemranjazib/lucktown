@@ -101,12 +101,14 @@ class _TransactionMainPageState extends State<TransactionMainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final getTransactions = Provider.of<TransactionProvider>(context);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.black,
         drawer: sideMenu(),
-        key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
+        // key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -125,11 +127,261 @@ class _TransactionMainPageState extends State<TransactionMainPage> {
                 height: MediaQuery.of(context).size.height,
                 child: TabBarView(children: [
                   Container(
-                    child: games(),
+                    child: getTransactions.isLoadinggt
+                        ? Center(child: CircularProgressIndicator())
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Container(
+                              color: Color(0xff121519),
+                              // padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(14.0),
+                                      child: Container(
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: Text(
+                                                  'Game',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  'Type',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  'Bet/Transfer',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  'Win',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ]),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      // shrinkWrap: true,
+                                      itemCount: getTransactions
+                                          .agt.response!.transactions!.length,
+                                      itemBuilder: (context, index) {
+                                        final data = getTransactions.agt
+                                            .response!.transactions![index]!;
+                                        return Container(
+                                          color: Color(0xff212631),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(14.0),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Row(
+                                                          children: [
+                                                            Image.network(
+                                                              data.product_image_url!,
+                                                              height: 80,
+                                                              width: 80,
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(data
+                                                                    .game_transaction_payout!),
+                                                                Text(data
+                                                                    .transaction_created_datetime!),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                          child: Text(data
+                                                              .transaction_type!)),
+                                                      Expanded(
+                                                          child: Text(data
+                                                              .transaction_amount!)),
+                                                      Expanded(
+                                                          child: Text(data
+                                                              .game_transaction_winloss!)),
+                                                    ]),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
                   ),
                   Container(
-                    child: wallet(),
-                  ),
+                      child: getTransactions.isLoadingwt
+                          ? Center(child: CircularProgressIndicator())
+                          : Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Container(
+                                color: Color(0xff121519),
+                                // padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(14.0),
+                                        child: Container(
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Text(
+                                                    'Game',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    'Type',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    'Bet/Transfer',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    'Win',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        // shrinkWrap: true,
+                                        itemCount: getTransactions.agwt
+                                            .response!.transactions!.length,
+                                        itemBuilder: (context, index) {
+                                          final data = getTransactions.agwt
+                                              .response!.transactions![index]!;
+                                          return Container(
+                                            color: Color(0xff212631),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(14.0),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Row(
+                                                            children: [
+                                                              Image.network(
+                                                                data.product_image_url!,
+                                                                height: 80,
+                                                                width: 80,
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 10),
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(data
+                                                                          .product_name ??
+                                                                      "nnn"),
+                                                                  Text(data
+                                                                          .transaction_created_datetime ??
+                                                                      "ooo"),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                            child: Text(
+                                                                data.transaction_type ??
+                                                                    "nnn")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                data.done_by_shareholder_id ??
+                                                                    "0000")),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "dnt know")),
+                                                      ]),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )),
                 ]),
               ),
             ],
@@ -139,231 +391,233 @@ class _TransactionMainPageState extends State<TransactionMainPage> {
     );
   }
 
-  games() {
-    final getTransactions = Provider.of<TransactionProvider>(context);
-    return getTransactions.isLoading
-        ? Center(child: CircularProgressIndicator())
-        : Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Container(
-              color: Color(0xff121519),
-              // padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(14.0),
-                      child: Container(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Game',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Type',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Bet/Transfer',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Win',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ]),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      // shrinkWrap: true,
-                      itemCount:
-                          getTransactions.agt.response!.transactions!.length,
-                      itemBuilder: (context, index) {
-                        final data =
-                            getTransactions.agt.response!.transactions![index]!;
-                        return Container(
-                          color: Color(0xff212631),
-                          child: Padding(
-                            padding: const EdgeInsets.all(14.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Row(
-                                          children: [
-                                            Image.network(
-                                              data.product_image_url!,
-                                              height: 80,
-                                              width: 80,
-                                              fit: BoxFit.contain,
-                                            ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(data
-                                                    .game_transaction_payout!),
-                                                Text(data
-                                                    .transaction_created_datetime!),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                          child: Text(data.transaction_type!)),
-                                      Expanded(
-                                          child:
-                                              Text(data.transaction_amount!)),
-                                      Expanded(
-                                          child: Text(
-                                              data.game_transaction_winloss!)),
-                                    ]),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-  }
+  // games() {
+  //   final getTransactions = Provider.of<TransactionProvider>(context);
+  //   return getTransactions.isLoading
+  //       ? Center(child: CircularProgressIndicator())
+  //       : Padding(
+  //           padding: EdgeInsets.symmetric(horizontal: 10),
+  //           child: Container(
+  //             color: Color(0xff121519),
+  //             // padding: EdgeInsets.symmetric(horizontal: 10),
+  //             child: Column(
+  //               children: [
+  //                 Container(
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.all(14.0),
+  //                     child: Container(
+  //                       child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Expanded(
+  //                               flex: 2,
+  //                               child: Text(
+  //                                 'Game',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                             Expanded(
+  //                               child: Text(
+  //                                 'Type',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                             Expanded(
+  //                               child: Text(
+  //                                 'Bet/Transfer',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                             Expanded(
+  //                               child: Text(
+  //                                 'Win',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                           ]),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   child: ListView.builder(
+  //                     // shrinkWrap: true,
+  //                     itemCount:
+  //                         getTransactions.agt.response!.transactions!.length,
+  //                     itemBuilder: (context, index) {
+  //                       final data =
+  //                           getTransactions.agt.response!.transactions![index]!;
+  //                       return Container(
+  //                         color: Color(0xff212631),
+  //                         child: Padding(
+  //                           padding: const EdgeInsets.all(14.0),
+  //                           child: Column(
+  //                             children: [
+  //                               Row(
+  //                                   mainAxisAlignment:
+  //                                       MainAxisAlignment.spaceBetween,
+  //                                   children: [
+  //                                     Expanded(
+  //                                       flex: 2,
+  //                                       child: Row(
+  //                                         children: [
+  //                                           Image.network(
+  //                                             data.product_image_url!,
+  //                                             height: 80,
+  //                                             width: 80,
+  //                                             fit: BoxFit.contain,
+  //                                           ),
+  //                                           SizedBox(width: 10),
+  //                                           Column(
+  //                                             mainAxisAlignment:
+  //                                                 MainAxisAlignment.start,
+  //                                             crossAxisAlignment:
+  //                                                 CrossAxisAlignment.start,
+  //                                             children: [
+  //                                               Text(data
+  //                                                   .game_transaction_payout!),
+  //                                               Text(data
+  //                                                   .transaction_created_datetime!),
+  //                                             ],
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                     ),
+  //                                     Expanded(
+  //                                         child: Text(data.transaction_type!)),
+  //                                     Expanded(
+  //                                         child:
+  //                                             Text(data.transaction_amount!)),
+  //                                     Expanded(
+  //                                         child: Text(
+  //                                             data.game_transaction_winloss!)),
+  //                                   ]),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       );
+  //                     },
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  // }
 
-  wallet() {
-    final getWalletTransactions = Provider.of<TransactionProvider>(context);
+  // wallet() {
+  //   final getWalletTransactions = Provider.of<TransactionProvider>(context);
 
-    return getWalletTransactions.isLoadingWallet
-        ? Center(child: CircularProgressIndicator())
-        : Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Container(
-              color: Color(0xff121519),
-              // padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(14.0),
-                      child: Container(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Game',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Type',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Bet/Transfer',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Win',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ]),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      // shrinkWrap: true,
-                      itemCount: getWalletTransactions
-                          .agwt.response!.transactions!.length,
-                      itemBuilder: (context, index) {
-                        final data = getWalletTransactions
-                            .agwt.response!.transactions![index]!;
-                        return Container(
-                          color: Color(0xff212631),
-                          child: Padding(
-                            padding: const EdgeInsets.all(14.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Row(
-                                          children: [
-                                            Image.network(
-                                              data.product_image_url!,
-                                              height: 80,
-                                              width: 80,
-                                              fit: BoxFit.contain,
-                                            ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                    data.product_name ?? "nnn"),
-                                                Text(
-                                                    data.transaction_created_datetime ??
-                                                        "ooo"),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                          child: Text(
-                                              data.transaction_type ?? "nnn")),
-                                      Expanded(
-                                          child: Text(
-                                              data.done_by_shareholder_id ??
-                                                  "0000")),
-                                      Expanded(child: Text("dnt know")),
-                                    ]),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-  }
+  //   return
+  //   getWalletTransactions.isLoadingWallet
+  //       ? Center(child: CircularProgressIndicator())
+  //       : Padding(
+  //           padding: EdgeInsets.symmetric(horizontal: 10),
+  //           child: Container(
+  //             color: Color(0xff121519),
+  //             // padding: EdgeInsets.symmetric(horizontal: 10),
+  //             child: Column(
+  //               children: [
+  //                 Container(
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.all(14.0),
+  //                     child: Container(
+  //                       child: Row(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Expanded(
+  //                               flex: 2,
+  //                               child: Text(
+  //                                 'Game',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                             Expanded(
+  //                               child: Text(
+  //                                 'Type',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                             Expanded(
+  //                               child: Text(
+  //                                 'Bet/Transfer',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                             Expanded(
+  //                               child: Text(
+  //                                 'Win',
+  //                                 style: TextStyle(fontWeight: FontWeight.bold),
+  //                               ),
+  //                             ),
+  //                           ]),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   child: ListView.builder(
+  //                     // shrinkWrap: true,
+  //                     itemCount: getWalletTransactions
+  //                         .agwt.response!.transactions!.length,
+  //                     itemBuilder: (context, index) {
+  //                       final data = getWalletTransactions
+  //                           .agwt.response!.transactions![index]!;
+  //                       return Container(
+  //                         color: Color(0xff212631),
+  //                         child: Padding(
+  //                           padding: const EdgeInsets.all(14.0),
+  //                           child: Column(
+  //                             children: [
+  //                               Row(
+  //                                   mainAxisAlignment:
+  //                                       MainAxisAlignment.spaceBetween,
+  //                                   children: [
+  //                                     Expanded(
+  //                                       flex: 2,
+  //                                       child: Row(
+  //                                         children: [
+  //                                           Image.network(
+  //                                             data.product_image_url!,
+  //                                             height: 80,
+  //                                             width: 80,
+  //                                             fit: BoxFit.contain,
+  //                                           ),
+  //                                           SizedBox(width: 10),
+  //                                           Column(
+  //                                             mainAxisAlignment:
+  //                                                 MainAxisAlignment.start,
+  //                                             crossAxisAlignment:
+  //                                                 CrossAxisAlignment.start,
+  //                                             children: [
+  //                                               Text(
+  //                                                   data.product_name ?? "nnn"),
+  //                                               Text(
+  //                                                   data.transaction_created_datetime ??
+  //                                                       "ooo"),
+  //                                             ],
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                     ),
+  //                                     Expanded(
+  //                                         child: Text(
+  //                                             data.transaction_type ?? "nnn")),
+  //                                     Expanded(
+  //                                         child: Text(
+  //                                             data.done_by_shareholder_id ??
+  //                                                 "0000")),
+  //                                     Expanded(child: Text("dnt know")),
+  //                                   ]),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       );
+  //                     },
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //         );
+
+  // }
 }

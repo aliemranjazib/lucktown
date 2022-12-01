@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/main.dart';
+import 'package:flutter_application_lucky_town/models/profile_model.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/constants/api_constants.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
@@ -20,8 +21,8 @@ class Countries {
 }
 
 class CountrySwitch extends StatefulWidget {
-  // final String? selectCountry;
-  // const CountrySwitch({super.key, this.selectCountry});
+  ProfileData? profileData;
+  CountrySwitch({super.key, this.profileData});
 
   @override
   State<CountrySwitch> createState() => _CountrySwitchState();
@@ -36,6 +37,55 @@ class _CountrySwitchState extends State<CountrySwitch> {
   }
 
   bool isLoading = false;
+  bool isLoadingProfile = false;
+
+  Future<ProfileData> getProfileInfo() async {
+    setState(() {
+      isLoadingProfile = true;
+    });
+    try {
+      final response1 = await http.post(
+        Uri.parse('${memberBaseUrl}user/getProfileData'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": await um!.response!.authToken!,
+        },
+        body: jsonEncode(<String, dynamic>{"data": {}}),
+      );
+      switch (response1.statusCode) {
+        case 200:
+          Map<String, dynamic> data = json.decode(response1.body);
+          setState(() {
+            widget.profileData = ProfileData.fromJson(data);
+          });
+          if (!mounted) ;
+          // print("coin ${profileData.response!.accounts!.first!.accountName}");
+          setState(() {
+            isLoadingProfile = false;
+          });
+          break;
+        case 514:
+          Navigator.pushNamed(context, web_scaffold_page);
+          break;
+        case 500:
+          Navigator.pushNamed(context, web_scaffold_page);
+          break;
+        // break;
+        default:
+          final data = json.decode(response1.body);
+          print(response1.statusCode);
+          print(data);
+          CustomToast.customToast(context, data['msg']);
+          setState(() {
+            isLoadingProfile = false;
+          });
+      }
+    } catch (e) {
+      CustomToast.customToast(context, e.toString());
+    }
+
+    return widget.profileData!;
+  }
 
   // getData() {
   //   List<Countries> countries = [];
@@ -63,6 +113,7 @@ class _CountrySwitchState extends State<CountrySwitch> {
         case 200:
           Map<String, dynamic> data = json.decode(response1.body);
           CustomToast.customToast(context, data['msg']);
+          widget.profileData = await getProfileInfo();
           setState(() {
             isLoading = false;
           });
