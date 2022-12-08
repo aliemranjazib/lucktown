@@ -14,12 +14,21 @@ import '../../utils/components/custom_toast.dart';
 import '../../utils/components/gradient_text.dart';
 import '../../utils/constants/api_constants.dart';
 
-class WebSetNewPinPage extends StatefulWidget {
-  @override
-  State<WebSetNewPinPage> createState() => _WebSetNewPinPageState();
+class TokenAndOtp {
+  String? otp;
+  String? userToken;
+
+  TokenAndOtp({this.otp, this.userToken});
 }
 
-class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
+class ForgetOtpPage extends StatefulWidget {
+  String? userToken;
+  ForgetOtpPage({this.userToken});
+  @override
+  State<ForgetOtpPage> createState() => _ForgetOtpPageState();
+}
+
+class _ForgetOtpPageState extends State<ForgetOtpPage> {
   int index = 0;
   bool line_visible1 = false;
   bool line_visible = true;
@@ -36,85 +45,6 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
       Color(0xC1995C).withOpacity(1),
     ],
   ).createShader(Rect.fromLTWH(200.0, 0.0, 0.0, 70.0));
-
-  @override
-  void initState() {
-    // print("authhhhhhhh ${widget.authToken}");
-    super.initState();
-    // print("ppp $tempAuthKey");
-    // tokenKey = widget.data;
-    // print("my token key ${widget.data}");
-  }
-
-  setNewOtp() async {
-    // final args = ModalRoute.of(context)!.settings.arguments as Map;
-    // print("need $te");
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      final response1 = await http.post(
-        Uri.parse('${memberBaseUrl}user/setNewPin'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": temAuth!,
-
-          // 'Authorization':
-        },
-        body: jsonEncode(<String, dynamic>{
-          "data": {
-            // "tokenKey": widget.data,
-            "newPin": otpCode,
-            "confirmPin": otpCode,
-            // "otpCode": widget.data!['otpCode'],
-            "language": "en",
-            // "language": widget.data!['language'],
-          }
-        }),
-      );
-      switch (response1.statusCode) {
-        case 200:
-          setState(() {
-            isLoading = true;
-          });
-          Map<String, dynamic> data = json.decode(response1.body);
-          CustomToast.customToast(context, data['msg']);
-
-          context.goNamed(RouteCon.home_Page);
-
-          setState(() {
-            isLoading = false;
-          });
-          print(response1.statusCode);
-          break;
-        case 400:
-          Map<String, dynamic> data = json.decode(response1.body);
-          CustomToast.customToast(context, data['msg']);
-
-          setState(() {
-            isLoading = false;
-          });
-          print(response1.statusCode);
-          break;
-        default:
-          final data = json.decode(response1.body);
-          print(response1.statusCode);
-          print(data);
-          setState(() {
-            isLoading = false;
-          });
-
-          CustomToast.customToast(context, data['msg']);
-        // CustomToast.customToast(context, "WENT WRONG");
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      CustomToast.customToast(context, e.toString());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,7 +94,7 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         left: 12, bottom: 30),
-                                    child: silverGradient("Set New Pin", 28),
+                                    child: silverGradient("OTP Code", 28),
                                   ),
                                   // SizedBox(height: 40),
                                   Padding(
@@ -192,15 +122,6 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
                                     //runs when every textfield is filled
                                     onSubmit: (String verificationCode) {
                                       otpCode = verificationCode;
-                                      // showDialog(
-                                      //     context: context,
-                                      //     builder: (context) {
-                                      //       return AlertDialog(
-                                      //         title: Text("Verification Code"),
-                                      //         content: Text(
-                                      //             'Code entered is $verificationCode'),
-                                      //       );
-                                      //     });
                                     }, // end onSubmit
                                   ),
                                   SizedBox(height: 30),
@@ -210,7 +131,13 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
                                         title: "Continue",
                                         width: double.infinity,
                                         onPress: () {
-                                          setNewOtp();
+                                          TokenAndOtp top = TokenAndOtp(
+                                            otp: "$otpCode",
+                                            userToken: "${widget.userToken}",
+                                          );
+                                          context.goNamed(
+                                              RouteCon.set_new_password,
+                                              extra: top);
                                         }),
                                   ),
                                   SizedBox(height: 20),
@@ -250,7 +177,7 @@ class _WebSetNewPinPageState extends State<WebSetNewPinPage> {
             children: [
               IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  GoRouter.of(context).pop();
                 },
                 icon: Icon(
                   Icons.navigate_before,

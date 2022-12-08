@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
+import '../app_routes/app_routes.dart';
 import '../web/menue_folder/menueProvider.dart';
 
 // ignore: camel_case_types
@@ -39,13 +41,13 @@ class _sideMenuState extends State<sideMenu> {
                         press: () {
                           print("qqq ${value.menuItems[index]}");
                           if (value.menuItems[index] == "Home") {
-                            Navigator.pushNamed(context, web_home_Page);
+                            context.goNamed(RouteCon.home_Page);
                           } else if (value.menuItems[index] == "Profile") {
-                            Navigator.pushNamed(context, web_profile_page);
+                            context.goNamed(RouteCon.profile_page);
                           } else if (value.menuItems[index] == "Contact") {
-                            Navigator.pushNamed(context, web_contact_main_page);
+                            context.goNamed(RouteCon.contact_main_page);
                           } else if (value.menuItems[index] == "Transactions") {
-                            Navigator.pushNamed(context, web_transaction_page);
+                            context.goNamed(RouteCon.transaction_page);
                           }
                           value.saveIndex(index, () {
                             // print("qqq ${value.selectedIndex}");

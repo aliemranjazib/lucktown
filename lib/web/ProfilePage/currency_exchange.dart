@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -23,9 +26,6 @@ class _CurrencyExchangePageState extends State<CurrencyExchangePage> {
   TextEditingController toController = TextEditingController();
   bool isLoadingGif = false;
 
-  String temp =
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjkyMTU0MTcsImlzcyI6IiIsImV4cCI6MTY2OTMwMTgxNywidXNlclRva2VuIjoiQ3ZyS0pnTWkxNm4zY3JMUTdDUnByUktZaWhmOWVwYm5wMjlET2NkM3RXNEZNeU5wSFlVUVg2VjdERVJwelVZNEREY3o4TzlwT2FSNFB4b2dPR2t5c2RQU05QeEpCMmdwQUJ0ZlRrbG9Sc01LeGZZOFR4a2xqME9DdEhuT1VLVjBrYUJtTkJhWk5zVzNlT3RVTmVsU00zclE2ek9Mb3hjc2dBQWFxUnNrZHF5Z2s1bElCUnJzVmJ1QlJjSHBNSU1UQUQ4YVVlTlciLCJ1c2VyVHlwZSI6Im1lbWJlciIsInVzZXJBdXRoIjoiUkdFckx2V1pyRXNpc2hlVmc4WUx0STRRVUJhaUVNNTJuVkxKTGpmcFV3UDY1ZU5nNWxIN04zcTJoVTVlcmFhRm9RQ1FzOWtNSk5Eeno4UG4zRkVvTlkyQzJLZTlNSnY5QnhBbkxXbVg1b3VRNlFJT2VHemg2d08yMWZKdHNzQ3N5YzY3cHZlWlF3UlZWMnlna01VeXVwd1dvYlM4ZVFta3NudHFiODFJQzUxc3FaOXFFenRFZW9RMTg0N2p6ZlJpNmdYbFdWcGgifQ.0diMQYeOGUqnPV10u6kN5j-IODL4tNZIjvvsHEHOfo4";
-
   currencyExchange() async {
     setState(() {
       isLoadingGif = true;
@@ -35,7 +35,7 @@ class _CurrencyExchangePageState extends State<CurrencyExchangePage> {
         Uri.parse('${memberBaseUrl}currency/exchange'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": await um!.response!.authToken!,
+          "Authorization": await userM!.response!.authToken!,
 
           // 'Authorization':
         },
@@ -86,7 +86,7 @@ class _CurrencyExchangePageState extends State<CurrencyExchangePage> {
                     children: [
                       BackButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, web_profile_page);
+                          GoRouter.of(context).goNamed(RouteCon.profile_page);
                         },
                       ),
                       ResponsiveVisibility(

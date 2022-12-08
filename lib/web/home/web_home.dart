@@ -21,11 +21,13 @@ import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
 import 'package:flutter_application_lucky_town/web_menue/header.dart';
 import 'package:flutter_application_lucky_town/web_menue/web_menu.dart';
 import 'package:flutter_application_lucky_town/widgets/banner.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:multiple_result/multiple_result.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../app_routes/app_routes.dart';
 import '../../utils/components/custom_toast.dart';
 import '../../utils/components/small_button.dart';
 import '../../utils/constants/api_constants.dart';
@@ -323,21 +325,26 @@ class _WebHomePageState extends State<WebHomePage> {
             profileData = ProfileData.fromJson(data);
           });
           if (!mounted) ;
-          print("coin ${profileData.response!.accounts!.first!.accountName}");
+          // print(
+          //     "coinoo ${profileData.response!.accounts!.first!.accountName ?? ""}");
           setState(() {
             isLoadingProfile = false;
           });
           break;
         case 514:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
+          // Navigator.pushNamed(context, web_scaffold_page);
           break;
         case 500:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
+          // Navigator.pushNamed(context, web_scaffold_page);
           break;
         // break;
         default:
           final data = json.decode(response1.body);
-          print(response1.statusCode);
+          print("status code of profile ${response1.statusCode}");
           print(data);
           CustomToast.customToast(context, data['msg']);
           setState(() {
@@ -345,6 +352,7 @@ class _WebHomePageState extends State<WebHomePage> {
           });
       }
     } catch (e) {
+      print("${e.toString()}");
       CustomToast.customToast(context, e.toString());
     }
 
@@ -390,10 +398,12 @@ class _WebHomePageState extends State<WebHomePage> {
           // filterProduct("all");
           break;
         case 514:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
           break;
         case 500:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
           break;
         default:
           print(response.statusCode);
@@ -430,10 +440,12 @@ class _WebHomePageState extends State<WebHomePage> {
           }
           break;
         case 514:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
           break;
         case 500:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
           break;
         default:
           final data = json.decode(response1.body);
@@ -449,11 +461,9 @@ class _WebHomePageState extends State<WebHomePage> {
   Future<UserSessionModel> getToken() async {
     String aa = await LuckySharedPef.getAuthToken();
     Map<String, dynamic> decodedata = jsonDecode(aa);
-
     setState(() {
       um = UserSessionModel.fromJson(decodedata);
       print("auth ${um!.response!.authToken}");
-
       print("tttt ${um!.response!.user!.memberUsername}");
     });
 
@@ -461,15 +471,15 @@ class _WebHomePageState extends State<WebHomePage> {
   }
 
   getAllData() async {
-    final p = Provider.of<SelectCountry>(context, listen: false);
-    p.getCountry(context);
+    // final p = Provider.of<SelectCountry>(context, listen: false);
+    // p.getCountry(context);
     setState(() {
       isGettingToken = true;
     });
     await getToken();
-    getSliderImages();
-    getProfileInfo();
-    getAllProducts("all");
+    await getSliderImages();
+    await getProfileInfo();
+    await getAllProducts("all");
     setState(() {
       isGettingToken = false;
     });
@@ -488,50 +498,27 @@ class _WebHomePageState extends State<WebHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final getCountries = Provider.of<SelectCountry>(context);
-
-    // print("home ${sIndex}");
-    // filterProduct();
-    // getProducts();
-    // print('iii ${LuckySharedPef.getAuthToken()}');
-    // getAllData();
-    // final sw = MediaQuery.of(context).size.width;
-    // print("authtoken ${um!.response!.authToken}");
     return Scaffold(
       backgroundColor: Colors.black,
-      // drawer: sideMenu(),
-      // key: Provider.of<MenuProvider>(context, listen: false).scaffoldkey,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // MenuBar(),
-            // Header(),
-            Header(),
-            // Text(profileData.response.)
-            isGettingToken
-                ? Center(
-                    child: CircularProgressIndicator(
-                    backgroundColor: Color(0xffBD8E37),
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
-                  ))
-                : BannerArea(gifs),
-            SizedBox(height: 12),
-            isLoadingProfile
-                ? Center(
-                    child: CircularProgressIndicator(
-                    backgroundColor: Color(0xffBD8E37),
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
-                  ))
-                : Row(
+      body: isGettingToken
+          ? Center(
+              child: CircularProgressIndicator(
+              backgroundColor: Color(0xffBD8E37),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+            ))
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Header(),
+                  BannerArea(gifs),
+                  SizedBox(height: 12),
+                  Row(
                     children: [
                       ResponsiveVisibility(
                         visible: true,
                         hiddenWhen: const [Condition.smallerThan(name: TABLET)],
                         child: Expanded(
                           child: Container(
-                            // height: 1048,
                             width: 200,
                             alignment: Alignment.topCenter,
                             decoration: BoxDecoration(color: Color(0xff292929)),
@@ -551,7 +538,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                           Image.asset(avatar),
                                           SizedBox(width: 10),
                                           Text(
-                                            "${um!.response!.user!.memberUsername}",
+                                            "${um!.response!.user!.memberUsername ?? ""}",
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ],
@@ -602,8 +589,9 @@ class _WebHomePageState extends State<WebHomePage> {
                                                           ],
                                                         ),
                                                         Center(
-                                                          child: getCountries
-                                                                  .isLoading
+                                                          child: profileData
+                                                                      .response ==
+                                                                  null
                                                               ? Center(
                                                                   child:
                                                                       CircularProgressIndicator())
@@ -622,8 +610,8 @@ class _WebHomePageState extends State<WebHomePage> {
                                                                             mainAxisAlignment:
                                                                                 MainAxisAlignment.spaceEvenly,
                                                                             children: [
-                                                                              ...List.generate(getCountries.sm.response!.list!.length, (index) {
-                                                                                final data = getCountries.sm.response!.list![index]!;
+                                                                              ...List.generate(profileData.response!.countryList!.length, (index) {
+                                                                                final data = profileData.response!.countryList![index]!;
 
                                                                                 return InkWell(
                                                                                   onTap: () {
@@ -660,7 +648,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                                                                           maxRadius: 47,
                                                                                           backgroundColor: Colors.transparent,
                                                                                           child: Image.network(
-                                                                                            data.iconUrl!,
+                                                                                            data.iconUrl ?? "https://cdn-icons-png.flaticon.com/512/197/197484.png",
                                                                                             width: ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 50 : 40,
                                                                                             height: ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 50 : 40,
                                                                                             fit: BoxFit.cover,
@@ -682,7 +670,9 @@ class _WebHomePageState extends State<WebHomePage> {
                                                   });
                                             },
                                             child: Image.network(
-                                                um!.response!.user!.countryUrl!,
+                                                um!.response!.user!
+                                                        .countryUrl ??
+                                                    "https://cdn-icons-png.flaticon.com/512/197/197484.png",
                                                 height: 35,
                                                 width: 35),
                                           ),
@@ -698,23 +688,27 @@ class _WebHomePageState extends State<WebHomePage> {
                                   Info(
                                       title: "Referral",
                                       value:
-                                          "${um!.response!.user!.refMemberName}"),
+                                          "${um!.response!.user!.refMemberName ?? "null"}"),
                                   SizedBox(height: 10),
                                   coin_chips(
                                     title: "Chips",
-                                    value: profileData.response!.coinBalance!,
+                                    value: profileData.response!.coinBalance ??
+                                        "null",
                                   ),
                                   coin_chips(
                                     title: "Cash",
-                                    value: profileData.response!.walletBalance!,
+                                    value:
+                                        profileData.response!.walletBalance ??
+                                            "null",
                                   ),
                                   coin_chips(
                                     title: "Coin",
                                     value:
-                                        profileData.response!.interestBalance!,
+                                        profileData.response!.interestBalance ??
+                                            "null",
                                   ),
                                   SizedBox(height: 30),
-                                  join_nowButton(() {}),
+                                  // join_nowButton(() {}),
                                   SizedBox(height: 50),
                                   // Container(
                                   //   child: GridView(
@@ -744,17 +738,11 @@ class _WebHomePageState extends State<WebHomePage> {
                                         //   print(sIndex);
                                         // }),
                                         selection(favourite, 'All Games', () {
-                                          // gProducts!.response!.products =
-                                          //     gProducts!.response!.products;
                                           setState(() {
                                             sIndex = 'all';
                                           });
                                           print(sIndex);
-                                          // filterProduct("all");
                                           getAllProducts("all");
-                                          // fProducts!.response!.products =
-                                          //     gProducts!.response!.products;
-                                          // gProducts = gProducts;
                                         }),
 
                                         selection(egame, 'Egame', () {
@@ -771,8 +759,6 @@ class _WebHomePageState extends State<WebHomePage> {
                                         }),
                                         selection(LiveCasino, 'Live Casino',
                                             () {
-                                          // getAllProducts();
-
                                           setState(() {
                                             sIndex = 'LIVECASINO';
                                           });
@@ -789,7 +775,7 @@ class _WebHomePageState extends State<WebHomePage> {
                                     ),
                                   ),
 
-                                  Text(sIndex),
+                                  // Text(sIndex),
                                 ],
                               ),
                             ),
@@ -1022,9 +1008,9 @@ class _WebHomePageState extends State<WebHomePage> {
 
                                           SizedBox(height: 5),
                                           join_nowButton(() {
-                                            Navigator.pushNamed(
-                                                context, web_product_detail,
-                                                arguments: gProducts!.response!
+                                            context.goNamed(
+                                                RouteCon.product_detail,
+                                                extra: gProducts!.response!
                                                     .products![index]);
                                           }),
                                         ],
@@ -1181,10 +1167,9 @@ class _WebHomePageState extends State<WebHomePage> {
 
                                             SizedBox(height: 5),
                                             join_nowButton(() {
-                                              Navigator.pushNamed(
-                                                  context, web_product_detail,
-                                                  arguments: gProducts!
-                                                      .response!
+                                              context.goNamed(
+                                                  RouteCon.product_detail,
+                                                  extra: gProducts!.response!
                                                       .products![index]);
                                             }),
                                           ],
@@ -1201,9 +1186,9 @@ class _WebHomePageState extends State<WebHomePage> {
                       SizedBox(width: 20),
                     ],
                   )
-          ],
-        ),
-      ),
+                ],
+              ),
+            ),
     );
   }
 }

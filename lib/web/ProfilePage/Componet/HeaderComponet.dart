@@ -10,6 +10,8 @@ class ProfileHeader extends StatelessWidget {
   final String nick;
   final String reffercal;
   final String imageUrl;
+  final String countryUrl;
+  final String qrUrl;
 
   const ProfileHeader({
     Key? key,
@@ -18,6 +20,8 @@ class ProfileHeader extends StatelessWidget {
     required this.nick,
     required this.reffercal,
     required this.imageUrl,
+    required this.countryUrl,
+    required this.qrUrl,
   }) : super(key: key);
 
   showQRDialogue(BuildContext context) {
@@ -52,7 +56,7 @@ class ProfileHeader extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: Image.network(
-                  um!.response!.user!.memberQrcodeUrl!,
+                  qrUrl,
                   height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
                       ? 450
                       : 150,
@@ -118,7 +122,7 @@ class ProfileHeader extends StatelessWidget {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: NetworkImage(um!.response!.user!.countryUrl!),
+                      image: NetworkImage(countryUrl),
                     )),
               ),
               InkWell(

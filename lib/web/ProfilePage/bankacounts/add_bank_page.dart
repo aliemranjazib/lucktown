@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/setting_page.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import 'bankprovider.dart';
 
@@ -37,7 +40,46 @@ class _AddBankPageState extends State<AddBankPage> {
         backgroundColor: Colors.black,
         body: Column(
           children: [
-            topbackbutton(context, web_bank_acount_page),
+            Row(
+              children: [
+                Container(
+                  height: 50,
+                  color: Colors.black,
+                  child: Row(
+                    children: [
+                      BackButton(
+                        onPressed: () {
+                          // context.pop();
+                          GoRouter.of(context).pop();
+
+                          // Navigator.pushNamed(context, path);
+                          // Navigator.pop(context);
+                        },
+                      ),
+                      ResponsiveVisibility(
+                          visible: true,
+                          hiddenWhen: const [
+                            Condition.smallerThan(name: TABLET)
+                          ],
+                          child: Text("Back"))
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Image.asset(
+                      logo,
+                      width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 202
+                          : 101,
+                      height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 62
+                          : 31,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.all(18.0),

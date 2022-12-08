@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:responsive_framework/responsive_value.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:go_router/go_router.dart';
 
 class MenuBar extends StatelessWidget {
   // const MenuBar({Key? key}) : super(key: key);
@@ -121,7 +123,7 @@ class MenuBar extends StatelessWidget {
                     child: IconButton(
                         onPressed: () {
                           LuckySharedPef.removeAuthToken().then((value) =>
-                              Navigator.pushNamed(context, web_scaffold_page));
+                              context.goNamed(RouteCon.scaffold_page));
                         },
                         icon: Icon(Icons.logout)),
                     decoration: BoxDecoration(

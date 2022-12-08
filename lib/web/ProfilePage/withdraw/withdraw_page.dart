@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:darq/darq.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
@@ -12,8 +13,10 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankp
 import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:responsive_framework/responsive_framework.dart';
 
 class WithdrawPage extends StatefulWidget {
   const WithdrawPage({super.key});
@@ -37,7 +40,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
     super.initState();
   }
 
-  getW() async {
+  getW(String id) async {
     setState(() {
       isLoadingProfile = true;
     });
@@ -51,7 +54,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
         body: jsonEncode(<String, dynamic>{
           "data": {
             "withdrawAmount": "${number.text}",
-            "withdrawBankAccountId": "11"
+            "withdrawBankAccountId": "$id"
           }
         }),
       );
@@ -120,7 +123,45 @@ class _WithdrawPageState extends State<WithdrawPage> {
         backgroundColor: Colors.black,
         body: Column(
           children: [
-            topbackbutton(context, web_profile_page),
+            Row(
+              children: [
+                Container(
+                  height: 50,
+                  color: Colors.black,
+                  child: Row(
+                    children: [
+                      BackButton(
+                        onPressed: () {
+                          GoRouter.of(context).goNamed(RouteCon.profile_page);
+
+                          // Navigator.pushNamed(context, path);
+                          // Navigator.pop(context);
+                        },
+                      ),
+                      ResponsiveVisibility(
+                          visible: true,
+                          hiddenWhen: const [
+                            Condition.smallerThan(name: TABLET)
+                          ],
+                          child: Text("Back"))
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Image.asset(
+                      logo,
+                      width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 202
+                          : 101,
+                      height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 62
+                          : 31,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.all(18.0),
               child: Form(
@@ -185,7 +226,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                           }
                           return null;
                         },
-                        hintText: "account number"),
+                        hintText: "enter amount"),
                     SizedBox(height: 20),
                     PrimaryButton(
                         title: "SUBMIT",
@@ -194,7 +235,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                           if (formkey.currentState!.validate()) {
                             print("${number.text} and ${cc.first!.bankId!}");
                             // pickImage();
-                            await getW();
+                            await getW(cc.first!.id!);
                           }
                         },
                         width: double.infinity),

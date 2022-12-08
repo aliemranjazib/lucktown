@@ -1,12 +1,11 @@
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_application_lucky_town/utils/components/select_category.dart';
-import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
-import 'package:flutter_application_lucky_town/web_menue/SideMenu.dart';
-import 'package:flutter_application_lucky_town/web_menue/header.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-
+import 'package:go_router/go_router.dart';
 import '../../utils/components/gradient_text.dart';
 import '../../utils/constants/contants.dart';
 
@@ -26,6 +25,7 @@ class _WebScaffoldState extends State<WebScaffold> {
   @override
   Widget build(BuildContext context) {
     final getCountries = Provider.of<SelectCountry>(context);
+
     return Scaffold(
         backgroundColor: Colors.black,
         // drawer: sideMenu(),
@@ -94,14 +94,25 @@ class _WebScaffoldState extends State<WebScaffold> {
                           final data = getCountries.sm.response!.list![index]!;
                           return GestureDetector(
                             onTap: () {
+                              print("okkk");
                               getCountries.saveSelection({
                                 "name": data.name,
                                 "icon": data.iconUrl,
                                 "countrycode": data.code,
                                 "countryId": data.countryId,
                               });
-                              Navigator.pushReplacementNamed(
-                                  context, web_signin_page);
+                              // context.push('/oooooooooooo');
+                              // context.replace('/login');
+                              context.goNamed(
+                                RouteCon.signin_page,
+                                // extra: data.name!,
+                              );
+                              // GoRouter.of(context).go('/login');
+                              // context.pushNamed('login');
+                              // context.goNamed(RouteCon.web_signin_page);
+                              // GoRouter.of(context)
+                              //     .goNamed(RouteCon.web_signin_page);
+                              // context.pushNamed(web_signin_page);
                             },
                             child: Column(
                               children: [

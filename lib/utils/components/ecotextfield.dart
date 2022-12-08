@@ -59,10 +59,9 @@ class EcoTextField extends StatelessWidget {
             child: Text(
               upperText!,
               style: TextStyle(
-                  fontSize: 18,
-                  color: Color(0xffFCD877),
-                  fontFamily: "gotham-light",
-                  fontWeight: FontWeight.w400),
+                fontSize: 18,
+                color: Color(0xffFCD877),
+              ),
             ),
             // child: GradientText(
             //   upperText!,
@@ -202,42 +201,28 @@ class EcoMobileTextField extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            child: GradientText(
-              "Mobile Number",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: "gotham-light",
-                  fontWeight: FontWeight.w400),
-              gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  // tileMode: TileMode.clamp,
-                  colors: [
-                    Color(0xffBD8E37).withOpacity(1),
-                    Color(0xffFCD877).withOpacity(1),
-                    Color(0xffFFFFD1).withOpacity(1),
-                    // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
-                    Color(0xffC1995C).withOpacity(1),
-                  ]),
+          Text(
+            upperText!,
+            style: TextStyle(
+              fontSize: 18,
+              color: Color(0xffFCD877),
             ),
           ),
           InternationalPhoneNumberInput(
             inputDecoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xFCD877),
+                  color: Color(0xffFCD877),
                 ),
               ),
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xFCD877),
+                  color: Color(0xffFCD877),
                 ),
               ),
               border: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color(0xFCD877),
+                  color: Color(0xffFCD877),
                 ),
               ),
             ),
@@ -253,7 +238,7 @@ class EcoMobileTextField extends StatelessWidget {
               selectorType: PhoneInputSelectorType.DROPDOWN,
             ),
             ignoreBlank: false,
-            countries: ['MY', 'PK', 'SG', 'TH', 'KH'],
+            countries: ['MY', 'TH'],
             autoValidateMode: AutovalidateMode.disabled,
             selectorTextStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
             initialValue: PhoneNumber(isoCode: 'MY'),

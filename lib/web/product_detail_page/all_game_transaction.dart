@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../app_routes/app_routes.dart';
 import '../../utils/constants/api_constants.dart';
 
 class AllGameTransactionPage extends StatefulWidget {
@@ -74,7 +76,7 @@ class _AllGameTransactionPageState extends State<AllGameTransactionPage> {
         padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            topbackbutton(context, web_home_Page),
+            topbackbutton(context, RouteCon.home_Page),
             Expanded(child: Center(child: Text("NO TRANSACTION")))
           ],
         ),
@@ -93,7 +95,9 @@ Row topbackbutton(BuildContext context, String path) {
           children: [
             BackButton(
               onPressed: () {
-                Navigator.pushNamed(context, path);
+                context.pop();
+
+                // Navigator.pushNamed(context, path);
                 // Navigator.pop(context);
               },
             ),

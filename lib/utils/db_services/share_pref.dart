@@ -8,10 +8,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LuckySharedPef extends ChangeNotifier {
   static SharedPreferences? sharedPreferences;
   static const authToken = 'authToken';
-  static const userKey = 'userKey';
-  UserSessionModel? um;
+  static const onlyAuthToken = 'authToken';
+
+  // static const userKey = 'userKey';
+  // UserSessionModel? um;
   // String get usersData => _userData!;
-  UserSessionModel get _um => um!;
+  // UserSessionModel get _um => um!;
   static init() async {
     sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences;
@@ -21,20 +23,31 @@ class LuckySharedPef extends ChangeNotifier {
     return sharedPreferences!.getString(authToken) ?? "";
   }
 
-  forAll(String data) async {
-    // data = getAuthToken();
-    Map<String, dynamic> decodedata = jsonDecode(data);
-    um = UserSessionModel.fromJson(decodedata);
-    notifyListeners();
+  static Future saveOnlyAuthToken(String token) {
+    return sharedPreferences!.setString(onlyAuthToken, token);
   }
 
-  getAll() {}
-
-  static Future saveMapValues(String data) {
-    Map<String, dynamic> json = jsonDecode(data);
-    String user = jsonEncode(json);
-    return sharedPreferences!.setString(userKey, user);
+  static String getOnlyAuthToken() {
+    return sharedPreferences!.getString(onlyAuthToken) ?? "";
   }
+
+  static Future<bool> removeOnlyAuthToken() async {
+    return sharedPreferences!.remove(onlyAuthToken);
+  }
+  // forAll(String data) async {
+  //   // data = getAuthToken();
+  //   Map<String, dynamic> decodedata = jsonDecode(data);
+  //   um = UserSessionModel.fromJson(decodedata);
+  //   notifyListeners();
+  // }
+
+  // getAll() {}
+
+  // static Future saveMapValues(String data) {
+  //   Map<String, dynamic> json = jsonDecode(data);
+  //   String user = jsonEncode(json);
+  //   return sharedPreferences!.setString(userKey, user);
+  // }
 
   // static Response getMapValues() {
   //   // Map<String, dynamic> json = jsonDecode(data);

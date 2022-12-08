@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/models/available_credits_model.dart';
 import 'package:flutter_application_lucky_town/models/profile_model.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_application_lucky_town/utils/components/primary-button.d
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -461,7 +463,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             : SingleChildScrollView(
                 child: Column(
                   children: [
-                    topbackbutton(context, web_home_Page),
+                    topbackbutton(context, RouteCon.home_Page),
                     Image.network(
                       widget.product!.product_image_url ??
                           "https://cdn.sanity.io/images/0vv8moc6/dermatologytimes/d198c3b708a35d9adcfa0435ee12fe454db49662-640x400.png",
@@ -567,9 +569,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                               8.0),
                                                       child: GestureDetector(
                                                         onTap: () {
-                                                          Navigator.pushNamed(
-                                                              context,
-                                                              web_all_game_transaction_page);
+                                                          context.goNamed(RouteCon
+                                                              .all_game_transaction_page);
+                                                          ;
                                                         },
                                                         child: Container(
                                                           // width: 100,

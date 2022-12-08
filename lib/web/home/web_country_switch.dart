@@ -8,10 +8,12 @@ import 'package:flutter_application_lucky_town/utils/constants/api_constants.dar
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:http/http.dart' as http;
 
+import '../../app_routes/app_routes.dart';
 import '../../utils/components/gradient_text.dart';
 
 class Countries {
@@ -65,10 +67,14 @@ class _CountrySwitchState extends State<CountrySwitch> {
           });
           break;
         case 514:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
+          // Navigator.pushNamed(context, web_scaffold_page);
           break;
         case 500:
-          Navigator.pushNamed(context, web_scaffold_page);
+          context.goNamed(RouteCon.scaffold_page);
+
+          // Navigator.pushNamed(context, web_scaffold_page);
           break;
         // break;
         default:

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:client_information/client_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
@@ -8,25 +9,28 @@ import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_framework/responsive_framework.dart';
-
+import '../../app_routes/app_routes.dart';
 import '../../models/user_session_model.dart';
 import '../../utils/components/custom_toast.dart';
 import '../../utils/components/gradient_text.dart';
 import '../../utils/constants/api_constants.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
-class OTPScreen extends StatefulWidget {
+class BindOTPScreen extends StatefulWidget {
   // String? image;
   // String? text;
   // final String? data;
-  // OTPScreen({this.data});
+  // BindOTPScreen({this.data});
 
   @override
-  State<OTPScreen> createState() => _OTPScreenState();
+  State<BindOTPScreen> createState() => _BindOTPScreenState();
 }
 
-class _OTPScreenState extends State<OTPScreen> {
+class _BindOTPScreenState extends State<BindOTPScreen> {
   int index = 0;
   bool line_visible1 = false;
   bool line_visible = true;
@@ -34,6 +38,28 @@ class _OTPScreenState extends State<OTPScreen> {
   // String? tokenKey;
   bool isLoading = false;
   bool isverifying = false;
+  ClientInformation cli = ClientInformation();
+  var platformName = '';
+  getPlateform() {
+    if (kIsWeb) {
+      platformName = "Web";
+    } else {
+      if (Platform.isAndroid) {
+        platformName = "Android";
+      } else if (Platform.isIOS) {
+        platformName = "IOS";
+      } else if (Platform.isFuchsia) {
+        platformName = "Fuchsia";
+      } else if (Platform.isLinux) {
+        platformName = "Linux";
+      } else if (Platform.isMacOS) {
+        platformName = "MacOS";
+      } else if (Platform.isWindows) {
+        platformName = "Windows";
+      }
+    }
+    print("platformName :- " + platformName.toString());
+  }
 
   final Shader linearGradient = LinearGradient(
     colors: <Color>[
@@ -44,12 +70,20 @@ class _OTPScreenState extends State<OTPScreen> {
       Color(0xC1995C).withOpacity(1),
     ],
   ).createShader(Rect.fromLTWH(200.0, 0.0, 0.0, 70.0));
+  Future<ClientInformation> getDeviceId() async {
+    return (await ClientInformation.fetch());
+  }
 
+  String? tokenKeyofOtp;
   @override
   void initState() {
     super.initState();
     // tokenKey = widget.data;
     // print("my token key ${widget.data}");
+    getPlateform();
+    getDeviceId().then((value) {
+      cli = value;
+    });
   }
 
   getOtp() async {
@@ -70,6 +104,16 @@ class _OTPScreenState extends State<OTPScreen> {
       );
       switch (response1.statusCode) {
         case 200:
+          final data = json.decode(response1.body);
+          print(data);
+
+          CustomToast.customToast(context, data['msg']);
+          setState(() {
+            tokenKeyofOtp = data['response']['userToken'];
+            isLoading = false;
+          });
+          break;
+        case 400:
           setState(() {
             isLoading = false;
           });
@@ -111,14 +155,13 @@ class _OTPScreenState extends State<OTPScreen> {
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
-            "tokenKey":
-                "ULHrzxpJGnQBNqaS95ttbRdQ7BA9XoQTeRmnsrXHV9o7V96w2KktS2IgZ6KRQrPKbkdmR1ohRc7UQbr27log2amjFqk2ZL99G4ueE90drNCoyIAW5MnKwPiUjD4AOgkHwSTO9Iz3wWWBpAjb2Q5vHAlMzrbc6cZmp20ujKrDycWYzs7gFFfksm9YqqsMydThjNyuk4Z0",
-            "otpCode": "439428",
+            "tokenKey": tokenKeyofOtp,
+            "otpCode": otpCode,
             "deviceInfo": {
-              "id": "33CC669C-2CB7-4B9A-B0A9-ED3B2DD6BCFB",
-              "platform": "web"
+              "id": "${cli.deviceId}",
+              "platform": "${platformName.toString()}"
             },
-            "version": "1.0.8"
+            "version": "4.0.1"
           }
         }),
       );
@@ -134,8 +177,7 @@ class _OTPScreenState extends State<OTPScreen> {
             // userModel = user.User.fromJson(data['response']['user']);
           });
           CustomToast.customToast(context, data['msg']);
-          // Navigator.pushNamed(context, web_home_Page);
-          // print("ooo ${dau.getAllUsers()}");
+
           Future.delayed(
               Duration(
                 seconds: 1,
@@ -151,8 +193,6 @@ class _OTPScreenState extends State<OTPScreen> {
               ), () {
             String aa = LuckySharedPef.getAuthToken();
             print(aa);
-            // String bb = LuckySharedPef.getOnlyAuthToken();
-            // print("get only auth ${bb}");
 
             Map<String, dynamic> decodedata = jsonDecode(aa);
             setState(() {
@@ -160,26 +200,20 @@ class _OTPScreenState extends State<OTPScreen> {
               print("tttt ${um!.response!.user!.memberUsername}");
             });
 
-            // Navigator.pushNamed(context, web_home_Page);
-            Navigator.pushNamed(context, web_home_Page);
-            // print()
+            context.goNamed(RouteCon.home_Page);
           });
 
           setState(() {
             isverifying = false;
           });
-          // setState(() {
-          //   tempAuthKey = data['response']['authToken'];
-          // });
-          // Navigator.pushNamed(context, web_otp_page, arguments: {
-          //   "authkey": data['response']['authToken'],
-          //   "usertoken": data['response']['userToken']
-          // });
+
           break;
         case 400:
           Map<String, dynamic> data = json.decode(response1.body);
           CustomToast.customToast(context, data['msg']);
-
+          setState(() {
+            isverifying = false;
+          });
           break;
         default:
           final data = json.decode(response1.body);
@@ -234,9 +268,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        topbackbutton(context, web_signin_page),
-                        // SizedBox(height: 100),
-
+                        topbackbutton(context, RouteCon.signin_page),
                         Expanded(
                           flex: 2,
                           child: Center(
@@ -309,6 +341,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                         loading: isverifying,
                                         onPress: () {
                                           verifyOtp();
+                                          print(otpCode);
                                         }),
                                   ),
                                   SizedBox(height: 20),

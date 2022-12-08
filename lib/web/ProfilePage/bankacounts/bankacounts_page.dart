@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bank_model.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankprovider.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class BankAcountsPage extends StatefulWidget {
   const BankAcountsPage({super.key});
@@ -31,7 +34,7 @@ class _BankAcountsPageState extends State<BankAcountsPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              topbackbutton(context, web_profile_page),
+              topbackbutton(context),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: SingleChildScrollView(
@@ -39,8 +42,7 @@ class _BankAcountsPageState extends State<BankAcountsPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(
-                              context, web_add_bank_acount_page);
+                          context.pushNamed(RouteCon.add_bank_acount_page);
                         },
                         child: Container(
                           width: double.infinity,
@@ -133,5 +135,44 @@ class _BankAcountsPageState extends State<BankAcountsPage> {
             ],
           ),
         ));
+  }
+
+  Row topbackbutton(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          height: 50,
+          color: Colors.black,
+          child: Row(
+            children: [
+              BackButton(
+                onPressed: () {
+                  context.pop();
+
+                  // Navigator.pushNamed(context, path);
+                  // Navigator.pop(context);
+                },
+              ),
+              ResponsiveVisibility(
+                  visible: true,
+                  hiddenWhen: const [Condition.smallerThan(name: TABLET)],
+                  child: Text("Back"))
+            ],
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: Image.asset(
+              logo,
+              width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                  ? 202
+                  : 101,
+              height:
+                  ResponsiveWrapper.of(context).isLargerThan(MOBILE) ? 62 : 31,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

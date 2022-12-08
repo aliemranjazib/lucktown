@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
 import 'dart:io';
@@ -35,7 +36,7 @@ class _BankTopUpMainPageState extends State<BankTopUpMainPage> {
   TextEditingController number = TextEditingController();
   final formkey = GlobalKey<FormState>();
   List<BankModelResponseAccounts?> cc = [];
-
+  bool isUploading = false;
   final imagePicker = ImagePicker();
   List<XFile> images = [];
   List bb = [];
@@ -55,7 +56,7 @@ class _BankTopUpMainPageState extends State<BankTopUpMainPage> {
           "data": {
             "topUpAmount": "$amount",
             "topUpBankId": "$bankId",
-            "imageUrl": "",
+            "imageUrl": "$imageUrl",
             "promo": ""
           }
         }),
@@ -81,6 +82,9 @@ class _BankTopUpMainPageState extends State<BankTopUpMainPage> {
   }
 
   Future uploadTopUp(String imagedata) async {
+    setState(() {
+      isUploading = true;
+    });
     try {
       final response = await http.post(
         Uri.parse('${memberBaseUrl}upload/topUpReceipt'),
@@ -96,16 +100,25 @@ class _BankTopUpMainPageState extends State<BankTopUpMainPage> {
       );
       switch (response.statusCode) {
         case 200:
+          setState(() {
+            isUploading = true;
+          });
           Map<String, dynamic> data = await json.decode(response.body);
           print(data['return']['imgUrl']);
           CustomToast.customToast(context, data['msg']);
           requestTopUp(context, cc.first!.bankId!, number.text,
               data['return']['imgUrl']);
+          setState(() {
+            isUploading = false;
+          });
           break;
         case 400:
           Map<String, dynamic> data = await json.decode(response.body);
           CustomToast.customToast(context, data['msg']);
           // sm = SelectCountryModel.fromJson(item);
+          setState(() {
+            isUploading = false;
+          });
           break;
         default:
           Map<String, dynamic> data = await json.decode(response.body);
@@ -174,85 +187,90 @@ class _BankTopUpMainPageState extends State<BankTopUpMainPage> {
         backgroundColor: Colors.black,
         body: Column(
           children: [
-            topbackbutton(context, web_profile_page),
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Form(
-                key: formkey,
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: getBanks.isloading
-                          ? Center(child: CircularProgressIndicator())
-                          : DropdownButtonFormField(
-                              hint: const Text("choose bank"),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.all(10),
-                              ),
-                              validator: (value) {
-                                if (value == null) {
-                                  return "bank must be selected";
+            topbackbutton(context, RouteCon.profile_page),
+            isUploading
+                ? Center(child: CircularProgressIndicator())
+                : Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Form(
+                      key: formkey,
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: getBanks.isloading
+                                ? Center(child: CircularProgressIndicator())
+                                : DropdownButtonFormField(
+                                    hint: const Text("choose bank"),
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.all(10),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return "bank must be selected";
+                                      }
+                                      return null;
+                                    },
+                                    value: selectedValue,
+                                    items: getBanks.bm.response!.accounts!
+                                        .map((e) => DropdownMenuItem<String>(
+                                            value: e!.bankId,
+                                            child: Text(e.bankName!)))
+                                        .toList(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedValue = value.toString();
+                                        print(selectedValue);
+                                        cc = getBanks.bm.response!.accounts!
+                                            .where((element) =>
+                                                element!.bankId ==
+                                                selectedValue)
+                                            .toList();
+                                        print("bnabn ${cc.first!.accountName}");
+                                      });
+                                    }),
+                          ),
+                          SizedBox(height: 20),
+                          cc.isEmpty
+                              ? Container()
+                              : Column(
+                                  children: [
+                                    selectedAccount(
+                                        "BANK : ", cc.first!.bankName),
+                                    selectedAccount("Account Name : ",
+                                        cc.first!.accountName),
+                                    selectedAccount("Account No. : ",
+                                        cc.first!.accountNumber),
+                                  ],
+                                ),
+                          SizedBox(height: 20),
+                          CurrencyTextField(
+                              title: "Topup Amount",
+                              controller: number,
+                              validate: (p0) {
+                                if (p0!.isEmpty) {
+                                  return "amount must enter";
                                 }
                                 return null;
                               },
-                              value: selectedValue,
-                              items: getBanks.bm.response!.accounts!
-                                  .map((e) => DropdownMenuItem<String>(
-                                      value: e!.bankId,
-                                      child: Text(e.bankName!)))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue = value.toString();
-                                  print(selectedValue);
-                                  cc = getBanks.bm.response!.accounts!
-                                      .where((element) =>
-                                          element!.bankId == selectedValue)
-                                      .toList();
-                                  print("bnabn ${cc.first!.accountName}");
-                                });
-                              }),
+                              hintText: "account number"),
+                          SizedBox(height: 20),
+                          PrimaryButton(
+                              title: "SUBMIT",
+                              loading: isUploading,
+                              onPress: () {
+                                if (formkey.currentState!.validate()) {
+                                  pickImage();
+                                }
+                              },
+                              width: double.infinity),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 20),
-                    cc.isEmpty
-                        ? Container()
-                        : Column(
-                            children: [
-                              selectedAccount("BANK : ", cc.first!.bankName),
-                              selectedAccount(
-                                  "Account Name : ", cc.first!.accountName),
-                              selectedAccount(
-                                  "Account No. : ", cc.first!.accountNumber),
-                            ],
-                          ),
-                    SizedBox(height: 20),
-                    CurrencyTextField(
-                        title: "Topup Amount",
-                        controller: number,
-                        validate: (p0) {
-                          if (p0!.isEmpty) {
-                            return "amount must enter";
-                          }
-                          return null;
-                        },
-                        hintText: "account number"),
-                    SizedBox(height: 20),
-                    PrimaryButton(
-                        title: "SUBMIT",
-                        onPress: () {
-                          if (formkey.currentState!.validate()) {
-                            pickImage();
-                          }
-                        },
-                        width: double.infinity),
-                  ],
-                ),
-              ),
-            )
+                  )
           ],
         ));
   }

@@ -283,6 +283,7 @@ class _ContactMainPageState extends State<ContactMainPage> {
           });
           // print("${sm.msg} ${response1.statusCode}");
           CustomToast.customToast(context, "${data['msg']}");
+          Navigator.pop(context);
 
           break;
         case 400:
@@ -333,30 +334,49 @@ class _ContactMainPageState extends State<ContactMainPage> {
           child: Column(
             children: [
               Header(),
-              Container(
-                child: TabBar(indicatorColor: kPrimaryColor, tabs: [
-                  Tab(text: "Friend list"),
-                  Tab(text: "Friend request"),
-                  Tab(text: "Friend deleted"),
-                ]),
-              ),
-              Container(
-                //Add this to give height
-                height: MediaQuery.of(context).size.height,
-                child: TabBarView(children: [
-                  Container(
-                    child: contactsModel.response == null
-                        ? Center(child: CircularProgressIndicator())
-                        : friendList(),
-                  ),
-                  Container(
-                    child: Text("Friend request"),
-                  ),
-                  Container(
-                    child: Text("Friend deleted"),
-                  ),
-                ]),
-              ),
+              contactsModel.response == null
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Color(0xffBD8E37),
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+                      ),
+                    )
+                  : friendList(),
+              // Container(
+              //   child: contactsModel.response == null
+              //       ? Center(child: CircularProgressIndicator())
+              //       : friendList(),
+              // )
+              // Container(
+              //   child: TabBar(indicatorColor: kPrimaryColor, tabs: [
+              //     Tab(text: "Friend list"),
+              //     Tab(text: "Friend request"),
+              //     Tab(text: "Friend deleted"),
+              //   ]),
+              // ),
+              // Container(
+              //   //Add this to give height
+              //   height: MediaQuery.of(context).size.height,
+              //   child: TabBarView(children: [
+              //     Container(
+              //       child: contactsModel.response == null
+              //           ? Center(
+              //               child: CircularProgressIndicator(
+              //               backgroundColor: Color(0xffBD8E37),
+              //               valueColor: AlwaysStoppedAnimation<Color>(
+              //                   Color(0xffFCD877)),
+              //             ))
+              //           : friendList(),
+              //     ),
+              //     Container(
+              //       child: Text("Friend request"),
+              //     ),
+              //     Container(
+              //       child: Text("Friend deleted"),
+              //     ),
+              //   ]),
+              // ),
             ],
           ),
         ),
