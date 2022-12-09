@@ -3,7 +3,7 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "88557c53d0d7110b921960d8546ee132",
+  "assets/AssetManifest.json": "8ab7c01137da7c65b5578ece81a199ea",
 "assets/assets/images/arrow-left.png": "b7edeac1e345823e340b3deceb92e158",
 "assets/assets/images/avatar.png": "fc78731b38a68b381582420cb49217b6",
 "assets/assets/images/BACKGROUND_2.png": "faf0cdfb1be4c694ba9f9259497f9c1b",
@@ -15,7 +15,6 @@ const RESOURCES = {
 "assets/assets/images/contact_search.png": "9b8262fa0b61d2311310198faa077950",
 "assets/assets/images/country_pick.png": "09c08b40d3ac0f88e807f79d9d0295e7",
 "assets/assets/images/egame.png": "0144db0b81fe14f1cf730b71f7e2a650",
-"assets/assets/images/egame_banner.png": "7122de169f3892b6c64662d3176f34df",
 "assets/assets/images/eye_open.png": "75b76d5b49a58ced75a7b595dee943dd",
 "assets/assets/images/facebook.png": "23787362ffc18ad02cfb1a2afd349fae",
 "assets/assets/images/favourite.png": "4dd395a980202345d608389807baa023",
@@ -50,16 +49,13 @@ const RESOURCES = {
 "assets/assets/images/spin.png": "afc71274275aa620370ad994c0d192c7",
 "assets/assets/images/spin_move.png": "d43af1e0a0c7bcc65b13988c094f8036",
 "assets/assets/images/sport.png": "270fa69438e442763d0fb83ce7d8ac20",
-"assets/assets/images/star.png": "46019a01e176c8971b11a254e0386420",
 "assets/assets/images/subtract.png": "816931317c335cf02869793df4620546",
 "assets/assets/images/tablets_sidebar.png": "08814474f5cdda3d80f02677f5ab4261",
-"assets/assets/images/thailand.png": "fda0045316bc49d0199df016b446778d",
 "assets/assets/images/topup.png": "7686c0a9a6736dd25eb6d82193ea5c62",
 "assets/assets/images/transaction.png": "81c04d41056afb6308f2b86e130c3335",
 "assets/assets/images/transfer.png": "f0054f64c4d66e4c92bdd866b9e41a38",
 "assets/assets/images/unlock.png": "df53437ce50b5647595e028c490917d5",
 "assets/assets/images/user.png": "51c814aeb281f4cfd8bf8df673bd8ee1",
-"assets/assets/images/vietnam.png": "359b254d8f1c9ec94e7afa37e0cff013",
 "assets/FontManifest.json": "83df7500a44d641665be0bb44c8f693d",
 "assets/fonts/Gotham-Bold.otf": "92ab8603f1cd43d0de15482236890449",
 "assets/fonts/GothamLight.ttf": "8566e2336952927984495865df90963c",
@@ -339,9 +335,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "a5cd8dbe58e54d617ad77cee3b0f72eb",
-"/": "a5cd8dbe58e54d617ad77cee3b0f72eb",
-"main.dart.js": "0d72b2f88cb921cf687d6ca254a365c6",
+"index.html": "999b57b303868c95838abb6e60053b83",
+"/": "999b57b303868c95838abb6e60053b83",
+"main.dart.js": "b9a98719d6488f48b7180596071cc04b",
 "manifest.json": "43c2c4f002e72595606a862fcf94652b",
 "version.json": "029bbf2d2f2beed5e7e1421aa4587bcd"
 };
