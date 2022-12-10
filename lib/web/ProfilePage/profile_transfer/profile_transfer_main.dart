@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_dialogue.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
@@ -11,22 +12,21 @@ import 'package:flutter_application_lucky_town/web/contact/searchfriendmodel.dar
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/header.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../../utils/db_services/share_pref.dart';
-import '../../web_menue/SideMenu.dart';
-import '../menue_folder/menueProvider.dart';
+import '../../../utils/db_services/share_pref.dart';
 
-class ContactMainPage extends StatefulWidget {
+class ProfileTransferPage extends StatefulWidget {
   @override
-  State<ContactMainPage> createState() => _ContactMainPageState();
+  State<ProfileTransferPage> createState() => _ProfileTransferPageState();
 }
 
-class _ContactMainPageState extends State<ContactMainPage> {
+class _ProfileTransferPageState extends State<ProfileTransferPage> {
   bool isLoadingGif = false;
   bool isSearching = false;
   bool isAdding = false;
@@ -335,6 +335,32 @@ class _ContactMainPageState extends State<ContactMainPage> {
     super.initState();
   }
 
+  filterData(String query) {
+    var dummySearch = contactsModel.response!.list;
+    dummySearch!.addAll(contactsModel.response!.list!);
+    if (query.isNotEmpty) {
+      var dummyData = contactsModel.response!.list!;
+      dummySearch.forEach((element) {
+        if (element!.memberUsername!
+            .toLowerCase()
+            .contains(query.toLowerCase())) {
+          dummyData.add(element);
+        }
+      });
+      setState(() {
+        contactsModel.response!.list!.clear();
+        contactsModel.response!.list!.addAll(dummyData);
+      });
+      return;
+    } else {
+      setState(() {
+        contactsModel.response!.list!.clear();
+        contactsModel.response!.list!.addAll(contactsModel.response!.list!);
+      });
+      // return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -347,7 +373,48 @@ class _ContactMainPageState extends State<ContactMainPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Header(),
+              // Header(),
+              Row(
+                children: [
+                  Container(
+                    height: 50,
+                    color: Colors.black,
+                    child: Row(
+                      children: [
+                        BackButton(
+                          onPressed: () {
+                            // GoRouter.of(context).goNamed(RouteCon.profile_page);
+                            GoRouter.of(context).pop();
+                          },
+                        ),
+                        ResponsiveVisibility(
+                            visible: true,
+                            hiddenWhen: const [
+                              Condition.smallerThan(name: TABLET)
+                            ],
+                            child: Text("Back"))
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Image.asset(
+                        logo,
+                        width:
+                            ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                                ? 202
+                                : 101,
+                        height:
+                            ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                                ? 62
+                                : 31,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 50),
+
               contactsModel.response == null
                   ? Center(
                       child: CircularProgressIndicator(
@@ -357,40 +424,6 @@ class _ContactMainPageState extends State<ContactMainPage> {
                       ),
                     )
                   : friendList(),
-              // Container(
-              //   child: contactsModel.response == null
-              //       ? Center(child: CircularProgressIndicator())
-              //       : friendList(),
-              // )
-              // Container(
-              //   child: TabBar(indicatorColor: kPrimaryColor, tabs: [
-              //     Tab(text: "Friend list"),
-              //     Tab(text: "Friend request"),
-              //     Tab(text: "Friend deleted"),
-              //   ]),
-              // ),
-              // Container(
-              //   //Add this to give height
-              //   height: MediaQuery.of(context).size.height,
-              //   child: TabBarView(children: [
-              //     Container(
-              //       child: contactsModel.response == null
-              //           ? Center(
-              //               child: CircularProgressIndicator(
-              //               backgroundColor: Color(0xffBD8E37),
-              //               valueColor: AlwaysStoppedAnimation<Color>(
-              //                   Color(0xffFCD877)),
-              //             ))
-              //           : friendList(),
-              //     ),
-              //     Container(
-              //       child: Text("Friend request"),
-              //     ),
-              //     Container(
-              //       child: Text("Friend deleted"),
-              //     ),
-              //   ]),
-              // ),
             ],
           ),
         ),
@@ -403,261 +436,227 @@ class _ContactMainPageState extends State<ContactMainPage> {
         ? SingleChildScrollView(
             child: Form(
               key: formKey,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 44, 49, 53),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: TextFormField(
-                              controller: searchController,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "should not be empty";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Search",
-                                hintStyle: TextStyle(
-                                  color: Colors.white,
-                                ),
-                                prefixIcon: Container(
-                                  child: Image.asset(contact_search),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 44, 49, 53),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: TextFormField(
+                                controller: searchController,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "should not be empty";
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  // filterData(searchController.text);
+                                  setState(() {
+                                    contactsModel.response!.list = contactsModel
+                                        .response!.list!
+                                        .where((element) => element!
+                                            .memberUniqueKey!
+                                            .contains(searchController.text))
+                                        .toList();
+                                  });
+                                  // print(mm);
+                                  // var dummy = contactsModel.response!.list;
+
+                                  // contactsModel.response!.list = contactsModel
+                                  //     .response!.list!
+                                  //     .where((element) =>
+                                  //         element!.memberUsername ==
+                                  //         searchController.text)
+                                  //     .toList();
+                                  // print(contactsModel
+                                  //     .response!.list!.first!.memberId!);
+                                },
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Search",
+                                  hintStyle: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  prefixIcon: Container(
+                                    child: Image.asset(contact_search),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-
-                        // Expanded(
-                        //   child: Container(
-                        //     decoration: BoxDecoration(
-                        //       color: Color.fromARGB(255, 44, 49, 53),
-                        //       borderRadius: BorderRadius.circular(25),
-                        //     ),
-                        //     child: TextFormField(
-                        //       controller: searchController,
-                        //       validator: (value) {
-                        //         if (value!.isEmpty) {
-                        //           return "should not be empty";
-                        //         }
-                        //         return null;
-                        //       },
-                        //       decoration: InputDecoration(
-                        //         border: InputBorder.none,
-                        //         hintText: "Search",
-                        //         hintStyle: TextStyle(
-                        //           color: Colors.white,
-                        //         ),
-                        //         prefixIcon: Container(
-                        //           child: Image.asset(contact_search),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-
-                        SizedBox(
-                          width: 20,
-                        ),
-                        // PrimaryButton(
-                        //   title: "Search",
-                        //   onPress: () {
-                        //     // if (formKey.currentState!.validate()) {
-                        //       // if (buttonText == "Send Request") {
-                        //       //   addFriend();
-                        //       //   ////////
-                        //       // } else if (buttonText == "+ New Friend")
-                        //       //   searchFriend();
-                        //     // }
-                        //   },
-                        //   width: 120,
-                        // ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        PrimaryButton(
-                          title: "+ New Friend",
-                          onPress: () {
-                            showBoxDialogue();
-                            // if (formKey.currentState!.validate()) {
-                            //   if (buttonText == "Send Request") {
-                            //     addFriend();
-                            //     ////////
-                            //   } else if (buttonText == "+ New Friend")
-                            //     searchFriend();
-                            // }
-                          },
-                          width: 120,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  contactsModel.response == null
-                      ? CircularProgressIndicator()
-                      : Container(
-                          color: Color(0xff121519),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 50, vertical: 20),
-                            child: Row(
-                              children: [
-                                // Image.asset("name"),
-                                Expanded(
-                                  flex: 2,
-                                  child: Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text("Avatar"),
-                                  ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    contactsModel.response == null
+                        ? CircularProgressIndicator()
+                        : SingleChildScrollView(
+                            child: Container(
+                              color: Color(0xff121519),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 50, vertical: 20),
+                                child: Row(
+                                  children: [
+                                    // Image.asset("name"),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text("Avatar"),
+                                      ),
+                                    ),
+                                    Expanded(flex: 2, child: Text("Username")),
+                                    Expanded(
+                                        flex: 2, child: Text("Phone Number")),
+                                    Expanded(
+                                        flex: 2, child: Text("Last Update")),
+                                    Expanded(
+                                        flex: 2,
+                                        child: Text("Transfer Amount")),
+                                    Expanded(
+                                        flex: 2,
+                                        child: Center(child: Text("Action"))),
+                                  ],
                                 ),
-                                Expanded(flex: 2, child: Text("Username")),
-                                Expanded(flex: 2, child: Text("Phone Number")),
-                                Expanded(flex: 2, child: Text("Last Update")),
-                                Expanded(
-                                    flex: 2, child: Text("Transfer Amount")),
-                                Expanded(
-                                    flex: 2,
-                                    child: Center(child: Text("Action"))),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: contactsModel.response!.list!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final contacts = contactsModel.response!.list![index]!;
-                      return Container(
-                        color: Color(0xff212631),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: contactDetialRow(
-                            icon1: Icons.edit,
-                            onPress: () {
-                              print(contactsModel
-                                  .response!.list![index]!.friendUniqueKey);
-                            },
-                            icon2: Icons.delete,
-                            onPressDelete: () {
-                              print(contactsModel
-                                  .response!.list![index]!.friendUniqueKey);
-                              deleteFriend(contactsModel
-                                  .response!.list![index]!.friendUniqueKey!);
-                            },
-                            imgUrl: contacts.memberAvatarUrl!,
-                            lastUpdate: contacts.modifiedDatetime!,
-                            phoneNumber: contacts.friendStatus!,
-                            userName: contacts.memberUsername!,
-                            onPressAmount: () {
-                              print(contacts.friendId);
-                              print("Aaaaa");
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return CustomDialog(
-                                    name: contacts.memberUsername,
-                                    memberUniqueKey: contacts.memberUniqueKey!,
-                                    amount: "0.0",
-                                    avatar: contacts.memberAvatarUrl ??
-                                        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973461_960_720.png",
-                                  );
-                                },
-                              );
-                            },
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: contactsModel.response!.list!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final contacts = contactsModel.response!.list![index]!;
+                        return Container(
+                          color: Color(0xff212631),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: contactDetialRow(
+                              icon1: Icons.edit,
+                              onPress: () {
+                                print(contactsModel
+                                    .response!.list![index]!.friendUniqueKey);
+                              },
+                              icon2: Icons.delete,
+                              onPressDelete: () {
+                                print(contactsModel
+                                    .response!.list![index]!.friendUniqueKey);
+                                deleteFriend(contactsModel
+                                    .response!.list![index]!.friendUniqueKey!);
+                              },
+                              imgUrl: contacts.memberAvatarUrl!,
+                              lastUpdate: contacts.modifiedDatetime!,
+                              phoneNumber: contacts.friendStatus!,
+                              userName: contacts.memberUsername!,
+                              onPressAmount: () {
+                                print(contacts.friendId);
+                                print("Aaaaa");
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CustomDialog(
+                                      name: contacts.memberUsername,
+                                      memberUniqueKey:
+                                          contacts.memberUniqueKey!,
+                                      amount: "0.0",
+                                      avatar: contacts.memberAvatarUrl ??
+                                          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973461_960_720.png",
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 20),
-                ],
+                        );
+                      },
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
           )
 
         ///mobile view///////
-        : SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: PrimaryButton(
-                      title: "title", onPress: () {}, width: double.infinity),
-                ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 44, 49, 53),
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Search",
-                        hintStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                        prefixIcon: Container(
-                          child: Image.asset(contact_search),
-                        ),
+        : Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: PrimaryButton(
+                    title: "title", onPress: () {}, width: double.infinity),
+              ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 44, 49, 53),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Search",
+                      hintStyle: TextStyle(
+                        color: Colors.white,
+                      ),
+                      prefixIcon: Container(
+                        child: Image.asset(contact_search),
                       ),
                     ),
                   ),
                 ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: contactsModel.response!.list!.length,
-                        itemBuilder: (context, index) {
-                          final contacts =
-                              contactsModel.response!.list![index]!;
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: contactsModel.response!.list!.length,
+                      itemBuilder: (context, index) {
+                        final contacts = contactsModel.response!.list![index]!;
 
-                          return ListTile(
-                            // leading: Icon(Icons.arrow_forward_ios),
-                            leading: Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  100,
-                                ),
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                  contacts.memberAvatarUrl!,
-                                )),
+                        return ListTile(
+                          // leading: Icon(Icons.arrow_forward_ios),
+                          leading: Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                100,
                               ),
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                contacts.memberAvatarUrl!,
+                              )),
                             ),
-                            title: Text(contacts.memberUsername!),
-                            trailing: Icon(Icons.arrow_forward_ios_outlined),
-                          );
-                        },
-                      ),
+                          ),
+                          title: Text(contacts.memberUsername!),
+                          trailing: Icon(Icons.arrow_forward_ios_outlined),
+                        );
+                      },
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           );
   }
 }
@@ -731,23 +730,19 @@ class contactDetialRow extends StatelessWidget {
                   onPressAmount!();
                 },
                 child: Container(
-                  height: 40,
+                  height: 43,
                   width: double.infinity,
+                  padding: EdgeInsets.only(left: 5),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Color.fromARGB(255, 44, 49, 53),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Enter amount"),
-                    // child: TextField(
-                    //   controller: controller,
-                    //   onEditingComplete: onSumbit,
-                    //   decoration: InputDecoration(
-                    //     border: InputBorder.none,
-                    //     hintText: "Enter Amount",
-                    //   ),
-                    // ),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color(0xff252A2D)),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Enter amount",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(color: Colors.white60),
+                    ),
                   ),
                 ),
               ),

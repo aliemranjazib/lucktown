@@ -12,7 +12,7 @@ import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bank_model.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/bankprovider.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange.dart';
-import 'package:flutter_application_lucky_town/web/ProfilePage/setting_page.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/setting_page.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/header.dart';
 import 'package:provider/provider.dart';

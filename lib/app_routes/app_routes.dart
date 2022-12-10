@@ -12,6 +12,9 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/bankacounts/banka
 import 'package:flutter_application_lucky_town/web/ProfilePage/checktopup/checktopup_page.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/checktopup/checktopupmodel.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/profile_transfer/profile_transfer_main.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/forget_password/settingforget_otp_page.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/forget_password/settingset_new_password.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/topup_bank_transfer/bantopup_main_page.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/withdraw/withdraw_page.dart';
 import 'package:flutter_application_lucky_town/web/contact/contact_main.dart';
@@ -28,7 +31,8 @@ import 'package:flutter_application_lucky_town/web/web_forget_page/web_forget_pa
 import 'package:go_router/go_router.dart';
 
 import '../models/user_session_model.dart';
-import '../web/ProfilePage/setting_page.dart';
+import '../web/ProfilePage/settings/forget_password/settingweb_forget_page.dart';
+import '../web/ProfilePage/settings/setting_page.dart';
 import '../web/transactions/transaction_mainpage.dart';
 import '../web/web_otp/bind_otp_screen.dart';
 
@@ -41,7 +45,6 @@ class RouteCon {
   static const String home_Page = 'webhome';
   static const String signin_page = 'websignin';
   static const String bind_otp_page = 'web_otp';
-  static const String forget_page = 'web_forget';
   static const String set_new_pin_page = 'web_set_pin';
   static const String product_detail = 'web_detail_page';
   static const String profile_page = 'web_profile_page';
@@ -56,13 +59,24 @@ class RouteCon {
   static const String add_bank_acount_page = 'web_add_bank_acount_page';
   static const String bank_topup_main_page = 'web_bank_topup_main_page';
   static const String withdraw_page = 'web_withdraw_page';
+  static const String forget_page = 'web_forget';
   static const String forget_otp = 'forget_otp';
   static const String set_new_password = 'set_new_password';
   static const String pending_top_up = 'pending_top_up';
+  //////////////////////////
+  static const String setting_forget_page = 'setting_forget_page';
+  static const String setting_forget_otp = 'setting_forget_otp';
+  static const String setting_set_new_password = 'setting_set_new_password';
+  //////////profile transfer
+  static const String profile_tranfer_main_page = 'profile_tranfer_main_page';
+
+  ///
+
 }
 
 class AppRoute {
   GoRouter router = GoRouter(
+    debugLogDiagnostics: true,
     routes: [
       // case web_product_detail:
       //         // return ProductDetailPage();
@@ -86,11 +100,7 @@ class AppRoute {
         path: "/setnewpin",
         builder: (context, state) => WebSetNewPinPage(),
       ),
-      GoRoute(
-        name: RouteCon.contact_main_page,
-        path: "/contacts",
-        builder: (context, state) => ContactMainPage(),
-      ),
+
       GoRoute(
           name: RouteCon.profile_page,
           path: "/profile",
@@ -108,6 +118,13 @@ class AppRoute {
               path: "currency_exchange",
               builder: (context, state) {
                 return CurrencyExchangePage();
+              },
+            ),
+            GoRoute(
+              name: RouteCon.profile_tranfer_main_page,
+              path: "profile_tranfer_main_page",
+              builder: (context, state) {
+                return ProfileTransferPage();
               },
             ),
             GoRoute(
@@ -135,6 +152,32 @@ class AppRoute {
                 );
               },
             ),
+            GoRoute(
+                name: RouteCon.setting_forget_page,
+                path: "recoverpasswords",
+                builder: (context, state) => SeetingWebForgetPage(),
+                routes: [
+                  GoRoute(
+                    name: RouteCon.setting_forget_otp,
+                    path: "forgetotps:userToken",
+                    builder: (context, state) {
+                      return SettingsForgetOtpPage(
+                        userToken: state.params["userToken"]!,
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    name: RouteCon.setting_set_new_password,
+                    path: "setnewpasswords",
+                    builder: (context, state) {
+                      SeetingTokenAndOtp two =
+                          state.extra as SeetingTokenAndOtp;
+                      return SettingsSetNewPasswordPage(
+                        tokenAndOtp: two,
+                      );
+                    },
+                  ),
+                ]),
           ]),
       GoRoute(
         name: RouteCon.transaction_page,
@@ -196,6 +239,11 @@ class AppRoute {
             }
           },
           routes: []),
+      GoRoute(
+        name: RouteCon.contact_main_page,
+        path: "/contacts",
+        builder: (context, state) => ContactMainPage(),
+      ),
       GoRoute(
         name: RouteCon.scaffold_page,
         path: "/selectcountry",

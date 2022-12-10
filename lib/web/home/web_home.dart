@@ -332,9 +332,16 @@ class _WebHomePageState extends State<WebHomePage> {
           });
           break;
         case 514:
-          context.goNamed(RouteCon.scaffold_page);
+          // Map<String, dynamic> data = json.decode(response1.body);
+          // print(
+          //     "coin ${profileData.response!.accounts!.first!.accountName ?? "null"}");
+          LuckySharedPef.removeAuthToken();
+          LuckySharedPef.removeOnlyAuthToken();
+          GoRouter.of(context).goNamed(RouteCon.home_Page);
+          setState(() {
+            isLoadingGif = false;
+          });
 
-          // Navigator.pushNamed(context, web_scaffold_page);
           break;
         case 500:
           context.goNamed(RouteCon.scaffold_page);
@@ -398,7 +405,15 @@ class _WebHomePageState extends State<WebHomePage> {
           // filterProduct("all");
           break;
         case 514:
-          context.goNamed(RouteCon.scaffold_page);
+          // Map<String, dynamic> data = json.decode(response1.body);
+          // print(
+          //     "coin ${profileData.response!.accounts!.first!.accountName ?? "null"}");
+          LuckySharedPef.removeAuthToken();
+          LuckySharedPef.removeOnlyAuthToken();
+          GoRouter.of(context).goNamed(RouteCon.home_Page);
+          setState(() {
+            isLoadingGif = false;
+          });
 
           break;
         case 500:
@@ -445,6 +460,18 @@ class _WebHomePageState extends State<WebHomePage> {
           break;
         case 500:
           context.goNamed(RouteCon.scaffold_page);
+
+          break;
+        case 514:
+          // Map<String, dynamic> data = json.decode(response1.body);
+          // print(
+          //     "coin ${profileData.response!.accounts!.first!.accountName ?? "null"}");
+          LuckySharedPef.removeAuthToken();
+          LuckySharedPef.removeOnlyAuthToken();
+          GoRouter.of(context).goNamed(RouteCon.home_Page);
+          setState(() {
+            isLoadingGif = false;
+          });
 
           break;
         default:

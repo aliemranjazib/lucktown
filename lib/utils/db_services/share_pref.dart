@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LuckySharedPef extends ChangeNotifier {
   static SharedPreferences? sharedPreferences;
   static const authToken = 'authToken';
-  static const onlyAuthToken = 'authToken';
+  static const onlyAuthToken = 'onlyAuthToken';
 
   // static const userKey = 'userKey';
   // UserSessionModel? um;
@@ -23,8 +23,8 @@ class LuckySharedPef extends ChangeNotifier {
     return sharedPreferences!.getString(authToken) ?? "";
   }
 
-  static Future saveOnlyAuthToken(String token) {
-    return sharedPreferences!.setString(onlyAuthToken, token);
+  static Future saveOnlyAuthToken(String tokenonly) {
+    return sharedPreferences!.setString(onlyAuthToken, tokenonly);
   }
 
   static String getOnlyAuthToken() {
@@ -34,28 +34,6 @@ class LuckySharedPef extends ChangeNotifier {
   static Future<bool> removeOnlyAuthToken() async {
     return sharedPreferences!.remove(onlyAuthToken);
   }
-  // forAll(String data) async {
-  //   // data = getAuthToken();
-  //   Map<String, dynamic> decodedata = jsonDecode(data);
-  //   um = UserSessionModel.fromJson(decodedata);
-  //   notifyListeners();
-  // }
-
-  // getAll() {}
-
-  // static Future saveMapValues(String data) {
-  //   Map<String, dynamic> json = jsonDecode(data);
-  //   String user = jsonEncode(json);
-  //   return sharedPreferences!.setString(userKey, user);
-  // }
-
-  // static Response getMapValues() {
-  //   // Map<String, dynamic> json = jsonDecode(data);
-  //   Map<String, dynamic> userjson =
-  //       jsonDecode(sharedPreferences!.getString(userKey) ?? "");
-  //   // Response s = Response.fromJson(userjson);
-  //   return s;
-  // }
 
   static Future saveAuthToken(String token) {
     return sharedPreferences!.setString(authToken, token);

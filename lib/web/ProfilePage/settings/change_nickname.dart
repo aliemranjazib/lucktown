@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/ProfilePage.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange.dart';
-import 'package:flutter_application_lucky_town/web/ProfilePage/setting_page.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/setting_page.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../utils/components/custom_toast.dart';
@@ -80,11 +81,11 @@ class _ChangeNickeNameState extends State<ChangeNickeName> {
 
   @override
   Widget build(BuildContext context) {
+    // print(userM!.response!.user.!);
     return AlertDialog(
       actionsPadding: EdgeInsets.symmetric(horizontal: 40),
       // backgroundColor: Color.fromARGB(255, 46, 45, 45),
       backgroundColor: kContainerBg,
-
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

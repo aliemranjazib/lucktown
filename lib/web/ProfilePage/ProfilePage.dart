@@ -225,9 +225,21 @@ class _ProfilePageState extends State<ProfilePage> {
           });
 
           break;
+        case 514:
+          // Map<String, dynamic> data = json.decode(response1.body);
+          // print(
+          //     "coin ${profileData.response!.accounts!.first!.accountName ?? "null"}");
+          LuckySharedPef.removeAuthToken();
+          LuckySharedPef.removeOnlyAuthToken();
+          GoRouter.of(context).goNamed(RouteCon.home_Page);
+          setState(() {
+            isLoadingGif = false;
+          });
+
+          break;
         default:
           final data = json.decode(response1.body);
-          print(response1.statusCode);
+          print("response-------------${response1.statusCode}");
           print(data);
           setState(() {
             isLoadingGif = false;
@@ -512,8 +524,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 transfer,
                                                 "Transfer",
                                                 () {
-                                                  context.goNamed(RouteCon
-                                                      .contact_main_page);
+                                                  context.pushNamed(RouteCon
+                                                      .profile_tranfer_main_page);
                                                 },
                                               ),
                                               ResponsiveVisibility(
@@ -571,7 +583,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 CurrencyExchange,
                                                 "Currency\nExchange",
                                                 () {
-                                                  context.goNamed(RouteCon
+                                                  context.pushNamed(RouteCon
                                                       .currency_exchange_page);
                                                 },
                                               ),

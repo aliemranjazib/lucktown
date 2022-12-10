@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/custom_toast.dart';
+import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/web/transactions/all_wallet_transaction_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_application_lucky_town/web/transactions/all_game_transac
 class TransactionProvider extends ChangeNotifier {
   AllGameTransactionModel agt = AllGameTransactionModel();
   AllWalletTransactionModel agwt = AllWalletTransactionModel();
-
   bool isLoadinggt = false;
   bool isLoadingwt = false;
 
@@ -36,7 +36,7 @@ Future<AllWalletTransactionModel> apicallforWallet(context) async {
       Uri.parse('${memberBaseUrl}user/allWalletTransaction'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        "Authorization": await um!.response!.authToken!,
+        "Authorization": await LuckySharedPef.getOnlyAuthToken(),
       },
       body: jsonEncode(<String, dynamic>{
         "data": {
@@ -76,7 +76,7 @@ Future<AllGameTransactionModel> apicallforTransaction(context) async {
       Uri.parse('${memberBaseUrl}user/allGameTransaction'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        "Authorization": await um!.response!.authToken!,
+        "Authorization": await LuckySharedPef.getOnlyAuthToken(),
       },
       body: jsonEncode(<String, dynamic>{
         "data": {

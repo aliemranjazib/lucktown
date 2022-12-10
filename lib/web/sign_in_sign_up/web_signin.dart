@@ -310,23 +310,28 @@ class _WebSignInPageState extends State<WebSignInPage> {
                 seconds: 1,
               ), () {
             LuckySharedPef.saveAuthToken(response1.body);
+            // LuckySharedPef.saveOnlyAuthToken(data['response']['authSession']);
             // LuckySharedPef.saveOnlyAuthToken(data['response']['authToken']);
+            print("only auth ${data['response']['authToken']}");
           });
           // String? otp = data['response']['userToken'];
-
+          // LuckySharedPef.saveOnlyAuthToken(data['response']['authToken']);
           Future.delayed(
               Duration(
                 seconds: 1,
               ), () {
             String aa = LuckySharedPef.getAuthToken();
-            print(aa);
+            // String bb = LuckySharedPef.getOnlyAuthToken();
+
             // String bb = LuckySharedPef.getOnlyAuthToken();
             // print("get only auth ${bb}");
 
             Map<String, dynamic> decodedata = jsonDecode(aa);
             setState(() {
               um = UserSessionModel.fromJson(decodedata);
-              print("tttt ${um!.response!.user!.memberUsername}");
+              LuckySharedPef.saveOnlyAuthToken(um!.response!.authToken!);
+              // print("tttt ${um!.response!.user!.}");
+              // print("only auth is here${bb}");
             });
 
             context.goNamed(RouteCon.home_Page);

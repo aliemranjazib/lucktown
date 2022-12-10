@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/settings/change_nickname.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/change_payment_pin.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/change_phone.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../../utils/components/gradient_text.dart';
-import '../../utils/constants/contants.dart';
-import '../../web_menue/Drawer.dart';
+import '../../../utils/components/gradient_text.dart';
+import '../../../utils/constants/contants.dart';
+import '../../../web_menue/Drawer.dart';
 
 class SettingPage extends StatelessWidget {
   @override
@@ -68,8 +70,18 @@ class SettingPage extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         )),
-                    tiles("Change Login Password", () {}),
-                    tiles("Change Payment Pin", () {}),
+                    tiles("Change Login Password", () {
+                      GoRouter.of(context)
+                          .goNamed(RouteCon.setting_forget_page);
+                    }),
+                    tiles("Change Payment Pin", () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return ChangePaymentPin();
+                        },
+                      );
+                    }),
                     tiles("Change Nickname", () {
                       showDialog(
                         context: context,
@@ -78,7 +90,14 @@ class SettingPage extends StatelessWidget {
                         },
                       );
                     }),
-                    tiles("Change Phone Number", () {}),
+                    tiles("Change Phone Number", () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return ChangePhoneNumber();
+                        },
+                      );
+                    }),
                     tiles("Switch Account", () {}),
                     tiles("Change", () {}),
                     Align(
@@ -172,6 +191,7 @@ class SettingTextField extends StatelessWidget {
         SizedBox(height: 10),
         TextFormField(
           controller: controller,
+          validator: validate,
           // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           keyboardType: TextInputType.number,
           style: TextStyle(color: Colors.black),

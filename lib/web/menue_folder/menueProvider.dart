@@ -29,8 +29,8 @@ class MenuProvider extends ChangeNotifier {
         "Contact",
         "Transactions",
         "Profile",
-        'About us',
-        'Contact us',
+        // 'About us',
+        // 'Contact us',
       ];
 
   // List<MaterialPageRoute> menuRoute =[

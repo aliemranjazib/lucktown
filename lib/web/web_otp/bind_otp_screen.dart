@@ -321,17 +321,9 @@ class _BindOTPScreenState extends State<BindOTPScreen> {
                                     //runs when every textfield is filled
                                     onSubmit: (String verificationCode) {
                                       otpCode = verificationCode;
-                                      // showDialog(
-                                      //     context: context,
-                                      //     builder: (context) {
-                                      //       return AlertDialog(
-                                      //         title: Text("Verification Code"),
-                                      //         content: Text(
-                                      //             'Code entered is $verificationCode'),
-                                      //       );
-                                      //     });
                                     }, // end onSubmit
                                   ),
+
                                   SizedBox(height: 30),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),

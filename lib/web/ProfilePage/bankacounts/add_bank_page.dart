@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
-import 'package:flutter_application_lucky_town/web/ProfilePage/setting_page.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/setting_page.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
