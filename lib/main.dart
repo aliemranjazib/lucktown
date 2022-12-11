@@ -10,11 +10,11 @@ import 'package:flutter_application_lucky_town/web/transactions/transaction_prov
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:url_strategy/url_strategy.dart';
+// import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
   //////////////
-  setPathUrlStrategy();
+  // setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await LuckySharedPef.init();
   runApp(MultiProvider(
