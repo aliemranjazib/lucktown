@@ -7,6 +7,7 @@ Widget join_nowButton(VoidCallback click) {
     },
     child: Container(
       width: double.infinity,
+      constraints: BoxConstraints(maxHeight: 60, minHeight: 50),
       alignment: Alignment.center,
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(

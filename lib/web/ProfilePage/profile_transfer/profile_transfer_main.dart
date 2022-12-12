@@ -501,7 +501,11 @@ class _ProfileTransferPageState extends State<ProfileTransferPage> {
                       height: 20,
                     ),
                     contactsModel.response == null
-                        ? CircularProgressIndicator()
+                        ? CircularProgressIndicator(
+                            backgroundColor: Color(0xffBD8E37),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xffFCD877)),
+                          )
                         : SingleChildScrollView(
                             child: Container(
                               color: Color(0xff121519),

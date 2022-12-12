@@ -15,6 +15,7 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/currency_exchange
 import 'package:flutter_application_lucky_town/web/ProfilePage/settings/setting_page.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 import 'package:flutter_application_lucky_town/web_menue/header.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:darq/darq.dart';
 import 'package:image_picker/image_picker.dart';
@@ -187,9 +188,52 @@ class _BankTopUpMainPageState extends State<BankTopUpMainPage> {
         backgroundColor: Colors.black,
         body: Column(
           children: [
-            topbackbutton(context, RouteCon.profile_page),
+            Row(
+              children: [
+                Container(
+                  height: 50,
+                  color: Colors.black,
+                  child: Row(
+                    children: [
+                      BackButton(
+                        onPressed: () {
+                          GoRouter.of(context).pop();
+
+                          // Navigator.pushNamed(context, path);
+                          // Navigator.pop(context);
+                        },
+                      ),
+                      ResponsiveVisibility(
+                          visible: true,
+                          hiddenWhen: const [
+                            Condition.smallerThan(name: TABLET)
+                          ],
+                          child: Text("Back"))
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Image.asset(
+                      logo,
+                      width: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 202
+                          : 101,
+                      height: ResponsiveWrapper.of(context).isLargerThan(MOBILE)
+                          ? 62
+                          : 31,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             isUploading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(
+                    child: CircularProgressIndicator(
+                    backgroundColor: Color(0xffBD8E37),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+                  ))
                 : Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: Form(
@@ -201,7 +245,12 @@ class _BankTopUpMainPageState extends State<BankTopUpMainPage> {
                                 color: Colors.grey.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(10)),
                             child: getBanks.isloading
-                                ? Center(child: CircularProgressIndicator())
+                                ? Center(
+                                    child: CircularProgressIndicator(
+                                    backgroundColor: Color(0xffBD8E37),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xffFCD877)),
+                                  ))
                                 : DropdownButtonFormField(
                                     hint: const Text("choose bank"),
                                     decoration: const InputDecoration(

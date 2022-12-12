@@ -128,7 +128,12 @@ class _TransactionMainPageState extends State<TransactionMainPage> {
                 child: TabBarView(children: [
                   Container(
                     child: getTransactions.isLoadinggt
-                        ? Center(child: CircularProgressIndicator())
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            backgroundColor: Color(0xffBD8E37),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xffFCD877)),
+                          ))
                         : Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Container(
@@ -253,7 +258,12 @@ class _TransactionMainPageState extends State<TransactionMainPage> {
                   ),
                   Container(
                       child: getTransactions.isLoadingwt
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              backgroundColor: Color(0xffBD8E37),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xffFCD877)),
+                            ))
                           : Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Container(

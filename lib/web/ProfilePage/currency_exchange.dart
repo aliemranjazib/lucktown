@@ -86,7 +86,7 @@ class _CurrencyExchangePageState extends State<CurrencyExchangePage> {
                     children: [
                       BackButton(
                         onPressed: () {
-                          GoRouter.of(context).goNamed(RouteCon.profile_page);
+                          GoRouter.of(context).pop();
                         },
                       ),
                       ResponsiveVisibility(

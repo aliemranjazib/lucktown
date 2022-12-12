@@ -8,6 +8,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:go_router/go_router.dart';
 import '../../utils/components/gradient_text.dart';
 import '../../utils/constants/contants.dart';
+import "dart:html";
 
 class WebScaffold extends StatefulWidget {
   @override
@@ -94,6 +95,8 @@ class _WebScaffoldState extends State<WebScaffold> {
                           final data = getCountries.sm.response!.list![index]!;
                           return GestureDetector(
                             onTap: () {
+                              window.localStorage['tok'] = "okkk";
+
                               print("okkk");
                               getCountries.saveSelection({
                                 "name": data.name,

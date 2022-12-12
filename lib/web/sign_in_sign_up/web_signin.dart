@@ -45,7 +45,11 @@ class _WebSignInPageState extends State<WebSignInPage> {
   bool isValidatingUserName = false;
   bool isBinding = false;
   String text = "verify";
-  bool isPasswordShown = false;
+  bool isPasswordShown = true;
+  /////////
+  bool isSignUpPasswordShown = true;
+  bool isSignupConformPasswordShown = true;
+
   String? isoCode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController yourIdController = TextEditingController();
@@ -713,8 +717,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
               upperText: "Password",
               postIcons: IconButton(
                 icon: isPasswordShown
-                    ? Icon(Icons.visibility_off, color: primaryColor)
-                    : Icon(Icons.visibility, color: primaryColor),
+                    ? Icon(Icons.visibility, color: primaryColor)
+                    : Icon(Icons.visibility_off, color: primaryColor),
                 onPressed: () {
                   setState(() {
                     isPasswordShown = !isPasswordShown;
@@ -826,7 +830,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
             ),
             SizedBox(height: 30),
             EcoTextField(
-              isPassword: false,
+              isPassword: isSignUpPasswordShown,
               upperText: "Password",
               controller: passwordController,
               validate: (value) {
@@ -840,9 +844,15 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   }
                 }
               },
-              postIcons: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(eye_open),
+              postIcons: IconButton(
+                icon: isSignUpPasswordShown
+                    ? Icon(Icons.visibility, color: primaryColor)
+                    : Icon(Icons.visibility_off, color: primaryColor),
+                onPressed: () {
+                  setState(() {
+                    isSignUpPasswordShown = !isSignUpPasswordShown;
+                  });
+                },
               ),
               preIcons: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -858,7 +868,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                 Icons.done, "does not contain your email address"),
             SizedBox(height: 30),
             EcoTextField(
-              isPassword: false,
+              isPassword: isSignupConformPasswordShown,
               upperText: "Confirm Password",
               controller: confirmPasswordController,
               validate: (value) {
@@ -872,9 +882,16 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   }
                 }
               },
-              postIcons: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(eye_open),
+              postIcons: IconButton(
+                icon: isSignupConformPasswordShown
+                    ? Icon(Icons.visibility, color: primaryColor)
+                    : Icon(Icons.visibility_off, color: primaryColor),
+                onPressed: () {
+                  setState(() {
+                    isSignupConformPasswordShown =
+                        !isSignupConformPasswordShown;
+                  });
+                },
               ),
               preIcons: Padding(
                 padding: const EdgeInsets.all(8.0),

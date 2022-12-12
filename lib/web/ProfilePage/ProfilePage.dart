@@ -16,6 +16,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:url_launcher/url_launcher.dart';
+import "dart:html";
 
 import '../../app_routes/app_routes.dart';
 import '../../utils/constants/api_constants.dart';
@@ -164,9 +165,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 } else if (topupMethods[index] ==
                                     "Top Up Bank Transfer") {
                                   context
-                                      .goNamed(RouteCon.bank_topup_main_page);
+                                      .pushNamed(RouteCon.bank_topup_main_page);
                                 } else if (topupMethods[index] == "Withdraw") {
-                                  context.goNamed(RouteCon.withdraw_page);
+                                  context.pushNamed(RouteCon.withdraw_page);
                                 } else if (topupMethods[index] ==
                                     "Instant Top Up") {
                                   // Navigator.pop(context);
@@ -294,7 +295,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     getAllData();
-
     super.initState();
   }
 
@@ -324,7 +324,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 // WebMenu(),
                                 // Spacer(),
                                 userM!.response == null
-                                    ? CircularProgressIndicator()
+                                    ? CircularProgressIndicator(
+                                       backgroundColor: Color(0xffBD8E37),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+                                    )
                                     : Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: ProfileHeader(
@@ -670,7 +673,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 // topUpBar(),
                                 profileData.response == null
-                                    ? Center(child: CircularProgressIndicator())
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                        backgroundColor: Color(0xffBD8E37),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Color(0xffFCD877)),
+                                      ))
                                     : topUpBar(),
                                 transferBar(),
                               ],

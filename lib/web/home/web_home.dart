@@ -713,26 +713,35 @@ class _WebHomePageState extends State<WebHomePage> {
                                   //     value: userModel!.memberUsername!),
                                   // info(title: "Nickname", value: "oooo"),
                                   Info(
+                                      title: "LID",
+                                      value:
+                                          "${um!.response!.user!.vipLevelId ?? ""}"),
+                                  Info(
+                                      title: "NickName",
+                                      value:
+                                          "${um!.response!.user!.memberNickname ?? ""}"),
+                                  Info(
                                       title: "Referral",
                                       value:
-                                          "${um!.response!.user!.refMemberName ?? "null"}"),
+                                          "${um!.response!.user!.refMemberName ?? ""}"),
+
                                   SizedBox(height: 10),
                                   coin_chips(
                                     title: "Chips",
                                     value: profileData.response!.coinBalance ??
-                                        "null",
+                                        "0",
                                   ),
                                   coin_chips(
                                     title: "Cash",
                                     value:
                                         profileData.response!.walletBalance ??
-                                            "null",
+                                            "0",
                                   ),
                                   coin_chips(
                                     title: "Coin",
                                     value:
                                         profileData.response!.interestBalance ??
-                                            "null",
+                                            "0",
                                   ),
                                   SizedBox(height: 30),
                                   // join_nowButton(() {}),
@@ -764,13 +773,17 @@ class _WebHomePageState extends State<WebHomePage> {
                                         //   sIndex = 'popular';
                                         //   print(sIndex);
                                         // }),
-                                        selection(favourite, 'All Games', () {
-                                          setState(() {
-                                            sIndex = 'all';
-                                          });
-                                          print(sIndex);
-                                          getAllProducts("all");
-                                        }),
+                                        selection(
+                                          favourite,
+                                          'All Games',
+                                          () {
+                                            setState(() {
+                                              sIndex = 'all';
+                                            });
+                                            print(sIndex);
+                                            getAllProducts("all");
+                                          },
+                                        ),
 
                                         selection(egame, 'Egame', () {
                                           setState(() {

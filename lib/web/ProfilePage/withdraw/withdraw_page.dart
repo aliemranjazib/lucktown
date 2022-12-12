@@ -132,7 +132,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
                     children: [
                       BackButton(
                         onPressed: () {
-                          GoRouter.of(context).goNamed(RouteCon.profile_page);
+                          GoRouter.of(context).pop();
 
                           // Navigator.pushNamed(context, path);
                           // Navigator.pop(context);
@@ -173,7 +173,12 @@ class _WithdrawPageState extends State<WithdrawPage> {
                           color: Colors.grey.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(10)),
                       child: getBanks.isloading
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              backgroundColor: Color(0xffBD8E37),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xffFCD877)),
+                            ))
                           : DropdownButtonFormField(
                               hint: const Text("choose bank"),
                               decoration: const InputDecoration(

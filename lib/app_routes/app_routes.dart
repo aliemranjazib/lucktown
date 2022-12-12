@@ -20,6 +20,7 @@ import 'package:flutter_application_lucky_town/web/ProfilePage/withdraw/withdraw
 import 'package:flutter_application_lucky_town/web/contact/contact_main.dart';
 import 'package:flutter_application_lucky_town/web/home/web_home.dart';
 import 'package:flutter_application_lucky_town/web/login_otp.dart';
+import 'package:flutter_application_lucky_town/web/product_detail_page/all_game_transaction.dart';
 import 'package:flutter_application_lucky_town/web/product_detail_page/product_detail_page.dart';
 import 'package:flutter_application_lucky_town/web/select_country/web_main_page.dart';
 import 'package:flutter_application_lucky_town/web/set_new_pin/web_set_new_pin_page.dart';
@@ -92,6 +93,17 @@ class AppRoute {
           return ProductDetailPage(
             product: pm,
           );
+        },
+      ),
+      GoRoute(
+        name: RouteCon.all_game_transaction_page,
+        path: "/allgameTransaction",
+        builder: (context, state) {
+          // ProductsModelResponseProducts pm = ProductsModelResponseProducts();
+          // pm = state.extra as ProductsModelResponseProducts;
+          return AllGameTransactionPage(
+              // product: pm,
+              );
         },
       ),
 
