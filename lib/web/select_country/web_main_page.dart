@@ -82,11 +82,15 @@ class _WebScaffoldState extends State<WebScaffold> {
               // SizedBox(height: 70),
               getCountries.isLoading
                   ? Center(
-                      child: CircularProgressIndicator(
-                      backgroundColor: Color(0xffBD8E37),
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
-                    ))
+                      child: Transform.scale(
+                        scale: 1.5,
+                        child: CircularProgressIndicator(
+                          backgroundColor: Color(0xffBD8E37),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+                        ),
+                      ),
+                    )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

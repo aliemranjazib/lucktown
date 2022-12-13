@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/models/product_model.dart';
@@ -525,13 +526,18 @@ class _WebHomePageState extends State<WebHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(um!.response!.user!.walletPin);
     return Scaffold(
       backgroundColor: Colors.black,
       body: isGettingToken
           ? Center(
+              child: SizedBox(
+              height: 100,
+              width: 100,
               child: CircularProgressIndicator(
-              backgroundColor: Color(0xffBD8E37),
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+                backgroundColor: Color(0xffBD8E37),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xffFCD877)),
+              ),
             ))
           : SingleChildScrollView(
               child: Column(
@@ -897,166 +903,178 @@ class _WebHomePageState extends State<WebHomePage> {
                                 hiddenWhen: [
                                   Condition.largerThan(name: MOBILE)
                                 ],
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    mainAxisExtent:
-                                        MediaQuery.of(context).size.height *
-                                            0.5,
-                                    crossAxisSpacing:
-                                        MediaQuery.of(context).size.width *
-                                            0.07,
+                                child: ScrollConfiguration(
+                                  behavior:
+                                      ScrollConfiguration.of(context).copyWith(
+                                    dragDevices: {
+                                      PointerDeviceKind.touch,
+                                      PointerDeviceKind.mouse,
+                                    },
                                   ),
-                                  itemCount:
-                                      fProducts!.response!.products!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                      // height: 134,
-                                      // width: 200,
-                                      constraints:
-                                          BoxConstraints(maxWidth: 200),
-                                      child: Column(
-                                        children: [
-                                          // NetworkImage(url)
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                                20), // Image border
-                                            child: SizedBox.fromSize(
-                                              size: Size.square(
-                                                  200), // Image radius
-                                              child: Image.network(
-                                                fProducts!
-                                                        .response!
-                                                        .products![index]!
-                                                        .product_image_url ??
-                                                    "https://scontent.flhe11-1.fna.fbcdn.net/v/t39.30808-1/291321322_378298201059895_267225053697338827_n.png?stp=dst-png_p120x120&_nc_cat=106&ccb=1-7&_nc_sid=dbb9e7&_nc_ohc=K04AqBLJi9oAX9_zEh4&_nc_ht=scontent.flhe11-1.fna&oh=00_AfAerzR76y4VCuovsw2gGXiskoTUMvRSL57Awb720voYcw&oe=6378128B",
-                                                height: 200,
-                                                width: 200,
-                                                fit: BoxFit.contain,
+                                  child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisExtent:
+                                          MediaQuery.of(context).size.height *
+                                              0.5,
+                                      crossAxisSpacing:
+                                          MediaQuery.of(context).size.width *
+                                              0.07,
+                                    ),
+                                    itemCount:
+                                        fProducts!.response!.products!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        // height: 134,
+                                        // width: 200,
+                                        constraints:
+                                            BoxConstraints(maxWidth: 200),
+                                        child: Column(
+                                          children: [
+                                            // NetworkImage(url)
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      20), // Image border
+                                              child: SizedBox.fromSize(
+                                                size: Size.square(
+                                                    200), // Image radius
+                                                child: Image.network(
+                                                  fProducts!
+                                                          .response!
+                                                          .products![index]!
+                                                          .product_image_url ??
+                                                      "https://scontent.flhe11-1.fna.fbcdn.net/v/t39.30808-1/291321322_378298201059895_267225053697338827_n.png?stp=dst-png_p120x120&_nc_cat=106&ccb=1-7&_nc_sid=dbb9e7&_nc_ohc=K04AqBLJi9oAX9_zEh4&_nc_ht=scontent.flhe11-1.fna&oh=00_AfAerzR76y4VCuovsw2gGXiskoTUMvRSL57Awb720voYcw&oe=6378128B",
+                                                  height: 200,
+                                                  width: 200,
+                                                  fit: BoxFit.contain,
+                                                ),
                                               ),
                                             ),
-                                          ),
 
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              gProducts!
-                                                      .response!
-                                                      .products![index]!
-                                                      .product_name!
-                                                      .isEmpty
-                                                  ? "no name"
-                                                  : gProducts!
-                                                      .response!
-                                                      .products![index]!
-                                                      .product_name!,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  fontFamily: gotham_light),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                gProducts!
+                                                        .response!
+                                                        .products![index]!
+                                                        .product_name!
+                                                        .isEmpty
+                                                    ? "no name"
+                                                    : gProducts!
+                                                        .response!
+                                                        .products![index]!
+                                                        .product_name!,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16,
+                                                    fontFamily: gotham_light),
+                                              ),
                                             ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              gProducts!
-                                                      .response!
-                                                      .products![index]!
-                                                      .product_category!
-                                                      .isNotEmpty
-                                                  ? "no category"
-                                                  : gProducts!
-                                                      .response!
-                                                      .products![index]!
-                                                      .product_category!,
-                                              style: TextStyle(
-                                                  color: Colors.white
-                                                      .withOpacity(0.5),
-                                                  fontSize: 16,
-                                                  fontFamily: gotham_light),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                gProducts!
+                                                        .response!
+                                                        .products![index]!
+                                                        .product_category!
+                                                        .isNotEmpty
+                                                    ? "no category"
+                                                    : gProducts!
+                                                        .response!
+                                                        .products![index]!
+                                                        .product_category!,
+                                                style: TextStyle(
+                                                    color: Colors.white
+                                                        .withOpacity(0.5),
+                                                    fontSize: 16,
+                                                    fontFamily: gotham_light),
+                                              ),
                                             ),
-                                          ),
-                                          // Row(
-                                          //   mainAxisAlignment:
-                                          //       MainAxisAlignment.spaceBetween,
-                                          //   children: [
-                                          //     Row(
-                                          //       children: [
-                                          //         Text(
-                                          //           "4.5",
-                                          //           style: TextStyle(
-                                          //               color: Colors.white,
-                                          //               fontSize: 16,
-                                          //               fontFamily:
-                                          //                   gotham_light),
-                                          //         ),
-                                          //         RatingBar.builder(
-                                          //           initialRating: 3,
-                                          //           minRating: 1,
-                                          //           itemSize: 20,
-                                          //           direction: Axis.horizontal,
-                                          //           allowHalfRating: true,
-                                          //           itemCount: 5,
-                                          //           itemPadding:
-                                          //               EdgeInsets.symmetric(
-                                          //                   horizontal: 0.0),
-                                          //           itemBuilder: (context, _) =>
-                                          //               Icon(
-                                          //             Icons.star,
-                                          //             size: 14,
-                                          //             color: Colors.amber,
-                                          //           ),
-                                          //           onRatingUpdate: (rating) {
-                                          //             print(rating);
-                                          //           },
-                                          //         ),
-                                          //       ],
-                                          //     ),
-                                          //     Res  ponsiveVisibility(
-                                          //         visible: true,
-                                          //         hiddenWhen: const [
-                                          //           Condition.smallerThan(
-                                          //               name: TABLET)
-                                          //         ],
-                                          //         child: Padding(
-                                          //           padding:
-                                          //               const EdgeInsets.all(
-                                          //                   5.0),
-                                          //           child: Container(
-                                          //             height: 34,
-                                          //             width: 34,
-                                          //             decoration: BoxDecoration(
-                                          //                 color:
-                                          //                     Color(0xff252A2D),
-                                          //                 shape:
-                                          //                     BoxShape.circle,
-                                          //                 image:
-                                          //                     DecorationImage(
-                                          //                   scale: 1,
-                                          //                   // fit: BoxFit.contain,
-                                          //                   image: AssetImage(
-                                          //                     favourite,
-                                          //                   ),
-                                          //                 )),
-                                          //           ),
-                                          //         )),
-                                          //   ],
-                                          // ),
+                                            // Row(
+                                            //   mainAxisAlignment:
+                                            //       MainAxisAlignment.spaceBetween,
+                                            //   children: [
+                                            //     Row(
+                                            //       children: [
+                                            //         Text(
+                                            //           "4.5",
+                                            //           style: TextStyle(
+                                            //               color: Colors.white,
+                                            //               fontSize: 16,
+                                            //               fontFamily:
+                                            //                   gotham_light),
+                                            //         ),
+                                            //         RatingBar.builder(
+                                            //           initialRating: 3,
+                                            //           minRating: 1,
+                                            //           itemSize: 20,
+                                            //           direction: Axis.horizontal,
+                                            //           allowHalfRating: true,
+                                            //           itemCount: 5,
+                                            //           itemPadding:
+                                            //               EdgeInsets.symmetric(
+                                            //                   horizontal: 0.0),
+                                            //           itemBuilder: (context, _) =>
+                                            //               Icon(
+                                            //             Icons.star,
+                                            //             size: 14,
+                                            //             color: Colors.amber,
+                                            //           ),
+                                            //           onRatingUpdate: (rating) {
+                                            //             print(rating);
+                                            //           },
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //     Res  ponsiveVisibility(
+                                            //         visible: true,
+                                            //         hiddenWhen: const [
+                                            //           Condition.smallerThan(
+                                            //               name: TABLET)
+                                            //         ],
+                                            //         child: Padding(
+                                            //           padding:
+                                            //               const EdgeInsets.all(
+                                            //                   5.0),
+                                            //           child: Container(
+                                            //             height: 34,
+                                            //             width: 34,
+                                            //             decoration: BoxDecoration(
+                                            //                 color:
+                                            //                     Color(0xff252A2D),
+                                            //                 shape:
+                                            //                     BoxShape.circle,
+                                            //                 image:
+                                            //                     DecorationImage(
+                                            //                   scale: 1,
+                                            //                   // fit: BoxFit.contain,
+                                            //                   image: AssetImage(
+                                            //                     favourite,
+                                            //                   ),
+                                            //                 )),
+                                            //           ),
+                                            //         )),
+                                            //   ],
+                                            // ),
 
-                                          SizedBox(height: 5),
-                                          join_nowButton(() {
-                                            context.goNamed(
-                                                RouteCon.product_detail,
-                                                extra: gProducts!.response!
-                                                    .products![index]);
-                                          }),
-                                        ],
-                                      ),
-                                    );
-                                  },
+                                            SizedBox(height: 5),
+                                            join_nowButton(() {
+                                              context.goNamed(
+                                                  RouteCon.product_detail,
+                                                  extra: gProducts!.response!
+                                                      .products![index]);
+                                            }),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                               ResponsiveVisibility(
