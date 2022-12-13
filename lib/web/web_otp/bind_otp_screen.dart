@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:client_information/client_information.dart';
+// import 'package:client_information/client_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
@@ -38,7 +38,7 @@ class _BindOTPScreenState extends State<BindOTPScreen> {
   // String? tokenKey;
   bool isLoading = false;
   bool isverifying = false;
-  ClientInformation cli = ClientInformation();
+  // ClientInformation cli = ClientInformation();
   var platformName = '';
   getPlateform() {
     if (kIsWeb) {
@@ -70,9 +70,9 @@ class _BindOTPScreenState extends State<BindOTPScreen> {
       Color(0xC1995C).withOpacity(1),
     ],
   ).createShader(Rect.fromLTWH(200.0, 0.0, 0.0, 70.0));
-  Future<ClientInformation> getDeviceId() async {
-    return (await ClientInformation.fetch());
-  }
+  // Future<ClientInformation> getDeviceId() async {
+  //   return (await ClientInformation.fetch());
+  // }
 
   String? tokenKeyofOtp;
   @override
@@ -80,10 +80,10 @@ class _BindOTPScreenState extends State<BindOTPScreen> {
     super.initState();
     // tokenKey = widget.data;
     // print("my token key ${widget.data}");
-    getPlateform();
-    getDeviceId().then((value) {
-      cli = value;
-    });
+    // getPlateform();
+    // getDeviceId().then((value) {
+    //   cli = value;
+    // });
   }
 
   getOtp() async {
@@ -157,10 +157,7 @@ class _BindOTPScreenState extends State<BindOTPScreen> {
           "data": {
             "tokenKey": tokenKeyofOtp,
             "otpCode": otpCode,
-            "deviceInfo": {
-              "id": "${cli.deviceId}",
-              "platform": "${platformName.toString()}"
-            },
+            "deviceInfo": {"id": "`", "platform": "${platformName.toString()}"},
             "version": "4.0.1"
           }
         }),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
+import 'package:flutter_application_lucky_town/web/ProfilePage/settings/aboutInfo.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/settings/change_nickname.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/settings/change_payment_pin.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/settings/change_phone.dart';
@@ -12,6 +13,7 @@ import '../../../utils/constants/contants.dart';
 import '../../../web_menue/Drawer.dart';
 
 class SettingPage extends StatelessWidget {
+  DateTime dateTime = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +101,7 @@ class SettingPage extends StatelessWidget {
                       );
                     }),
                     tiles("Switch Account", () {}),
-                    tiles("Change", () {}),
+                    // tiles("Change", () {}),
                     Align(
                         alignment: Alignment.bottomLeft,
                         child: Text(
@@ -127,14 +129,22 @@ class SettingPage extends StatelessWidget {
                         Divider(),
                       ],
                     ),
-                    tiles('About Phone', () {}),
-                    tiles('About', () {}),
+                    tiles('About Phone', () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AboutInfoPage();
+                        },
+                      );
+                    }),
+                    // tiles('About', () {}),
                     Column(
                       children: [
                         ListTile(
                           title: Text("Time Zone"),
                           trailing: Container(
-                            child: Text("UST/GMT +8:00 Asia/KL"),
+                            child: Text(
+                                "${dateTime.timeZoneName}/ GMT ${dateTime.timeZoneOffset.toString().split(":")[0]}"),
                           ),
                         ),
                         Divider(),

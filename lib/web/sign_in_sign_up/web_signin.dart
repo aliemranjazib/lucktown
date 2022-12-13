@@ -25,7 +25,7 @@ import 'package:go_router/go_router.dart';
 import '../../models/user_model.dart';
 import '../../utils/components/gradient_text.dart';
 import '../../utils/constants/api_constants.dart';
-import 'package:client_information/client_information.dart';
+// import 'package:client_information/client_information.dart';
 
 String? tempAuthKeyforSignup;
 String? temAuth;
@@ -94,19 +94,19 @@ class _WebSignInPageState extends State<WebSignInPage> {
     }
   }
 
-  Future<ClientInformation> getDeviceId() async {
-    return (await ClientInformation.fetch());
-  }
+  // Future<ClientInformation> getDeviceId() async {
+  //   return (await ClientInformation.fetch());
+  // }
 
-  ClientInformation cli = ClientInformation();
+  // ClientInformation cli = ClientInformation();
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => check());
-    getDeviceId().then((value) {
-      cli = value;
-    });
+    // getDeviceId().then((value) {
+    //   cli = value;
+    // });
   }
 
   saveData(String countryId) async {
@@ -277,22 +277,22 @@ class _WebSignInPageState extends State<WebSignInPage> {
             "language": "EN",
             "authSession": "",
             "deviceInfo": {
-              "deviceId": "${cli.deviceId}",
-              "userAgent": "${cli.applicationName}",
-              "model": "${cli.deviceId}",
-              "manufacturer": "${cli.softwareName}",
+              "deviceId": "",
+              "userAgent": "",
+              "model": "",
+              "manufacturer": "",
               "host": "21DJ6B24",
-              "hardware": "${cli.applicationBuildCode}",
+              "hardware": "",
               "firstTimeInstall": 1629221041434,
-              "deviceName": "${cli.deviceName}",
+              "deviceName": "",
               "display": "RP1A.200720.012.G780FXXS3CUD7",
               "device": "r8s",
               "carrier": "MY ONEXOX",
-              "apiLevel": "${cli.osVersion}",
-              "version": "${cli.osVersion}",
+              "apiLevel": "",
+              "version": "",
               "uniqueId": "58c549bc790a5ed4",
               "id": "58c549bc790a5ed4",
-              "platform": "${cli.osName}",
+              "platform": "",
             },
             "version": "4.0.1"
           }

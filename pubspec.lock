@@ -78,13 +78,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  client_information:
-    dependency: "direct main"
-    description:
-      name: client_information
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2+2"
   clock:
     dependency: transitive
     description:
