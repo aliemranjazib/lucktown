@@ -3,28 +3,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
-import 'package:flutter_application_lucky_town/web/sign_in_sign_up/viewModel.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/web_signin.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../app_routes/app_routes.dart';
 import '../utils/components/custom_toast.dart';
 import '../utils/components/gradient_text.dart';
 import '../utils/constants/api_constants.dart';
 
-class LoginOTPScreen extends StatefulWidget {
-  // String? image;
-  // String? text;
-  // final String? data;
-  // LoginOTPScreen({this.data});
-
+class SignUpOTPScreen extends StatefulWidget {
   @override
-  State<LoginOTPScreen> createState() => _LoginOTPScreenState();
+  State<SignUpOTPScreen> createState() => _SignUpOTPScreenState();
 }
 
-class _LoginOTPScreenState extends State<LoginOTPScreen> {
+class _SignUpOTPScreenState extends State<SignUpOTPScreen> {
   int index = 0;
   bool line_visible1 = false;
   bool line_visible = true;
@@ -46,10 +41,6 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
   @override
   void initState() {
     super.initState();
-    // tokenKey = widget.data;
-    bindInfo =
-        Provider.of<SignInProvider>(context, listen: false).getTokenAndPhone;
-    // print("my token key ${widget.data}");
   }
 
   verifyOtp() async {
@@ -65,7 +56,7 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
         body: jsonEncode(<String, dynamic>{
           "data": {
             "otpCode": otpCode,
-            "tokenKey": bindInfo['userToken'],
+            "tokenKey": tempAuthKeyforSignup,
             // "otpCode": widget.data!['otpCode'],
             "language": "EN",
             // "language": widget.data!['language'],
@@ -80,14 +71,10 @@ class _LoginOTPScreenState extends State<LoginOTPScreen> {
           final data = json.decode(response1.body);
           print(data);
           CustomToast.customToast(context, data['msg']);
-          Navigator.pushNamed(context, web_set_new_pin_page);
           setState(() {
-            tempAuthKey = data['response']['authToken'];
+            temAuth = data['response']['authToken'];
           });
-          // Navigator.pushNamed(context, web_otp_page, arguments: {
-          //   "authkey": data['response']['authToken'],
-          //   "usertoken": data['response']['userToken']
-          // });
+          context.goNamed(RouteCon.set_new_pin_page);
           break;
         default:
           final data = json.decode(response1.body);

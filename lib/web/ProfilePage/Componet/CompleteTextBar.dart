@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_lucky_town/web/ProfilePage/Componet/TextBarComponet.dart';
 import 'package:flutter_application_lucky_town/web_menue/Drawer.dart';
 
+import '../../../utils/constants/contants.dart';
+
 // ************* for DeskTop ******************//
 class CompleteTextBar extends StatelessWidget {
   final String chips;
@@ -27,42 +29,42 @@ class CompleteTextBar extends StatelessWidget {
         children: [
           ProfileTextBarComponet(
             title: 'Chips',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: false,
           ),
           ProfileTextBarComponet(
             title: 'THB $chips',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: true,
           ),
           ProfileTextBarComponet(
             title: 'Cash',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: false,
           ),
           ProfileTextBarComponet(
             title: 'THB $cash',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: true,
           ),
           ProfileTextBarComponet(
             title: 'Coin',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: false,
           ),
           ProfileTextBarComponet(
             title: 'THB $coin',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: true,
           ),
           ProfileTextBarComponet(
             title: 'Stage',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: false,
           ),
           ProfileTextBarComponet(
             title: '$stage',
-            ImagePath: coin,
+            ImagePath: Hnadcoin,
             yesicon: true,
           ),
         ],
@@ -105,17 +107,17 @@ class CompleteTextBarMobileView extends StatelessWidget {
               ),
               ProfileTextBarComponet(
                 title: 'THB $chips',
-                ImagePath: coin,
+                ImagePath: Hnadcoin,
                 yesicon: true,
               ),
               ProfileTextBarComponet(
                 title: 'Cash',
-                ImagePath: coin,
+                ImagePath: Hnadcoin,
                 yesicon: false,
               ),
               ProfileTextBarComponet(
                 title: 'THB $chips',
-                ImagePath: coin,
+                ImagePath: Hnadcoin,
                 yesicon: true,
               ),
             ],
@@ -125,22 +127,22 @@ class CompleteTextBarMobileView extends StatelessWidget {
             children: [
               ProfileTextBarComponet(
                 title: 'Coin',
-                ImagePath: coin,
+                ImagePath: Hnadcoin,
                 yesicon: false,
               ),
               ProfileTextBarComponet(
                 title: 'THB',
-                ImagePath: coin,
+                ImagePath: Hnadcoin,
                 yesicon: true,
               ),
               ProfileTextBarComponet(
                 title: 'Stage',
-                ImagePath: coin,
+                ImagePath: Hnadcoin,
                 yesicon: false,
               ),
               ProfileTextBarComponet(
                 title: '$stage',
-                ImagePath: coin,
+                ImagePath: Hnadcoin,
                 yesicon: true,
               ),
             ],

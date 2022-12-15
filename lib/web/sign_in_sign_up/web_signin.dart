@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
+import 'package:flutter_application_lucky_town/main.dart';
 import 'package:flutter_application_lucky_town/models/userSignInModel.dart'
     as user;
 import 'package:flutter_application_lucky_town/models/user_session_model.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_application_lucky_town/utils/components/social_buttons.d
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
 import 'package:flutter_application_lucky_town/utils/db_services/share_pref.dart';
 import 'package:flutter_application_lucky_town/web/select_country/viewModel/selectCountry.dart';
+import 'package:flutter_application_lucky_town/web/select_country/web_main_page.dart';
 import 'package:flutter_application_lucky_town/web/sign_in_sign_up/viewModel.dart';
 // import 'package:ftoast/ftoast.dart';
 import 'package:http/http.dart' as http;
@@ -18,14 +21,15 @@ import 'package:is_first_run/is_first_run.dart';
 import 'package:multiple_result/multiple_result.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-
+import 'package:go_router/go_router.dart';
 import '../../models/user_model.dart';
 import '../../utils/components/gradient_text.dart';
 import '../../utils/constants/api_constants.dart';
-import 'package:client_information/client_information.dart';
+// import 'package:client_information/client_information.dart';
 
-String? tempAuthKey;
-user.User? userModel;
+String? tempAuthKeyforSignup;
+String? temAuth;
+String? tokenKey;
 
 class WebSignInPage extends StatefulWidget {
   @override
@@ -40,8 +44,12 @@ class _WebSignInPageState extends State<WebSignInPage> {
   bool isLoading = false;
   bool isValidatingUserName = false;
   bool isBinding = false;
+  String text = "verify";
+  bool isPasswordShown = true;
+  /////////
+  bool isSignUpPasswordShown = true;
+  bool isSignupConformPasswordShown = true;
 
-  bool isPasswordShown = false;
   String? isoCode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController yourIdController = TextEditingController();
@@ -86,24 +94,29 @@ class _WebSignInPageState extends State<WebSignInPage> {
     }
   }
 
-  Future<ClientInformation> getDeviceId() async {
-    return (await ClientInformation.fetch());
-  }
+  // Future<ClientInformation> getDeviceId() async {
+  //   return (await ClientInformation.fetch());
+  // }
 
+  // ClientInformation cli = ClientInformation();
   @override
   void initState() {
     super.initState();
-    getDeviceId().then((value) => print("www ${value.deviceName}"));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => check());
+    // getDeviceId().then((value) {
+    //   cli = value;
+    // });
   }
 
-  saveData() {
+  saveData(String countryId) async {
     if (_formKey.currentState!.validate()) {
       // print("OKKKKK");
       if (passwordController.text != confirmPasswordController.text) {
         CustomToast.customToast(
             context, "password and retype password is not matched");
       } else {
-        signupUser();
+        await signupUser(countryId);
       }
     }
   }
@@ -134,14 +147,29 @@ class _WebSignInPageState extends State<WebSignInPage> {
             isValidatingUserName = true;
           });
           Map<String, dynamic> data = json.decode(response1.body);
+          print("not ${data['msg']}");
           if (data['msg'] == 'Member Not Found!') {
             CustomToast.customToast(context, 'user does not exist');
           } else if (data['msg'] == 'Member exists!') {
             CustomToast.customToast(
-                context, 'user exist. choose any other name');
+                context, 'user exist. choose any other userId');
           }
           print(response1.statusCode);
 
+          setState(() {
+            isValidatingUserName = false;
+          });
+          break;
+        case 400:
+          Map<String, dynamic> data = json.decode(response1.body);
+          if (data['msg'] == '[username] is Empty') {
+            CustomToast.customToast(context, 'username is Empty');
+          } else if (data['msg'] == 'Member Not Found!') {
+            CustomToast.customToast(context, 'userId available');
+            setState(() {
+              text = "✓";
+            });
+          }
           setState(() {
             isValidatingUserName = false;
           });
@@ -239,36 +267,32 @@ class _WebSignInPageState extends State<WebSignInPage> {
         Uri.parse('${memberBaseUrl}user/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          // "Authorization": LuckySharedPef.getAuthToken(),
-
-          // 'Authorization':
         },
         body: jsonEncode(<String, dynamic>{
           "data": {
-            "username": "techtest",
+            "username": userNameC.text,
             "push_noti_token":
                 "d8jZfHNsk0EKkxuFZEbVQO:APA91bHsQUQjMpLKadIdktX-y-0doGvJLskp4NgbAjcru4jWuAanZ4BcsjmwBlrEXcQC5Ltm8cLxqTv0U5R3zoftqjX8szjSyE3bhj6wUphhXpDVytKjMEpB5OgEB9lFj3laGxVV5_Tx",
-            "password": "1233211234567abc",
+            "password": userPasswordC.text,
             "language": "EN",
             "authSession": "",
             "deviceInfo": {
-              "deviceId": "exynos990",
-              "userAgent":
-                  "Mozilla\/5.0 (Linux; Android 11; SM-G780F Build\/RP1A.200720.012; wv) AppleWebKit\/537.36 (KHTML, like Gecko) Version\/4.0 Chrome\/90.0.4430.210 Mobile Safari\/537.36",
-              "model": "SM-G780F",
-              "manufacturer": "samsung",
+              "deviceId": "",
+              "userAgent": "",
+              "model": "",
+              "manufacturer": "",
               "host": "21DJ6B24",
-              "hardware": "exynos990",
+              "hardware": "",
               "firstTimeInstall": 1629221041434,
-              "deviceName": "benjamin's Galaxy S20 FE",
+              "deviceName": "",
               "display": "RP1A.200720.012.G780FXXS3CUD7",
               "device": "r8s",
               "carrier": "MY ONEXOX",
-              "apiLevel": 30,
-              "version": "3.0.5",
+              "apiLevel": "",
+              "version": "",
               "uniqueId": "58c549bc790a5ed4",
               "id": "58c549bc790a5ed4",
-              "platform": "android"
+              "platform": "",
             },
             "version": "4.0.1"
           }
@@ -281,59 +305,55 @@ class _WebSignInPageState extends State<WebSignInPage> {
           });
           Map<String, dynamic> data = json.decode(response1.body);
           setState(() {
-            userModel = user.User.fromJson(data['response']['user']);
+            // userModel = user.User.fromJson(data['response']['user']);
           });
           CustomToast.customToast(context, data['msg']);
-          // Navigator.pushNamed(context, web_home_Page);
-          // print("ooo ${dau.getAllUsers()}");
+
           Future.delayed(
               Duration(
                 seconds: 1,
               ), () {
             LuckySharedPef.saveAuthToken(response1.body);
+            // LuckySharedPef.saveOnlyAuthToken(data['response']['authSession']);
+            // LuckySharedPef.saveOnlyAuthToken(data['response']['authToken']);
+            print("only auth ${data['response']['authToken']}");
           });
           // String? otp = data['response']['userToken'];
-
+          // LuckySharedPef.saveOnlyAuthToken(data['response']['authToken']);
           Future.delayed(
               Duration(
-                seconds: 2,
+                seconds: 1,
               ), () {
             String aa = LuckySharedPef.getAuthToken();
-            Map<String, dynamic> decodedata = jsonDecode(aa);
-            print(decodedata);
-            // UserSessionModel t = UserSessionModel.fromJson(decodedata);
-            // UserModel.fromJson();
-            // Response um = Response.fromJson(decodedata['response']);
-            // print(um);
-            // print("ccc ${um.response!.user!.memberUsername}");
+            // String bb = LuckySharedPef.getOnlyAuthToken();
 
-            // Navigator.pushNamed(context, web_home_Page);
+            // String bb = LuckySharedPef.getOnlyAuthToken();
+            // print("get only auth ${bb}");
+
+            Map<String, dynamic> decodedata = jsonDecode(aa);
+            setState(() {
+              um = UserSessionModel.fromJson(decodedata);
+              LuckySharedPef.saveOnlyAuthToken(um!.response!.authToken!);
+              // print("tttt ${um!.response!.user!.}");
+              // print("only auth is here${bb}");
+            });
+
+            context.goNamed(RouteCon.home_Page);
             // print()
           });
-          // await IsFirstRun.isFirstRun()
-          //     ? Navigator.pushNamed(context, web_login_otp_page,
-          //         arguments: data['response']['userToken'])
-          //     : Navigator.pushNamed(context, web_home_Page);
-
-          Navigator.pushNamed(context, web_home_Page);
           setState(() {
             isLoading = false;
           });
           break;
         case 303:
           CustomToast.customToast(context, "Please bind your account first");
-          // Map<String, dynamic> data = json.decode(response1.body);
-          // String userToken = data['response']['authToken'];
+          Map<String, dynamic> data = json.decode(response1.body);
+          setState(() {
+            temAuth = data['response']['authToken'];
+            tokenKey = data['response']['userToken'];
+          });
+          context.goNamed(RouteCon.bind_otp_page);
 
-          // setState(() {
-          //   Provider.of<SignInProvider>(context, listen: false)
-          //       .saveTokenAndPhone({
-          //     "userToken": data['response']['userToken'],
-          //     "authToken": data['response']['authToken']
-          //   });
-          // });
-
-          Navigator.pushNamed(context, web_login_otp_page);
           break;
         default:
           final data = json.decode(response1.body);
@@ -343,7 +363,6 @@ class _WebSignInPageState extends State<WebSignInPage> {
             isLoading = false;
           });
           CustomToast.customToast(context, data['msg']);
-        // CustomToast.customToast(context, "WENT WRONG");
       }
     } catch (e) {
       setState(() {
@@ -353,10 +372,13 @@ class _WebSignInPageState extends State<WebSignInPage> {
     }
   }
 
-  Future<Result<Exception, UserModel>> signupUser() async {
+  Future<Result<Exception, UserModel>> signupUser(String countryId) async {
+    // final getCountries = await Provider.of<SelectCountry>(context);
+    // print("selection ${getCountries.getSelection['countrycode']}");
     setState(() {
       isLoading = true;
     });
+    // final id = Provider.of<SelectCountry>(context).getSelection[''];
     try {
       final response = await http.post(
         Uri.parse('${memberBaseUrl}user/register'),
@@ -371,7 +393,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
             "password": passwordController.text,
             "confirmPassword": confirmPasswordController.text,
             "refUsername": refferalController.text,
-            "countryId": 1
+            "countryId": "$countryId",
           }
         }),
       );
@@ -387,9 +409,11 @@ class _WebSignInPageState extends State<WebSignInPage> {
           // 2. return Success with the desired value
           print("successs");
           // print(Success());
-          print(data['response']['authToken']);
+          print("aaauuttthh ${data['response']['authToken']}");
+          setState(() {
+            temAuth = data['response']['authToken'];
+          });
           try {
-            tempAuthKey = data['response']['authToken'];
             final response1 = await http.post(
               Uri.parse('${memberBaseUrl}user/sendRegisterOtp'),
               headers: <String, String>{
@@ -407,8 +431,10 @@ class _WebSignInPageState extends State<WebSignInPage> {
               case 200:
                 CustomToast.customToast(context, "OTP SENT SUCCESSFULLY");
                 print("token key of user : ${data['response']['userToken']}");
-                Navigator.pushNamed(context, web_otp_page,
-                    arguments: data['response']['userToken']);
+                context.goNamed(RouteCon.signup_otp_page);
+                setState(() {
+                  tempAuthKeyforSignup = "${data['response']['userToken']}";
+                });
                 break;
               default:
                 CustomToast.customToast(context, "WENT WRONG");
@@ -418,9 +444,6 @@ class _WebSignInPageState extends State<WebSignInPage> {
             // index = 0;
             isLoading = false;
           });
-
-          // Navigator.pushNamed(context, web_otp_page,
-          //     arguments: data['response']['authToken']);
 
           return Success(UserModel.fromJson(data));
         default:
@@ -437,17 +460,32 @@ class _WebSignInPageState extends State<WebSignInPage> {
     } catch (e) {
       // catch all exceptions (not just SocketException)
       // 4. return Error here too
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("${Exception("SOMETHING WENT WRONG")}")));
+      CustomToast.customToast(context, e.toString());
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text("${Exception("SOMETHING WENT WRONG")}")));
       print(Error(Exception()));
       return Error(Exception("NOT OK"));
+    }
+  }
+
+  check() {
+    if (Provider.of<SelectCountry>(context).getSelection['countrycode'] ==
+        null) {
+      print("done");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     s();
-    print("bbbb ${jsonDecode(LuckySharedPef.getAuthToken())['msg']}");
+    if (Provider.of<SelectCountry>(context).getSelection['countrycode'] ==
+        null) {
+      context.goNamed(RouteCon.scaffold_page);
+    }
+    // print(
+    //     "opop ${Provider.of<SelectCountry>(context).getSelection['countrycode']}");
+    // print("bbbb ${jsonDecode(LuckySharedPef.getAuthToken())['msg']}");
     // Provider.of<SelectCountry>(context);
     return Scaffold(
       backgroundColor: Colors.black,
@@ -483,31 +521,20 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   // height: double.infinity,
                   color: bgColor,
 
-                  // decoration: BoxDecoration(
-                  //   image: DecorationImage(
-                  //     image: AssetImage(tabletrightbar),
-                  //     fit: BoxFit.cover,
-                  //     alignment: Alignment.center,
-                  //   ),
-                  // ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, web_scaffold_page);
-                              },
-                              child: Image.asset(
-                                arrow_left,
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.contain,
-                              )),
-                          SizedBox(width: 10),
+                          BackButton(
+                            onPressed: () {
+                              context.goNamed(RouteCon.scaffold_page);
+                            },
+                          ),
+                          // SizedBox(width: 10),
                           Expanded(
                             child: Center(
                               child: Image.asset(
@@ -520,25 +547,69 @@ class _WebSignInPageState extends State<WebSignInPage> {
                           ),
                         ],
                       ),
+
                       SizedBox(height: 70),
                       Consumer<SelectCountry>(
                         builder: (context, value, child) {
                           return Column(
                             children: [
-                              value.getSelection['image'] == null
-                                  ? CircularProgressIndicator()
-                                  : Image.asset(value.getSelection['image']),
+                              value.getSelection['icon'] == null
+                                  ? CircularProgressIndicator(
+                                      backgroundColor: Color(0xffBD8E37),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xffFCD877)),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.bottomLeft,
+                                            end: Alignment.topRight,
+                                            colors: [
+                                              Color(0xffBD8E37).withOpacity(1),
+                                              Color(0xffFCD877).withOpacity(1),
+                                              Color(0xffFFFFD1).withOpacity(1),
+                                              // Color.fromARGB(0, 248, 248, 133).withOpacity(1),
+                                              Color(0xffC1995C).withOpacity(1),
+                                            ],
+                                          )),
+                                      child: CircleAvatar(
+                                        minRadius: 47,
+                                        maxRadius: 47,
+                                        backgroundColor: Colors.transparent,
+                                        child: Image.network(
+                                          value.getSelection['icon'],
+                                          width: ResponsiveWrapper.of(context)
+                                                  .isLargerThan(MOBILE)
+                                              ? 90
+                                              : 88,
+                                          height: ResponsiveWrapper.of(context)
+                                                  .isLargerThan(MOBILE)
+                                              ? 90
+                                              : 88,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
                               SizedBox(height: 10),
-                              value.getSelection['text'] == null
-                                  ? CircularProgressIndicator()
+                              value.getSelection['name'] == null
+                                  ? CircularProgressIndicator(
+                                      backgroundColor: Color(0xffBD8E37),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xffFCD877)),
+                                    )
                                   : silverGradientRobto(
-                                      value.getSelection['text'],
-                                      24,
+                                      value.getSelection['name'],
+                                      ResponsiveWrapper.of(context)
+                                              .isLargerThan(MOBILE)
+                                          ? 24
+                                          : 16,
                                       FontWeight.bold)
                             ],
                           );
                         },
                       ),
+
                       // Provider.of<SelectCountry>(context)
                       //             .getSelection['image'] ==
                       //         null
@@ -608,7 +679,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
                         children: [
                           // silverGradient("Sign In", 24),
                           Visibility(visible: index == 0, child: signIn()),
-                          Visibility(visible: index == 1, child: signUp()),
+                          Visibility(
+                              visible: index == 1, child: signUp(context)),
                         ],
                       ),
                       // select_country.map((e) => Text(e.text)).toList(),
@@ -645,8 +717,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
               upperText: "Password",
               postIcons: IconButton(
                 icon: isPasswordShown
-                    ? Icon(Icons.visibility_off, color: primaryColor)
-                    : Icon(Icons.visibility, color: primaryColor),
+                    ? Icon(Icons.visibility, color: primaryColor)
+                    : Icon(Icons.visibility_off, color: primaryColor),
                 onPressed: () {
                   setState(() {
                     isPasswordShown = !isPasswordShown;
@@ -668,39 +740,39 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
                   child: InkWell(
-                      onTap: () =>
-                          Navigator.pushNamed(context, web_forget_page),
+                      onTap: () => context.goNamed(RouteCon.forget_page),
                       child: silverGradientLight("Forget Password?", 16)),
                 )),
             PrimaryButton(
                 title: "Login",
                 width: double.infinity,
+                loading: isLoading,
                 onPress: () {
                   signInUser();
                 }),
             SizedBox(height: 10),
-            Container(
-              // margin: const EdgeInsets.symmetric(horizontal: 70, vertical: 0),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Container(
-                    child: SocialButton(
-                        title: "Google", image: google, onPress: () {}),
-                  )),
-                  SizedBox(width: 10),
-                  Expanded(
-                      child: Container(
-                    child: SocialButton(
-                      title: "Facebook",
-                      image: facebook,
-                      onPress: () {},
-                      // color: Color(0x262261),
-                    ),
-                  )),
-                ],
-              ),
-            ),
+            // Container(
+            //   // margin: const EdgeInsets.symmetric(horizontal: 70, vertical: 0),
+            //   child: Row(
+            //     children: [
+            //       Expanded(
+            //           child: Container(
+            //         child: SocialButton(
+            //             title: "Google", image: google, onPress: () {}),
+            //       )),
+            //       SizedBox(width: 10),
+            //       Expanded(
+            //           child: Container(
+            //         child: SocialButton(
+            //           title: "Facebook",
+            //           image: facebook,
+            //           onPress: () {},
+            //           // color: Color(0x262261),
+            //         ),
+            //       )),
+            //     ],
+            //   ),
+            // ),
             SizedBox(height: 20),
           ],
         ),
@@ -708,10 +780,12 @@ class _WebSignInPageState extends State<WebSignInPage> {
     );
   }
 
-  Widget signUp() {
+  Widget signUp(BuildContext context) {
+    final getCountries = Provider.of<SelectCountry>(context);
+
     RegExp regex =
         RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-    RegExp reguser = RegExp(r'^[a-zA-Z0-9]+$');
+    // RegExp reguser = RegExp(r'^[a-zA-Z0-9]+$');
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Form(
@@ -726,7 +800,11 @@ class _WebSignInPageState extends State<WebSignInPage> {
                     upperText: "Your ID",
                     controller: yourIdController,
                     onChanged: (v) {
-                      print(yourIdController.text);
+                      if (yourIdController.text.isEmpty) {
+                        setState(() {
+                          text = "verify";
+                        });
+                      }
                     },
                     validate: (p) {
                       if (p!.isEmpty) {
@@ -741,7 +819,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   ),
                 ),
                 PrimaryButton(
-                  title: "verify",
+                  title: "$text",
                   loading: isValidatingUserName,
                   onPress: () {
                     validateUserName();
@@ -752,7 +830,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
             ),
             SizedBox(height: 30),
             EcoTextField(
-              isPassword: false,
+              isPassword: isSignUpPasswordShown,
               upperText: "Password",
               controller: passwordController,
               validate: (value) {
@@ -766,9 +844,15 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   }
                 }
               },
-              postIcons: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(eye_open),
+              postIcons: IconButton(
+                icon: isSignUpPasswordShown
+                    ? Icon(Icons.visibility, color: primaryColor)
+                    : Icon(Icons.visibility_off, color: primaryColor),
+                onPressed: () {
+                  setState(() {
+                    isSignUpPasswordShown = !isSignUpPasswordShown;
+                  });
+                },
               ),
               preIcons: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -784,7 +868,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                 Icons.done, "does not contain your email address"),
             SizedBox(height: 30),
             EcoTextField(
-              isPassword: false,
+              isPassword: isSignupConformPasswordShown,
               upperText: "Confirm Password",
               controller: confirmPasswordController,
               validate: (value) {
@@ -798,9 +882,16 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   }
                 }
               },
-              postIcons: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(eye_open),
+              postIcons: IconButton(
+                icon: isSignupConformPasswordShown
+                    ? Icon(Icons.visibility, color: primaryColor)
+                    : Icon(Icons.visibility_off, color: primaryColor),
+                onPressed: () {
+                  setState(() {
+                    isSignupConformPasswordShown =
+                        !isSignupConformPasswordShown;
+                  });
+                },
               ),
               preIcons: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -852,7 +943,8 @@ class _WebSignInPageState extends State<WebSignInPage> {
             SizedBox(height: 30),
             Row(
               children: [
-                Checkbox(value: true, onChanged: (v) {}),
+                Checkbox(
+                    activeColor: primaryColor, value: true, onChanged: (v) {}),
                 Expanded(
                   child: Container(
                       constraints: BoxConstraints(
@@ -872,11 +964,9 @@ class _WebSignInPageState extends State<WebSignInPage> {
                                 TextSpan(
                                     text: 'Term & Conditions',
                                     style: TextStyle(
-                                        color: Color(0xFFFCC201), fontSize: 16),
+                                        color: primaryColor, fontSize: 16),
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        // navigate to desired screen
-                                      })
+                                      ..onTap = () {})
                               ]),
                         ),
                       )),
@@ -892,12 +982,7 @@ class _WebSignInPageState extends State<WebSignInPage> {
                   // await saveUsers();
                   print(phoneController.text);
                   print(isoCode);
-                  saveData();
-                  // setState(() {
-                  //   index = 0;
-                  // });
-
-                  // Navigator.pushNamed(context, web_otp_page);
+                  saveData(getCountries.getSelection['countryId']);
                 }),
             SizedBox(height: 20),
           ],

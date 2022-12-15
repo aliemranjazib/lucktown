@@ -3,22 +3,32 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../models/select_country_model.dart';
+// import '../../models/select_country_model.dart';
 
 //////////////// ROUTES /////////////////////
 //web
-const String web_auth_page = '/websauth';
-const String web_usd_topup = '/webusdtopup';
-const String web_login_otp_page = '/webloginotppage';
-const String web_scaffold_page = '/webscaffold';
-const String web_home_Page = '/webhome';
-const String web_signin_page = '/websignin';
-const String web_otp_page = '/web_otp';
-const String web_forget_page = '/web_forget';
-const String web_set_new_pin_page = '/web_set_pin';
-const String web_product_detail = '/web_detail_page';
-const String web_profile_page = '/web_profile_page';
-const String web_topup_usdt_page = '/web_topup_usdt_page';
+// const String web_check_page = 'webcheckpage';
+// const String web_auth_page = 'websauth';
+// const String web_usd_topup = 'webusdtopup';
+// const String web_login_otp_page = 'webloginotppage';
+// const String web_scaffold_page = 'webscaffold';
+// const String web_home_Page = 'webhome';
+// const String web_signin_page = 'websignin';
+// const String web_otp_page = 'web_otp';
+// const String web_forget_page = 'web_forget';
+// const String web_set_new_pin_page = 'web_set_pin';
+// const String web_product_detail = 'web_detail_page';
+// const String web_profile_page = 'web_profile_page';
+// const String web_topup_usdt_page = 'web_topup_usdt_page';
+// const String web_contact_main_page = 'web_contact_main_page';
+// const String web_all_game_transaction_page = 'web_all_game_transaction_page';
+// const String web_transaction_page = 'web_transaction_page';
+// const String web_currency_exchange_page = 'web_currency_exchange_page';
+// const String web_setting_page = 'web_setting_page';
+// const String web_bank_acount_page = 'web_bank_acount_page';
+// const String web_add_bank_acount_page = 'web_add_bank_acount_page';
+// const String web_bank_topup_main_page = 'web_bank_topup_main_page';
+// const String web_withdraw_page = 'web_withdraw_page';
 
 //mobile
 // const String mobilehomePage = '/mobilehome';
@@ -48,6 +58,18 @@ const String sport = "assets/images/sport.png";
 
 /////////////////////// PROFILE ///////////////////////////////
 const String gameIcon = "assets/images/AG2.png";
+const String smalLogo = "assets/images/small_logo.png";
+
+/////////////////////////// contacts////////////////////
+const String ccc = "assets/images/chat.png";
+const String pen = "assets/images/pen.png";
+const String contact_avtar_1 = "assets/images/contact_avtar_1.png";
+const String contact_avtar_2 = "assets/images/contact_avtar_2.png";
+const String contact_avtar_3 = "assets/images/contact_avtar_3.png";
+const String contact_avtar_4 = "assets/images/contact_avtar_4.png";
+const String contact_avtar_5 = "assets/images/contact_avtar_5.png";
+const String contact_avtar_6 = "assets/images/contact_avtar_6.png";
+const String contact_search = "assets/images/contact_search.png";
 
 //////////////////// product detail page icons ///////////////
 const String detail_page_banner =
@@ -94,6 +116,9 @@ const String gift = "assets/images/gift_n.png";
 ////////////// COLORS //////////////////////////
 const bgColor = Color(0xF5F5F5);
 const primaryColor = Color(0xffFCD877);
+const progressbgColor = Color(0xffBD8E37);
+const progresssecondcolor = AlwaysStoppedAnimation<Color>(Color(0xffFCD877));
+
 ////////////////////// FONTS  //////////////
 
 const String gotham_light = "gotham-light";
@@ -111,11 +136,11 @@ const String promotion = 'assets/images/icon_promotion.png';
 const String vip = 'assets/images/icon_vip.png';
 const String setting = 'assets/images/setting.png';
 
-List<SelectCountryModel> select_country = [
-  SelectCountryModel(text: "Malaysia", image: malaysia),
-  SelectCountryModel(text: "Singapore", image: singapore),
-  SelectCountryModel(text: "Thailand", image: thailand),
-  SelectCountryModel(text: "Vietnam", image: vietnam),
-];
+// List<SelectCountryModel> select_country = [
+//   SelectCountryModel(text: "Malaysia", image: malaysia),
+//   SelectCountryModel(text: "Singapore", image: singapore),
+//   SelectCountryModel(text: "Thailand", image: thailand),
+//   SelectCountryModel(text: "Vietnam", image: vietnam),
+// ];
 
 List phoneCodes = ["+60", "+92", "+65", "+66", "+855"];

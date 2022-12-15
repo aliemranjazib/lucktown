@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MenuProvider extends ChangeNotifier {
   int _selectedIndex = 0;
   VoidCallback? press;
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int get selectedIndex => _selectedIndex;
   saveIndex(index, VoidCallback p) {
     _selectedIndex = index;
@@ -12,25 +12,25 @@ class MenuProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  GlobalKey<ScaffoldState> get scaffoldkey => _scaffoldKey;
+  // GlobalKey<ScaffoldState> get scaffoldkey => _scaffoldKey;
 
-  void openOrCloseDraw() {
-    if (_scaffoldKey.currentState!.isDrawerOpen) {
-      _scaffoldKey.currentState!.openEndDrawer();
-    } else {
-      _scaffoldKey.currentState!.openDrawer();
-    }
-    print("PPPPPPPPPPPPPPPPPPPPPPPPP");
-    notifyListeners();
-  }
+  // void openOrCloseDraw() {
+  //   if (_scaffoldKey.currentState!.isDrawerOpen) {
+  //     _scaffoldKey.currentState!.openEndDrawer();
+  //   } else {
+  //     _scaffoldKey.currentState!.openDrawer();
+  //   }
+  //   print("PPPPPPPPPPPPPPPPPPPPPPPPP");
+  //   notifyListeners();
+  // }
 
   List<String> get menuItems => [
         "Home",
         "Contact",
         "Transactions",
         "Profile",
-        'About us',
-        'Contact us',
+        // 'About us',
+        // 'Contact us',
       ];
 
   // List<MaterialPageRoute> menuRoute =[

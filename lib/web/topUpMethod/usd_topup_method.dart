@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_lucky_town/app_routes/app_routes.dart';
 import 'package:flutter_application_lucky_town/utils/components/gradient_text.dart';
 import 'package:flutter_application_lucky_town/utils/components/primary-button.dart';
 import 'package:flutter_application_lucky_town/utils/constants/contants.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TopUpMethodScreen extends StatelessWidget {
@@ -17,7 +19,9 @@ class TopUpMethodScreen extends StatelessWidget {
                 children: [
                   IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, web_product_detail);
+                        context.goNamed(RouteCon.product_detail);
+
+                        // Navigator.pushNamed(context, web_product_detail);
                         // Navigator.pop(context);
                       },
                       padding: EdgeInsets.all(0),

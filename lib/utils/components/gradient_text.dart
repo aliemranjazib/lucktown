@@ -30,10 +30,15 @@ Text silverGradientLight(String text, double? fontsize) {
   );
 }
 
-Text whiteText(String text, double? fontsize,) {
+Text whiteText(
+  String text,
+  double? fontsize,
+) {
   return Text(
     text,
-    style: GoogleFonts.roboto(fontSize: fontsize, ),
+    style: GoogleFonts.roboto(
+      fontSize: fontsize,
+    ),
   );
 }
 
