@@ -153,14 +153,16 @@ class _BindOTPScreenState extends State<BindOTPScreen> {
           'Content-Type': 'application/json; charset=UTF-8',
           // "Authorization": temAuth!,
         },
-        body: jsonEncode(<String, dynamic>{
-          "data": {
-            "tokenKey": tokenKeyofOtp,
-            "otpCode": otpCode,
-            "deviceInfo": {"id": "`", "platform": "${platformName.toString()}"},
-            "version": "4.0.1"
-          }
-        }),
+        body: jsonEncode(
+          <String, dynamic>{
+            "data": {
+              "tokenKey": tokenKeyofOtp,
+              "otpCode": otpCode,
+              "deviceInfo": {"id": "1111122222", "platform": "android"},
+              "version": "4.0.1"
+            }
+          },
+        ),
       );
       switch (response1.statusCode) {
         case 200:
