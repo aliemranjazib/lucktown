@@ -3,7 +3,8 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "1fead5ffc12aab4b1a88b620133b17dc",
+  "assets/AssetManifest.json": "468e8d75c5191eeb4fb4c0ee0070721a",
+"assets/assets/images/announcement.png": "55d350c0f143675d5e229e59347dcf2d",
 "assets/assets/images/arrow-left.png": "b7edeac1e345823e340b3deceb92e158",
 "assets/assets/images/avatar.png": "fc78731b38a68b381582420cb49217b6",
 "assets/assets/images/BACKGROUND_2.png": "faf0cdfb1be4c694ba9f9259497f9c1b",
@@ -11,6 +12,7 @@ const RESOURCES = {
 "assets/assets/images/bg.png": "3f4918724f7bdff829d49c1b4cf433b7",
 "assets/assets/images/casino.png": "9613002905f65c158515afbaf844f320",
 "assets/assets/images/chat.png": "d354176ac3736f14305c3533248494e7",
+"assets/assets/images/checkin.png": "1df47d6f5566b99926d3ea10fa7cc568",
 "assets/assets/images/coin.jpg": "145ac10743aca019d0b6a7d4e59e0c4d",
 "assets/assets/images/contact_search.png": "9b8262fa0b61d2311310198faa077950",
 "assets/assets/images/country_pick.png": "09c08b40d3ac0f88e807f79d9d0295e7",
@@ -31,6 +33,7 @@ const RESOURCES = {
 "assets/assets/images/line.png": "bc16a881b229d62830965ad786ea4622",
 "assets/assets/images/logo.png": "e2f4d654d6c87e7af766974327aba94d",
 "assets/assets/images/lottery.png": "4f9bea7dd3324ac0c1060de06f6d6142",
+"assets/assets/images/ltcoin.png": "8198439f1048beab9540aa8485fc6e18",
 "assets/assets/images/malaysia.png": "1a62c7c9c35d7fbabf459fda86db7a66",
 "assets/assets/images/mask-group-1.png": "84f62b49052d8e09b76fc7c54a600981",
 "assets/assets/images/mobile_bg.jpg": "83e159010cedf5c0641962e8c0091bad",
@@ -39,9 +42,11 @@ const RESOURCES = {
 "assets/assets/images/one.png": "38dc1752f17ab3ae0fa9afa5e4583063",
 "assets/assets/images/pen.png": "589ed93668fc81b4de2a3ea4743ff209",
 "assets/assets/images/plus.png": "64fc094d5e643d523175cc6dcd781e9a",
+"assets/assets/images/points.png": "772d4e0132a361d60d224fb08ddfb300",
 "assets/assets/images/popular.png": "cac9ee6009d9ee3bd8b58fec5f5c71d6",
 "assets/assets/images/qrcode.png": "5e749e95e0250ca1cae2f4d05c082d2a",
 "assets/assets/images/Rectangle%25204153.png": "83e159010cedf5c0641962e8c0091bad",
+"assets/assets/images/redeem.png": "531124460b0042574c2807eb108de694",
 "assets/assets/images/search.png": "cf24e852e676dd82349c95a7170bd9c0",
 "assets/assets/images/setting.png": "a1cf7c7f96a4e39ed94ed328989c6029",
 "assets/assets/images/singapore.png": "a798f8297a3ed77b2174ad88cbf2c52f",
@@ -346,9 +351,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "4c51f8b874ac005c3849b356ef5aea1e",
-"/": "4c51f8b874ac005c3849b356ef5aea1e",
-"main.dart.js": "fcc05e481ea597ed38cc2be969580ccb",
+"index.html": "e8144399e175a37c5f81463931cb8f53",
+"/": "e8144399e175a37c5f81463931cb8f53",
+"main.dart.js": "db485ce2ac327e8dbef7392b1590ec8b",
 "manifest.json": "43c2c4f002e72595606a862fcf94652b",
 "version.json": "029bbf2d2f2beed5e7e1421aa4587bcd"
 };
